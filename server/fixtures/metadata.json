@@ -1,0 +1,18 @@
+{
+  "address": "5500 Grand Lake Dr, San Antonio, TX, 78244",
+  "capturedAt": "2026-10-24T05:40:20.452Z",
+  "endpoints": [
+    {
+      "name": "properties",
+      "status": 200
+    },
+    {
+      "name": "listings",
+      "status": 200
+    },
+    {
+      "name": "avm",
+      "status": 200
+    }
+  ]
+}

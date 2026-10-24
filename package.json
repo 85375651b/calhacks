@@ -4,16 +4,25 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -k -n api,web \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "node --watch server/index.js",
+    "dev:client": "vite",
+    "start:server": "node server/index.js",
+    "inspect:rentcast": "node server/scripts/inspect-rentcast.js",
+    "test": "node --test server/tests/*.test.js",
+    "check:secrets": "node server/scripts/check-secrets.js",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4"
   },
   "devDependencies": {
+    "concurrently": "^10.0.6",
     "vite": "^7.1.12"
   }
 }
