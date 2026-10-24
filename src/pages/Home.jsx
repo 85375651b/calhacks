@@ -1,4 +1,5 @@
 import DescribeSearch, { localRead, localWrite } from "../components/search/DescribeSearch";
+import CommuteResults from '../components/search/CommuteResults';
 import "../styles/describe.css";
 import { Link, useLocation } from "react-router-dom";
 import { readSession, writeSession } from "../lib/planner/listingSnapshot";
@@ -256,7 +257,11 @@ export default function Home() {
                 </p>
               ),
           )}
-          <ListingGrid
+          <CommuteResults
+            key={data.commute?.token || 'standard'}
+            data={data}
+            clientId={clientId}
+            onUpdate={next => setData(old => old.commute?.token === next.commute?.token ? { ...old, ...next } : old)}
             listings={rows}
             onOpen={setSelected}
             favorites={favorites}

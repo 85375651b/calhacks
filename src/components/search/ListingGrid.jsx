@@ -63,6 +63,9 @@ export default function ListingGrid({
               </p>
               <h3>{p.address}</h3>
               {p.distanceMiles != null && <p>{p.distanceMiles} miles from your radius center (straight-line)</p>}
+              {p.commute && <p className={`commute-badge ${Number.isFinite(p.commute.minutes) ? p.commute.minutes <= p.commute.maxMinutes ? 'within' : 'over' : 'unchecked'}`}>
+                {Number.isFinite(p.commute.minutes) ? `Commute about ${p.commute.minutes} min (${p.commute.departAt}, typical traffic)${p.commute.usingFixtures ? ' · sample data' : ''}` : p.commute.error || 'Commute not verified'}
+              </p>}
               <p>
                 {p.city}, {p.state} {p.zip}
               </p>

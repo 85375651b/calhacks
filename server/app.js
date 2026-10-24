@@ -9,6 +9,7 @@ import { config } from './config.js';
 import { resolvePlaces } from './search/places.js';
 import { describedSearch } from './search/described.js';
 import { partialCriteria } from './search/nlParser.js';
+import { commuteSearch } from './search/commute.js';
 
 export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, resolve = resolvePlaces } = {}) {
   const app = express();
@@ -35,6 +36,11 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
     res.set('Cache-Control', 'no-store');
     try { res.json(await describedSearch(req.body, String(req.get('X-Client-Id') || req.ip).slice(0, 100))); }
     catch (e) { res.status(400).json({ error: { message: e.message } }); }
+  });
+  app.post('/api/search/commute-more', async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    try { res.json(await commuteSearch.more(req.body?.token, String(req.get('X-Client-Id') || req.ip).slice(0,100))); }
+    catch(e) { res.status(400).json({error:{message:e.message}}); }
   });
   app.get("/api/insights/:module", async (req, res) => {
     try {
