@@ -1,3 +1,4 @@
+import { readSession, writeSession } from '../lib/planner/listingSnapshot';
 import { useFavorites } from "../lib/Favorites";
 import React, { useEffect, useRef, useState } from "react";
 import ListingGrid from "../components/search/ListingGrid";
@@ -7,19 +8,22 @@ import WorkAddress from "../components/search/WorkAddress";
 import { ModuleSelector } from "../lib/Preferences";
 import { defaults, SORTS } from "../../server/search/criteria";
 export default function Home() {
+  const restored = useRef(readSession('propertylens.search')).current;
   const { favorites, toggle } = useFavorites();
-  const [criteria, setCriteria] = useState({
+  const [criteria, setCriteria] = useState(restored?.criteria || {
       ...defaults,
       location: "Austin, TX",
     }),
-    [applied, setApplied] = useState(null),
-    [data, setData] = useState(null),
+    [applied, setApplied] = useState(restored?.applied || null),
+    [data, setData] = useState(restored?.data || null),
     [loading, setLoading] = useState(false),
     [error, setError] = useState(""),
-    [selected, setSelected] = useState(null),
-    [sort, setSort] = useState("relevance");
+    [selected, setSelected] = useState(restored?.selected || null),
+    [sort, setSort] = useState(restored?.sort || "relevance");
   const request = useRef(null);
   useEffect(() => () => request.current?.abort(), []);
+  useEffect(() => { writeSession('propertylens.search', {criteria,applied,data,selected,sort,scroll:window.scrollY}); }, [criteria,applied,data,selected,sort]);
+  useEffect(() => { if(restored) requestAnimationFrame(()=>window.scrollTo(0,restored.scroll || 0)); }, []);
   async function search(c) {
     request.current?.abort();
     const controller = new AbortController();

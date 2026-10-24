@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { APP_NAME } from "./lib/config";
 import Navbar from "./components/Navbar";
@@ -16,6 +16,7 @@ import "./styles/layout.css";
 import "./styles/results.css";
 import "./styles/autocomplete.css";
 import "./styles/enrichment.css";
+const Planner = lazy(() => import('./pages/Planner'));
 export default function App() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
@@ -32,6 +33,8 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/planner" element={<Suspense fallback={<main id="main">Loading planner…</main>}><Planner /></Suspense>} />
+          <Route path="/planner/:homeId" element={<Suspense fallback={<main id="main">Loading planner…</main>}><Planner /></Suspense>} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/lookup" element={<Lookup />} />
           <Route path="/results" element={<Results />} />

@@ -1,3 +1,4 @@
+import PlannerLink from '../PlannerLink';
 import React, { useState } from "react";
 export const money = (v) =>
   typeof v === "number" && Number.isFinite(v)
@@ -69,6 +70,7 @@ export default function ListingGrid({
               </small>
             </div>
           </button>
+          <PlannerLink listing={p} compact className="card-planner" />
           <button
             className="heart"
             aria-label={

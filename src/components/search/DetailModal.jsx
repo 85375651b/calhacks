@@ -1,3 +1,4 @@
+import PlannerLink from '../PlannerLink';
 import { useFavorites } from "../../lib/Favorites";
 import InsightModules from "./InsightModules";
 import React, { useEffect, useRef, useState } from "react";
@@ -70,6 +71,7 @@ export default function DetailModal({
               {p.city}, {p.state} {p.zip}
             </p>
             <strong className="detail-price">{money(p.price)}</strong>
+            <PlannerLink listing={p} />
           </div>
           <button
             aria-pressed={saved}
@@ -138,6 +140,7 @@ export default function DetailModal({
           </div>
         )}
       </div>
+      <div className="planner-mobile-action"><PlannerLink listing={p} /></div>
     </dialog>
   );
 }
