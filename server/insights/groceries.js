@@ -1,4 +1,6 @@
 import { moduleHandler, coords } from "./shared.js";
+import { runActor } from "../providers/actor.js";
+import { ACTORS } from "../config/apify.js";
 export function haversine(a, b) {
   const rad = (x) => (x * Math.PI) / 180,
     dlat = rad(b.lat - a.lat),
@@ -14,73 +16,57 @@ export function haversine(a, b) {
     )
   );
 }
+const GROCERY_PATTERN = /grocery|supermarket|food market|produce|greengrocer/i;
 export async function groceryProvider(p) {
-  let rows = [];
-  for (const radius of [3000, 8000, 15000]) {
-    let response;
-    for (const host of [
-      "https://overpass-api.de/api/interpreter",
-      "https://overpass.kumi.systems/api/interpreter",
-    ]) {
-      try {
-        const query =
-          '[out:json][timeout:20];nwr[shop~"^(supermarket|grocery|greengrocer)$"](around:' +
-          radius +
-          "," +
-          p.lat +
-          "," +
-          p.lng +
-          ");out center tags;";
-        const r = await fetch(host, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent":
-              "PropertyLens-CalHacks/1.0 (https://github.com/duhdubnub/calhack)",
-          },
-          body: new URLSearchParams({ data: query }),
-          signal: AbortSignal.timeout(25000),
-        });
-        if (r.ok) {
-          response = await r.json();
-          if (response.elements) break;
-        }
-      } catch {}
-    }
-    if (!response?.elements)
-      throw new Error("Grocery data unavailable right now");
-    rows = response.elements
-      .map((r) => {
-        const lat = r.lat ?? r.center?.lat,
-          lng = r.lon ?? r.center?.lon,
-          t = r.tags || {};
-        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-        return {
-          name: t.name || t.brand || "Unnamed grocery store",
-          brand: t.brand || null,
-          address:
-            [t["addr:housenumber"], t["addr:street"], t["addr:city"]]
-              .filter(Boolean)
-              .join(" ") || null,
-          miles: Math.round(haversine(p, { lat, lng }) * 100) / 100,
-          lat,
-          lng,
-        };
-      })
-      .filter(Boolean);
-    const seen = new Set();
-    rows = rows.filter((r) => {
+  const items = await runActor(
+    ACTORS.groceries,
+    {
+      searchStringsArray: ["grocery store"],
+      customGeolocation: {
+        type: "Point",
+        coordinates: [p.lng, p.lat],
+        radiusKm: 5,
+      },
+      maxCrawledPlacesPerSearch: 20,
+      language: "en",
+      skipClosedPlaces: true,
+      scrapePlaceDetailPage: false,
+    },
+    { limit: 20 },
+  );
+  const seen = new Set();
+  const rows = items
+    .map((r) => {
+      const lat = Number(r.location?.lat),
+        lng = Number(r.location?.lng),
+        categories = [r.categoryName, ...(r.categories || [])].filter(Boolean);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      if (r.permanentlyClosed || r.temporarilyClosed) return null;
+      if (categories.length && !categories.some((c) => GROCERY_PATTERN.test(c)))
+        return null;
+      return {
+        name: r.title || "Unnamed grocery store",
+        brand: null,
+        address: r.address || null,
+        miles: Math.round(haversine(p, { lat, lng }) * 100) / 100,
+        lat,
+        lng,
+        rating: Number.isFinite(r.totalScore) ? r.totalScore : null,
+        url: r.url || null,
+      };
+    })
+    .filter((r) => {
+      if (!r) return false;
       const k = r.name.toLowerCase() + r.lat.toFixed(3) + r.lng.toFixed(3);
       if (seen.has(k)) return false;
       seen.add(k);
       return true;
     });
-    if (rows.length >= 3) break;
-  }
+  if (!rows.length) throw new Error("No grocery stores found nearby");
   return {
-    source: "OpenStreetMap via Overpass",
+    source: "Google Maps via Apify",
     stores: rows.sort((a, b) => a.miles - b.miles).slice(0, 5),
-    note: "Distances are straight-line miles, not driving or walking routes. OpenStreetMap coverage may be incomplete.",
+    note: "Distances are straight-line miles, not driving or walking routes.",
   };
 }
 export const groceries = moduleHandler(

@@ -24,7 +24,7 @@ PORT=3001
 
 - `USE_FIXTURES=true`: every endpoint uses saved/demo data; neither key is required and the server makes no external calls. Autocomplete uses saved suggestions too. Images may still be fetched by the browser; unavailable photos have placeholders.
 - `USE_FIXTURES=false`: live providers with persistent caches. Both keys stay in `server/.env`, read through `process.env`. Missing provider credentials produce unavailable/fallback behavior.
-- `ENABLE_APIFY=false`: no live Apify launches. Search can fall back to RentCast; public FEMA and Overpass remain available. New-module fixtures still work. The legacy enrichment section remains disabled by this switch.
+- `ENABLE_APIFY=false`: no live Apify launches. Search can fall back to RentCast; public FEMA remains available (groceries now use Google Maps via Apify). New-module fixtures still work. The legacy enrichment section remains disabled by this switch.
 - `APIFY_MAX_RUNS_PER_HOUR`: rolling one-hour actor-launch cap across search, insights and legacy enrichment; default 60. Reservations persist across restarts. One enabled search source counts as one run. Commute uses three runs on a cold request (two peak directions and a batched off-peak comparison).
 - `PORT`: Express port; Vite proxies `/api` to it. Servers bind locally. Open the Vite URL printed in the terminal, normally `http://127.0.0.1:5173`. Restart after changing `.env`.
 
@@ -78,7 +78,7 @@ Only selected modules fetch, only after a listing opens. Preferences and the cho
 | Natural hazards | `malonestar/fema-nri-county-risk-profile` | Requests census tracts; falls back to the keyless FEMA ArcGIS tract point query. County-only actor results trigger the tract fallback. Area loss is not a property insurance quote.                                                                              |
 | Schools         | `TopApi/zillow-scraper`, property details | Public GreatSchools entries from Zillow. Uses listing URL or address. Can backfill year built and four photos. No insurance premium is invented when the provider does not supply one.                                                                           |
 | Commute         | `rastriq/google-maps-directions-traffic`  | Verified different next-Tuesday 8 AM/3 AM predictions. Home-to-work at 8 AM, work-to-home at 5:30 PM, both compared to 3 AM in the same direction. `tz-lookup` derives the home's calendar; actor times are local to each origin. Predictions, not live traffic. |
-| Groceries       | OpenStreetMap Overpass                    | Main endpoint plus Kumi mirror; 3/8/15 km expanding radii, nearest five, haversine straight-line miles. Both endpoints were unavailable during verification; graceful unavailable state and labeled illustrative fixtures are included.                          |
+| Groceries       | Google Maps via Apify (`compass/crawler-google-places`) | One run per cold request: "grocery store" search within 5 km of the point, grocery-category filter, nearest five by haversine straight-line miles. Labeled illustrative fixtures are included. |
 
 Crime, hazard, school and commute successes cache for 24 hours; grocery successes cache for seven days at coordinates rounded to three decimals. Failures cache only five minutes. Retry does not bypass that protection. Search caches one hour (partial failures five minutes). Identical in-flight requests share work. All caches are ignored JSON files under `server/.cache/`, for **one Express process**, not a multi-replica deployment.
 
