@@ -18,6 +18,8 @@ Create `server/.env` from `server/.env.example` (PowerShell: `Copy-Item server/.
 RENTCAST_API_KEY=your_key_here
 USE_FIXTURES=true
 PORT=3001
+APIFY_TOKEN=your_token_here
+ENABLE_APIFY=true
 ```
 
 For live lookups, put your RentCast key in that ignored file and set `USE_FIXTURES=false`. For development without quota usage, leave `USE_FIXTURES=true`; no key is required in that mode. The existing development workspace already has its local environment configured. Never commit real keys or prefix them with `VITE_`.
@@ -51,7 +53,7 @@ That temporary npm path is machine-specific and may be removed when Windows clea
 
 ## Data flow and quota
 
-- The browser calls only `GET /api/lookup?address=...`. The key stays on the server in `process.env`; RentCast requests use the documented `X-Api-Key` header ([authentication docs](https://developers.rentcast.io/reference/getting-started-guide)).
+- The primary request is `GET /api/lookup?address=...`. The key stays on the server in `process.env`; RentCast requests use the documented `X-Api-Key` header ([authentication docs](https://developers.rentcast.io/reference/getting-started-guide)).
 - A cold live lookup normally makes **two parallel requests**: `/avm/value` and `/listings/sale?status=Active`. The inspected AVM `subjectProperty` already includes beds, baths, square footage, property type, year built, lot size, and last-sale date when available. The UI never uses comparable-property attributes as subject details.
 - `/properties` is a third, fallback request only when the AVM lacks subject-address details. Missing provider fields remain `null` in JSON and render as `N/A`; a missing last-sale price alone does not trigger another request.
 - Returned listing status is checked explicitly. Inactive records are never shown as active, even if returned by an Active-filtered request. An empty/inactive listing result means no active listing; a failed listing request produces an error rather than a false not-listed claim.
@@ -61,7 +63,23 @@ That temporary npm path is machine-specific and may be removed when Windows clea
 
 ## Fixture mode
 
-`USE_FIXTURES=true` reads the saved raw RentCast responses in `server/fixtures/` and makes **zero external calls**. Any nonempty search shows the same saved property, preserving its actual address and displaying a **Sample data** badge and explanatory notice. These are recorded responses, not fresh data for the entered address. Fixture results never enter the live cache. Set `USE_FIXTURES=false` and restart to use live data.
+`USE_FIXTURES=true` reads saved RentCast and Apify responses in `server/fixtures/` without either API key or paid property-provider calls. Address suggestions still use free Photon requests. Any nonempty search shows the same saved property, preserving its actual address and displaying a **Sample data** badge and explanatory notice. These are recorded responses, not fresh data for the entered address. Fixture results never enter the live cache. Set `USE_FIXTURES=false` and restart to use live data.
+
+## Autocomplete and Zillow enrichment
+
+The search box calls `/api/autocomplete?q=...` after three characters with a 250 ms debounce. Photon supplies up to five deduplicated US house addresses in English. Server requests have a five-second timeout, a ten-minute memory cache, and a limit of 20 requests per IP per minute. Provider failures return an empty list. Arrow keys select an option, Enter searches, Escape closes suggestions, and ordinary typed searches still work. Stale browser requests are cancelled.
+
+After RentCast facts render, `/api/enrich?address=...` independently loads Zillow data. Its loading or failure never blocks RentCast results. The section compares an available Zestimate with RentCast, and shows listing status, photos, history, description, brokerage, source attribution, and a Zillow link. Missing fields show `N/A`.
+
+Get your token from account settings / integrations in the [Apify Console](https://console.apify.com/), then append `APIFY_TOKEN` to your existing ignored `server/.env`. Preserve your RentCast settings. `ENABLE_APIFY=false` disables enrichment; a missing token also produces a graceful unavailable response. Restart after changing settings. Authentication uses a server-only Authorization header, never a browser variable or URL.
+
+The actor is `crawloop~zillow-search-scraper`, configured in `server/providers/apify.js`. The initially considered `solid-scraper~zillow-detail-scraper` was unavailable during verification. The backend resolves the public Zillow address redirect with a five-second HEAD request, then sends the canonical property URL to Apify for content. Unresolvable addresses do not launch a paid run.
+
+Each run requests one item, detail fetching, a 55-second actor timeout, a 60-second HTTP timeout, and a $0.10 actor charge cap. Actor/platform/proxy pricing applies; this is not an all-inclusive billing guarantee. There are no automatic retries. Successful enrichment is cached on disk for 24 hours and failures for five minutes. Concurrent identical requests share one run. Ignored `server/.cache/` files support restarts and assume one server process. Different punctuation can create separate address entries.
+
+The actor documents a primary image field. The UI supports up to four photos and five history entries, but the verified sample returned neither image URLs nor price history. A photo count is not an image URL; missing information is never invented. Raw contact details are excluded from browser responses.
+
+`node server/scripts/inspect-apify.js` is an explicit paid inspection tool, not an ordinary setup step. It refuses to overwrite existing fixtures. `server/fixtures/apify-sample.json` contains the successful recorded response; an earlier empty search-URL response is retained separately for diagnostics. Fixture mode labels this recorded Zillow data as a sample.
 
 The one-off `npm run inspect:rentcast` script calls each of the three endpoints once and saves raw JSON plus capture metadata. It refuses to overwrite existing fixtures or silently repeat calls; the checked-in fixtures are already captured, so **do not run it during ordinary setup**. `node server/scripts/verify-live.js` explicitly exercises live mode with the persistent cache; a cold run normally costs two API requests and asserts that the repeated search adds zero requests.
 
@@ -81,6 +99,9 @@ server/
   rentcast.js           Fetch client, timeouts, sanitized provider errors
   lookup.js             Request orchestration, fixture mode, deduplication
   normalize.js          Provider-to-UI data mapping
+  autocomplete.js       Suggestion validation and per-IP rate limit
+  enrich.js             Enrichment normalization, fixtures and caching
+  providers/            Photon and Apify clients
   cache.js              24-hour JSON cache
   fixtures/             Recorded raw responses and capture metadata
   scripts/              One-off inspection, live verification, secret checks
@@ -95,12 +116,11 @@ Rename the app in `src/lib/config.js`. Display components accept normalized data
 
 ## Planned next
 
-- Additional property data integrations, potentially Apify
 - Claude-generated summaries
 - Azure deployment
 - Visa payments
 
-These are planned only. There is no map, comparables UI, autocomplete, field editing, database, authentication, payments, or AI integration.
+These are planned only. There is no map, comparables UI, field editing, database, authentication, payments, or AI integration.
 
 ## Verification
 
@@ -119,3 +139,5 @@ Offline tests cover normalization, price precedence, missing fields, inactive li
 - Repeat a successful live search: the provider request count must not increase.
 - Open `/results` directly, refresh a results URL, and visit an unknown route.
 - Follow Home and How it works; use keyboard navigation and inspect widths from 360px to desktop.
+
+Phase 3 offline tests cover Photon filtering, caching and rate limits; Apify normalization, authentication and run caps; success/failure persistence; duplicate requests; missing-token/disabled behavior; keyless fixtures; and independent lookup/enrichment responses. The secret checker covers both configured provider keys and Apify token patterns.
