@@ -17,6 +17,10 @@ const snapStrings = new Set([
   "sampleNotice",
   "area",
   "overall",
+  "nationalGrade",
+  "actorBuild",
+  "stateGrade",
+  "latestYear",
   "violent",
   "property",
   "note",
@@ -44,6 +48,9 @@ const snapNumbers = new Set([
   "national",
   "state",
   "score",
+  "safetyScore",
+  "violentPer100k",
+  "population",
   "expectedAnnualLoss",
   "average",
   "yearBuilt",
@@ -127,7 +134,8 @@ export function sanitizeListing(p) {
   out.snapshots = {};
   for (const k of ["crime", "hazards", "schools", "commute", "groceries"])
     if (p.snapshots?.[k]?.source && typeof p.snapshots[k].source === "string")
-      out.snapshots[k] = snapshot(p.snapshots[k]);
+      if (k !== "crime" || typeof p.snapshots[k].safetyScore === "number")
+        out.snapshots[k] = snapshot(p.snapshots[k]);
   return out;
 }
 export function createFavorites(file) {

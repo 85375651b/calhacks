@@ -1,42 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { usePreferences, MODULES } from "../../lib/Preferences";
-import { num, money, Photo } from "./ListingGrid";
+import { num } from "./ListingGrid";
+import { CRIME_ACTOR_BUILD } from '../../../server/config/apify';
 export function InsightBody({ type, data: d }) {
   if (type === "crime")
     return (
       <>
-        <span className="grade">{d.overall || "N/A"}</span>
-        <p>
-          Violent: {d.violent || "N/A"} · Property: {d.property || "N/A"}
-        </p>
+        <span className="grade">{d.safetyScore != null ? `${num(d.safetyScore)} / 10` : "N/A"}</span>
+        <p>Safety score · 10 is safest</p>
         {d.area && <p className="small-note">{d.area}</p>}
-        {d.rates?.map((r) => (
-          <div className="rate-row" key={r.label}>
-            <strong>{(r.label || "Unknown").replaceAll("_", " ")}</strong>
-            <p>
-              Area: {num(r.rate)} · US: {num(r.national)} · State:{" "}
-              {num(r.state)}
-            </p>
-            {r.rate != null && r.national != null && (
-              <meter
-                min="0"
-                max={Math.max(r.rate, r.national, 1) * 1.2}
-                value={r.rate}
-                aria-label={r.label + " area rate"}
-              />
-            )}
-          </div>
-        ))}
-        <p className="small-note">{d.note}</p>
+        <p>Violent crimes per 100,000 residents: {num(d.violentPer100k)}</p>
+        {d.latestYear && <p className="small-note">Data year: {d.latestYear}</p>}
+        {d.note && <p className="small-note">{d.note}</p>}
       </>
     );
   if (type === "hazards")
     return (
       <>
         <span className="grade">{d.rating || "N/A"}</span>
-        <p className="small-note">
-          {d.resolution} {d.tract} · {d.version}
-        </p>
         <ul>
           {d.hazards?.map((h) => (
             <li key={h.hazard}>
@@ -44,10 +25,6 @@ export function InsightBody({ type, data: d }) {
             </li>
           ))}
         </ul>
-        <p>Area expected annual loss: {money(d.expectedAnnualLoss)}</p>
-        <p className="small-note">
-          This is an area-wide loss model, not a home insurance premium.
-        </p>
         <p>
           <strong>Insurance considerations</strong>
           <br />
@@ -135,12 +112,12 @@ export function InsightBody({ type, data: d }) {
 }
 function InsightCard({ type, listing, onData, snapshot }) {
   const { work } = usePreferences(),
-    [state, setState] = useState({ data: snapshot || null }),
+    [state, setState] = useState({ data: type === "crime" && (snapshot?.safetyScore == null || snapshot?.actorBuild !== CRIME_ACTOR_BUILD) ? null : snapshot || null }),
     [retry, setRetry] = useState(0);
   const missing = type === "commute" && !Number.isFinite(work?.lat);
   const q = {
     listingId: listing.id,
-    address: [listing.address, listing.city, listing.state, listing.zip]
+    address: [listing.address, listing.city, [listing.state, listing.zip].filter(Boolean).join(" ")]
       .filter(Boolean)
       .join(", "),
     url: listing.zillowUrl || "",
@@ -225,7 +202,7 @@ function InsightCard({ type, listing, onData, snapshot }) {
           Source:{" "}
           {
             {
-              crime: "CrimeGrade via Apify",
+              crime: "Neighborhood Crime Safety via Apify · SpotCrime",
               hazards: "FEMA National Risk Index",
               schools: "GreatSchools in Zillow via Apify",
               commute: "Google Maps via Apify",

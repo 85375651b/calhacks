@@ -44,11 +44,15 @@ Input fields: `start_addr`, `end_addr`, `start_coords`, `end_coords`, `start_dat
 
 [README and schema](https://api.apify.com/v2/acts/johnvc~google-maps-directions-api/builds/default)
 
-## lexis-solutions/crimegrade-scraper
+## Neighborhood Crime Safety (QMw7eHkWvgqxhnd0C)
 
-Input fields: `zipCodes`, `cityUrls`, `proxyConfiguration`.
+Uses the private actor's version `0.7`, pinned to successful build `0.7.1`, with `{ address }`. The input schema and an existing successful run were checked on October 24, 2026 without launching a paid run. Scores now use a relative scale across cities in the same state (0–10); the actor's `scoreNote` explains the comparison and is displayed on the site. Existing project credentials can access it.
 
-[README and schema](https://api.apify.com/v2/acts/lexis-solutions~crimegrade-scraper/builds/default)
+Output `type: address-safety-score` provides `safetyScore` (0–10, higher is safer), `violentPer100k`, `population`, `nationalGrade`, `stateGrade`, `latestYear`, and `scoreNote`. These are SpotCrime city-level figures, not street or ZIP-level assessments. `not-covered`, `error`, and empty datasets show unavailable. No fallback to the previous crime actor is used.
+
+Schema/source and saved successful output were inspected through the authenticated Apify API on October 24, 2026. No new paid run was launched for this integration. Cache keys include the actor/build and address to avoid reusing old CrimeGrade results. Favorite snapshots retain the new fields and discard old crime snapshots when saved.
+
+[Actor source](https://console.apify.com/actors/QMw7eHkWvgqxhnd0C/source)
 
 ## lukass/zillow-scraper
 
@@ -125,7 +129,7 @@ Search field coverage is documented in the README. Redfin chosen actor only reso
 
 ## Insight verification
 
-- CrimeGrade ZIP 78704 timed out at 85 seconds. Live unavailable state is deliberate; demo crime values are explicitly illustrative, not measurements of either home. The actor documents national/state **cost** comparisons, not national/state crime-rate comparisons. Those are not conflated.
+- Neighborhood Crime Safety build `0.7.1` (version `0.7`): verified its address-only input and saved successful output (Vernon Hills, IL: 9.5, relative to 214 Illinois cities). Automated tests cover input formatting, score/rate handling, unavailable results, and saved favorite fields; no new paid run was launched.
 - FEMA actor succeeded at census-tract resolution. The direct public point-query fallback also returned both demo homes’ tracts.
 - TopApi detail mode returned three public schools and extra photo URLs for each of the two overlapping properties.
 - johnvc returned different 8 AM / 3 AM durations, but its output arrival times showed that timezone-offset ISO input was interpreted incorrectly. Rastriq was tested separately with origin-local time. It returned 35 vs 20 minutes, with matching local arrival times, and was selected. Crawlerbros public build returned 403; it was not run.

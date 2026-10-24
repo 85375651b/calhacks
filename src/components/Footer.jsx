@@ -13,7 +13,7 @@ export default function Footer() {
         </Link>
       </div>
       <p>
-        Third-party data: Zillow and Redfin via Apify, RentCast, CrimeGrade,
+        Third-party data: Zillow and Redfin via Apify, RentCast, Neighborhood Crime Safety / SpotCrime via Apify,
         FEMA National Risk Index, OpenStreetMap and Google Maps via Apify.
         <br />
         Informational only; not appraisal, insurance, legal or safety advice.

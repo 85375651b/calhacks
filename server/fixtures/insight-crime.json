@@ -1,46 +1,24 @@
 [
   {
-    "source": "CrimeGrade format · illustrative fixture",
+    "source": "Neighborhood Crime Safety format · illustrative fixture",
     "area": "Illustrative sample area 1",
-    "overall": "C+",
-    "violent": "B-",
-    "property": "C",
-    "rates": [
-      {
-        "label": "violent",
-        "rate": 3,
-        "national": 4,
-        "state": 3.5
-      },
-      {
-        "label": "property",
-        "rate": 18,
-        "national": 20,
-        "state": 19
-      }
-    ],
-    "note": "Illustrative demo values, not measured crime data for this property."
+    "safetyScore": 6.5,
+    "violentPer100k": 105,
+    "population": null,
+    "nationalGrade": "N/A",
+    "stateGrade": "N/A",
+    "latestYear": null,
+    "note": "Illustrative demo values, not measured crime data for this property. City-level data, not street-level."
   },
   {
-    "source": "CrimeGrade format · illustrative fixture",
+    "source": "Neighborhood Crime Safety format · illustrative fixture",
     "area": "Illustrative sample area 2",
-    "overall": "B",
-    "violent": "B+",
-    "property": "B-",
-    "rates": [
-      {
-        "label": "violent",
-        "rate": 2,
-        "national": 4,
-        "state": 3.5
-      },
-      {
-        "label": "property",
-        "rate": 14,
-        "national": 20,
-        "state": 19
-      }
-    ],
-    "note": "Illustrative demo values, not measured crime data for this property."
+    "safetyScore": 7.2,
+    "violentPer100k": 84,
+    "population": null,
+    "nationalGrade": "N/A",
+    "stateGrade": "N/A",
+    "latestYear": null,
+    "note": "Illustrative demo values, not measured crime data for this property. City-level data, not street-level."
   }
 ]
