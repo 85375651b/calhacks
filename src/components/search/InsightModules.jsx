@@ -11,7 +11,6 @@ export function InsightBody({ type, data: d }) {
         {d.area && <p className="small-note">{d.area}</p>}
         <p>Violent crimes per 100,000 residents: {num(d.violentPer100k)}</p>
         {d.latestYear && <p className="small-note">Data year: {d.latestYear}</p>}
-        {d.note && <p className="small-note">{d.note}</p>}
       </>
     );
   if (type === "hazards")

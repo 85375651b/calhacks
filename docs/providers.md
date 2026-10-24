@@ -46,7 +46,7 @@ Input fields: `start_addr`, `end_addr`, `start_coords`, `end_coords`, `start_dat
 
 ## Neighborhood Crime Safety (QMw7eHkWvgqxhnd0C)
 
-Uses the private actor's version `0.7`, pinned to successful build `0.7.1`, with `{ address }`. The input schema and an existing successful run were checked on October 24, 2026 without launching a paid run. Scores now use a relative scale across cities in the same state (0–10); the actor's `scoreNote` explains the comparison and is displayed on the site. Existing project credentials can access it.
+Uses the private actor's version `0.7`, pinned to successful build `0.7.1`, with `{ address }`. The input schema and an existing successful run were checked on October 24, 2026 without launching a paid run. Scores now use a relative scale across cities in the same state (0–10); the actor's `scoreNote` explains the comparison in the API response but is not displayed in the safety panel. Existing project credentials can access it.
 
 Output `type: address-safety-score` provides `safetyScore` (0–10, higher is safer), `violentPer100k`, `population`, `nationalGrade`, `stateGrade`, `latestYear`, and `scoreNote`. These are SpotCrime city-level figures, not street or ZIP-level assessments. `not-covered`, `error`, and empty datasets show unavailable. No fallback to the previous crime actor is used.
 
