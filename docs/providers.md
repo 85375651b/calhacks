@@ -132,3 +132,15 @@ Search field coverage is documented in the README. Redfin chosen actor only reso
 - Overpass main and Kumi mirror timed out/unreachable in this environment. Live requests show unavailable; grocery fixtures explicitly name illustrative example stores.
 
 [RentCast sale-listing parameters](https://developers.rentcast.io/reference/sale-listings) · [FEMA tract service](https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/National_Risk_Index_Census_Tracts/FeatureServer/0)
+
+## Furniture product dimensions
+
+`POST /api/furniture/resolve` accepts a query or HTTPS URL. Names use catalog matching and explicit dimension parsing, then optional Claude estimates, then a labelled generic preset. URLs first use a 10-second, 2-MB HTML-only fetch with DNS/IP validation, pinned public addresses, and at most five revalidated redirects. Private, loopback, link-local, mapped, metadata, and reserved address ranges are rejected. Credentials and non-default ports are rejected.
+
+JSON-LD Product fields and additionalProperty measurements take priority. Open Graph supplies title/image fallbacks. Nearby dimension text supports inches, feet, centimeters, and millimeters. The confirm dialog always asks users to verify measurements on the retailer's site.
+
+Optional Claude uses the official `@anthropic-ai/sdk`, a forced strict tool schema, local output validation, bounded dimensions, 500 output tokens, temperature zero, a 15-second timeout, and no SDK retries. At most two calls run concurrently, with a persisted rolling hourly cap (default 30). The default model `claude-haiku-5-5` was checked against the [official model overview](https://platform.claude.com/docs/en/models/overview); tool shape follows [official tool definitions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools). Product content is explicitly treated as untrusted data and trimmed to 6,000 characters. Missing keys, provider failures, and caps fall back to heuristics.
+
+Optional `ENABLE_FURNITURE_APIFY=true` uses [Apify Cheerio Scraper](https://apify.com/apify/cheerio-scraper/input-schema), a raw HTTP actor that avoids browser-rendering costs. It uses one start URL, one page/result, one concurrency slot, no retries, no link following, disabled redirects, and the existing global actor concurrency/hourly/charge guards. Unsafe local URLs are never passed to the actor. Fallback is further limited to known retailer domains (IKEA, Wayfair, Target, Walmart, Amazon, West Elm, Crate and Barrel, Article, Room & Board, Home Depot, and Lowes); arbitrary hosts use direct safe fetch or manual fallback. Live execution remains provider-dependent and has not been exercised by automated tests.
+
+Successful resolutions cache for seven days by normalized URL/query and coalesce concurrent requests. Resolution is limited to ten requests per minute per anonymous client. Fixture mode bypasses all external calls, using the three sample URLs in the planner guide and local estimates for other input. The library and planner do not require Claude or Apify.

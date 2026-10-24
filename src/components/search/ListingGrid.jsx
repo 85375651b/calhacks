@@ -45,6 +45,7 @@ export default function ListingGrid({
         <article className="listing-card" key={p.id}>
           <button
             className="listing-open"
+            data-listing-id={p.id}
             onClick={() => onOpen?.(p)}
             aria-label={"View " + p.address}
           >

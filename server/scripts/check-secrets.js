@@ -13,12 +13,17 @@ if (forbidden.length)
   throw new Error(
     "An environment file is tracked or staged; stop before committing.",
   );
-const secrets = [config.apiKey, config.apifyToken].filter(
+const secrets = [
+  config.apiKey,
+  config.apifyToken,
+  process.env.ANTHROPIC_API_KEY,
+].filter(
   (value) => value && !["your_key_here", "your_token_here"].includes(value),
 );
 const containsSecret = (text) =>
   secrets.some((secret) => text.includes(secret)) ||
-  /apify_api_[a-zA-Z0-9]{20,}/.test(text);
+  /apify_api_[a-zA-Z0-9]{20,}/.test(text) ||
+  /sk-ant-[a-zA-Z0-9_-]{20,}/.test(text);
 {
   for (const file of files) {
     const staged = git("show", `:${file}`);

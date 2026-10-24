@@ -1,4 +1,5 @@
-import { readSession, writeSession } from '../lib/planner/listingSnapshot';
+import { Link, useLocation } from "react-router-dom";
+import { readSession, writeSession } from "../lib/planner/listingSnapshot";
 import { useFavorites } from "../lib/Favorites";
 import React, { useEffect, useRef, useState } from "react";
 import ListingGrid from "../components/search/ListingGrid";
@@ -8,12 +9,15 @@ import WorkAddress from "../components/search/WorkAddress";
 import { ModuleSelector } from "../lib/Preferences";
 import { defaults, SORTS } from "../../server/search/criteria";
 export default function Home() {
-  const restored = useRef(readSession('propertylens.search')).current;
+  const location = useLocation();
+  const restored = useRef(readSession("propertylens.search")).current;
   const { favorites, toggle } = useFavorites();
-  const [criteria, setCriteria] = useState(restored?.criteria || {
-      ...defaults,
-      location: "Austin, TX",
-    }),
+  const [criteria, setCriteria] = useState(
+      restored?.criteria || {
+        ...defaults,
+        location: "Austin, TX",
+      },
+    ),
     [applied, setApplied] = useState(restored?.applied || null),
     [data, setData] = useState(restored?.data || null),
     [loading, setLoading] = useState(false),
@@ -22,8 +26,20 @@ export default function Home() {
     [sort, setSort] = useState(restored?.sort || "relevance");
   const request = useRef(null);
   useEffect(() => () => request.current?.abort(), []);
-  useEffect(() => { writeSession('propertylens.search', {criteria,applied,data,selected,sort,scroll:window.scrollY}); }, [criteria,applied,data,selected,sort]);
-  useEffect(() => { if(restored) requestAnimationFrame(()=>window.scrollTo(0,restored.scroll || 0)); }, []);
+  useEffect(() => {
+    writeSession("propertylens.search", {
+      criteria,
+      applied,
+      data,
+      selected,
+      sort,
+      scroll: window.scrollY,
+    });
+  }, [criteria, applied, data, selected, sort]);
+  useEffect(() => {
+    if (restored)
+      requestAnimationFrame(() => window.scrollTo(0, restored.scroll || 0));
+  }, []);
   async function search(c) {
     request.current?.abort();
     const controller = new AbortController();
@@ -91,6 +107,29 @@ export default function Home() {
         </h1>
         <p>Homes from multiple sources. The details that matter to you.</p>
       </section>
+      {location.state?.plannerMessage && !restored?.data && (
+        <p role="status">
+          Your previous search is no longer available. Find a home below or open
+          the demo planner.
+        </p>
+      )}
+      <div className="home-entry-cards">
+        <Link className="planner-entry" to="/planner">
+          <span className="eyebrow">PICTURE YOUR NEXT HOME</span>
+          <h2>Try your furniture</h2>
+          <p>
+            Build an estimated 3D layout. Bring your furniture. See what fits.
+          </p>
+          <strong>Open the room planner &rarr;</strong>
+        </Link>
+        <a href="#home-search">
+          <span className="eyebrow">EXPLORE THE POSSIBILITIES</span>
+          <h2>Find homes</h2>
+          <p>Search US listings, compare insights and save your shortlist.</p>
+          <strong>Start your search &rarr;</strong>
+        </a>
+      </div>
+      <div id="home-search" />
       <Filters
         value={criteria}
         onChange={setCriteria}

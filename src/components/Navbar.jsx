@@ -18,6 +18,7 @@ export default function Navbar() {
           <NavLink to="/" end>
             Search
           </NavLink>
+          <NavLink to="/planner">Planner</NavLink>
           <NavLink to="/favorites">
             Favorites <span className="count-badge">{favorites.length}</span>
           </NavLink>

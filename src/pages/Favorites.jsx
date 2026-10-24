@@ -1,3 +1,4 @@
+import { readSession } from "../lib/planner/listingSnapshot";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFavorites } from "../lib/Favorites";
@@ -5,7 +6,10 @@ import ListingGrid from "../components/search/ListingGrid";
 import DetailModal from "../components/search/DetailModal";
 export default function Favorites() {
   const { favorites, toggle, loading, message, refresh } = useFavorites(),
-    [selected, setSelected] = useState(null);
+    [selected, setSelected] = useState(() => {
+      const back = readSession("propertylens.plannerReturn");
+      return back?.path === "/favorites" ? back.listing : null;
+    });
   return (
     <main id="main" className="container search-page">
       <p className="eyebrow">YOUR SHORTLIST</p>

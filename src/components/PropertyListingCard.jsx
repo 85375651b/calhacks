@@ -1,7 +1,22 @@
 import React from "react";
+import PlannerLink from "./PlannerLink";
 import { formatCurrency, formatNumber, formatDate } from "../lib/format";
 
 export default function PropertyListingCard({ property }) {
+  let addressHash = 2166136261;
+  for (const c of property.address || "home")
+    addressHash = Math.imul(addressHash ^ c.charCodeAt(0), 16777619);
+  const plannerListing = {
+    id: "custom-lookup-" + (addressHash >>> 0).toString(16),
+    address: property.address,
+    price: property.listing?.listPrice ?? property.estimate?.price,
+    beds: property.bedrooms,
+    baths: property.bathrooms,
+    sqft: property.squareFootage,
+    yearBuilt: property.yearBuilt,
+    lotSizeSqft: property.lotSize,
+    homeType: property.propertyType,
+  };
   const hasListPrice = property.listing?.listPrice != null;
   const stats = [
     ["Beds", formatNumber(property.bedrooms)],
@@ -46,6 +61,7 @@ export default function PropertyListingCard({ property }) {
           </div>
         ))}
       </dl>
+      <PlannerLink listing={plannerListing} />
     </section>
   );
 }

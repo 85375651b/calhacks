@@ -146,3 +146,22 @@ Claude-generated summaries, Azure deployment, Visa payments and a cloud storage 
 37 automated tests pass, including unchanged Phase 2/3 behavior, canonical validation, adapter input mapping, cross-source merge, missing-field retention, one/both-source failure handling, persistent success/failure caches, concurrent favorites and the rolling actor budget. Fixture tests disable `fetch` and blank both keys to prove that the new search and all five modules require no external services.
 
 Browser checks covered filtered Austin results, URL precedence, selected-module loading, work-address selection, all five fixture cards, dialog Escape dismissal, favorites reload persistence, reset filters, and a 360-pixel viewport with no horizontal overflow. Production `npm run build` and secret checks pass. Live provider outcomes and unavailable services are recorded above; offline fixtures do not claim live coverage.
+
+## Try Your Furniture: 3D room planner
+
+The headline planner opens from any search or favorite card's **3D** shortcut or the listing popup's **Open 3D room planner** action. Go to `/planner` for a custom home, saved favorite, or the furnished demo at `/planner/demo`. Back to listing restores the last search and popup without rerunning the search actors.
+
+Switch between 2D and 3D, edit room dimensions, add catalog/name/manual/link/bulk furniture, confirm measurements, drag or nudge items, rotate, inspect collision and door warnings, undo/redo, and download a watermarked PNG. All houses are **Estimated layout, not the real floor plan**. Furniture sizes read from product pages or estimated from names must be verified.
+
+Furniture libraries (50 items) and layouts (10 homes, 80 placements each) persist in gitignored server JSON, scoped by the existing anonymous browser ID. Autosave has a visible localStorage fallback. Favorites remain limited to five. The demo needs no API keys; `USE_FIXTURES=true` makes no external furniture calls and supports three sample product URLs documented in [docs/planner.md](docs/planner.md).
+
+Run `npm install`, then `npm run dev`. Server environment is loaded from `server/.env`, following `server/.env.example`. Optional furniture-only settings:
+
+- `ANTHROPIC_API_KEY=your_key_here` (server only; omit for catalog/heuristic fallback)
+- `ANTHROPIC_MODEL=claude-haiku-5-5`
+- `ANTHROPIC_MAX_CALLS_PER_HOUR=30`
+- `ENABLE_FURNITURE_APIFY=false` (opt in to single-page fallback; shares `APIFY_MAX_RUNS_PER_HOUR`)
+
+Privacy: layouts, furniture names, and listing snapshots are stored for this browser's anonymous ID. Product URLs are fetched by the server and may be sent to enabled providers. No secrets are sent to the browser. Clearing the browser ID removes access to that anonymous library; this is not an authenticated account system.
+
+See [planner architecture and limitations](docs/planner.md) and [provider details](docs/providers.md). Validate with `npm test`, `npm run check:secrets`, and `npm run build`.

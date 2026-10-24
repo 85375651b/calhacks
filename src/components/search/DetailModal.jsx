@@ -1,4 +1,4 @@
-import PlannerLink from '../PlannerLink';
+import PlannerLink from "../PlannerLink";
 import { useFavorites } from "../../lib/Favorites";
 import InsightModules from "./InsightModules";
 import React, { useEffect, useRef, useState } from "react";
@@ -25,7 +25,11 @@ export default function DetailModal({
     return () => {
       ref.current?.close();
       document.body.style.overflow = old;
-      previous?.focus();
+      if (previous?.isConnected && previous !== document.body) previous.focus();
+      else
+        document
+          .querySelector(`[data-listing-id="${CSS.escape(original.id)}"]`)
+          ?.focus();
     };
   }, []);
   return (
@@ -71,7 +75,7 @@ export default function DetailModal({
               {p.city}, {p.state} {p.zip}
             </p>
             <strong className="detail-price">{money(p.price)}</strong>
-            <PlannerLink listing={p} />
+            <PlannerLink listing={{...p,snapshots}} />
           </div>
           <button
             aria-pressed={saved}
@@ -140,7 +144,9 @@ export default function DetailModal({
           </div>
         )}
       </div>
-      <div className="planner-mobile-action"><PlannerLink listing={p} /></div>
+      <div className="planner-mobile-action">
+        <PlannerLink listing={{...p,snapshots}} />
+      </div>
     </dialog>
   );
 }
