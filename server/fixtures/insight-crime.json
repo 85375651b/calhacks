@@ -1,0 +1,46 @@
+[
+  {
+    "source": "CrimeGrade format · illustrative fixture",
+    "area": "Illustrative sample area 1",
+    "overall": "C+",
+    "violent": "B-",
+    "property": "C",
+    "rates": [
+      {
+        "label": "violent",
+        "rate": 3,
+        "national": 4,
+        "state": 3.5
+      },
+      {
+        "label": "property",
+        "rate": 18,
+        "national": 20,
+        "state": 19
+      }
+    ],
+    "note": "Illustrative demo values, not measured crime data for this property."
+  },
+  {
+    "source": "CrimeGrade format · illustrative fixture",
+    "area": "Illustrative sample area 2",
+    "overall": "B",
+    "violent": "B+",
+    "property": "B-",
+    "rates": [
+      {
+        "label": "violent",
+        "rate": 2,
+        "national": 4,
+        "state": 3.5
+      },
+      {
+        "label": "property",
+        "rate": 14,
+        "national": 20,
+        "state": 19
+      }
+    ],
+    "note": "Illustrative demo values, not measured crime data for this property."
+  }
+]
