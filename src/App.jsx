@@ -4,6 +4,8 @@ import { APP_NAME } from "./lib/config";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import {PreferencesProvider} from "./lib/Preferences";
+import Favorites from "./pages/Favorites";
+import {FavoritesProvider} from "./lib/Favorites";
 import Home from "./pages/Home";
 import Lookup from "./pages/Lookup";
 import "./styles/search.css";
@@ -22,18 +24,19 @@ export default function App() {
     else window.scrollTo(0, 0);
   }, [pathname, hash]);
   return (
-    <PreferencesProvider>
+    <PreferencesProvider><FavoritesProvider>
       <a className="skip-link" href="#main">
         Skip to content
       </a>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/favorites" element={<Favorites />} />
         <Route path="/lookup" element={<Lookup />} />
         <Route path="/results" element={<Results />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
-    </PreferencesProvider>
+    </FavoritesProvider></PreferencesProvider>
   );
 }

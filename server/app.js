@@ -1,4 +1,5 @@
 import express from "express";
+import {favoritesRouter} from "./storage/favorites-routes.js";
 import {insightHandlers} from "./insights/index.js";
 import {search} from "./search/index.js";
 import { LookupError } from "./errors.js";
@@ -7,6 +8,7 @@ export function createApp(lookup, { autocomplete, enrich } = {}) {
   const app = express();
   app.disable("x-powered-by");
   app.use(express.json({limit:"100kb"}));
+  app.use("/api/favorites",favoritesRouter);
   app.get("/api/insights/:module", async(req,res)=>{try{const handler=insightHandlers[req.params.module];if(!handler)return res.status(404).json({error:{message:"Unknown insight"}});res.json(await handler(req.query));}catch(e){res.status(503).json({error:{message:e.message}});}});
   app.post("/api/search", async(req,res)=>{try{res.json(await search(req.body));}catch(e){res.status(/Invalid|Enter|Choose|Minimum|HTTPS/.test(e.message)?400:503).json({error:{message:e.message}});}});
   app.get("/api/autocomplete", async (req, res) => {

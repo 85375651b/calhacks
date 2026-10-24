@@ -1,7 +1,9 @@
 import React from "react";
+import {useFavorites} from "../lib/Favorites";
 import { Link, NavLink } from "react-router-dom";
 import { APP_NAME } from "../lib/config";
 export default function Navbar() {
+ const {favorites}=useFavorites();
   return (
     <header className="site-header">
       <div className="container nav-inner">
@@ -16,6 +18,7 @@ export default function Navbar() {
           <NavLink to="/" end>
             Search
           </NavLink>
+          <NavLink to="/favorites">Favorites <span className="count-badge">{favorites.length}</span></NavLink>
           <Link to="/#how-it-works">
             How it works <span aria-hidden="true">↗</span>
           </Link>

@@ -9,7 +9,7 @@ export function validateCriteria(input={}){if(!input||typeof input!=='object'||A
 for(const key of ['location','keywords']){if(input[key]!=null&&typeof input[key]!=='string')throw new Error('Invalid '+key);if(input[key]?.trim())c[key]=input[key].trim().slice(0,key==='location'?150:200);}
 for(const [key,[min,max]] of Object.entries(NUMBERS)){if(input[key]==null||input[key]==='')continue;if(!['number','string'].includes(typeof input[key])||!Number.isFinite(Number(input[key])))throw new Error('Invalid '+key);c[key]=Math.min(max,Math.max(min,Number(input[key])));if(!['minBaths'].includes(key))c[key]=Math.round(c[key]);}
 for(const key of FLAGS)if(input[key]===true)c[key]=true;
-for(const [key,values] of Object.entries(ENUMS)){if(input[key]!=null&&!values.includes(input[key]))throw new Error('Invalid '+key);if(input[key]&&input[key]!=='any'&&input[key]!=='include')c[key]=input[key];}
+for(const [key,values] of Object.entries(ENUMS)){if(input[key]!=null&&input[key]!==''&&!values.includes(input[key]))throw new Error('Invalid '+key);if(input[key]&&input[key]!=='any'&&input[key]!=='include')c[key]=input[key];}
 for(const [key,allowed] of [['homeTypes',HOME_TYPES],['views',['water','mountain','park','city']],['sources',['Zillow','Redfin']]]){if(input[key]!==undefined){if(!Array.isArray(input[key])||input[key].some(v=>!allowed.includes(v)))throw new Error('Invalid '+key);c[key]=[...new Set(input[key])].sort();}}
 if(!c.sources.length)throw new Error('Choose at least one source.');
 if(input.searchUrl){if(typeof input.searchUrl!=='string'||input.searchUrl.length>8000)throw new Error('Invalid search URL.');c.searchUrl=siteUrl(input.searchUrl,'zillow')||siteUrl(input.searchUrl,'redfin');if(!c.searchUrl)throw new Error('Use an HTTPS Zillow or Redfin search URL.');}
