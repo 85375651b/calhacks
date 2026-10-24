@@ -1,0 +1,50 @@
+[
+  {
+    "source": "OpenStreetMap format · illustrative fixture",
+    "stores": [
+      {
+        "name": "Example Neighborhood Market",
+        "brand": null,
+        "address": "Demo address",
+        "miles": 0.7
+      },
+      {
+        "name": "Example Grocery",
+        "brand": null,
+        "address": "Demo address",
+        "miles": 1.3
+      },
+      {
+        "name": "Example Produce Store",
+        "brand": null,
+        "address": "Demo address",
+        "miles": 2.1
+      }
+    ],
+    "note": "Illustrative demo stores, not verified businesses. Distances are straight-line miles."
+  },
+  {
+    "source": "OpenStreetMap format · illustrative fixture",
+    "stores": [
+      {
+        "name": "Example Neighborhood Market",
+        "brand": null,
+        "address": "Demo address",
+        "miles": 0.8999999999999999
+      },
+      {
+        "name": "Example Grocery",
+        "brand": null,
+        "address": "Demo address",
+        "miles": 1.5
+      },
+      {
+        "name": "Example Produce Store",
+        "brand": null,
+        "address": "Demo address",
+        "miles": 2.3000000000000003
+      }
+    ],
+    "note": "Illustrative demo stores, not verified businesses. Distances are straight-line miles."
+  }
+]
