@@ -61,14 +61,14 @@ const STATE_CODES = Object.fromEntries(
 );
 const text = (value) => (typeof value === "string" ? value.trim() : "");
 
-export function normalizeSuggestions(data) {
+export function normalizeSuggestions(data, places = false) {
   const suggestions = new Map();
   for (const feature of Array.isArray(data?.features) ? data.features : []) {
     const p = feature?.properties || {};
     const house = text(p.housenumber),
       road = text(p.street);
     const city =
-      text(p.city) || text(p.town) || text(p.village) || text(p.locality);
+      text(p.city) || text(p.town) || text(p.village) || text(p.locality) || (places ? text(p.name) : '');
     const rawState = text(p.state);
     const state =
       STATE_CODES[rawState.toLowerCase()] ||
@@ -76,18 +76,17 @@ export function normalizeSuggestions(data) {
     const zip = text(p.postcode);
     if (
       text(p.countrycode).toUpperCase() !== "US" ||
-      !house ||
-      !road ||
+      (!places && (!house || !road)) ||
       !city ||
       !state
     )
       continue;
-    const street = `${house} ${road}`;
-    const label = `${street}, ${city}, ${state}${zip ? ` ${zip}` : ""}`;
+    const street = [house, road].filter(Boolean).join(' ');
+    const label = places ? [...new Set([text(p.name), street, city, state].filter(Boolean))].join(', ') : `${street}, ${city}, ${state}${zip ? ` ${zip}` : ""}`;
     const coordinates = feature.geometry?.coordinates;
     const lng = Number.isFinite(coordinates?.[0]) ? coordinates[0] : null;
     const lat = Number.isFinite(coordinates?.[1]) ? coordinates[1] : null;
-    const key = `${street},${city},${state}`.toLowerCase();
+    const key = (places ? label : `${street},${city},${state}`).toLowerCase();
     if (!suggestions.has(key))
       suggestions.set(key, { label, street, city, state, zip, lat, lng });
     if (suggestions.size === 5) break;
@@ -98,6 +97,7 @@ export function normalizeSuggestions(data) {
 export function createAutocompleteProvider({
   fetchImpl = fetch,
   now = Date.now,
+  places = false,
 } = {}) {
   const cache = new Map(),
     inFlight = new Map();
@@ -115,12 +115,12 @@ export function createAutocompleteProvider({
           limit: "5",
           lang: "en",
           countrycode: "US",
-          layer: "house",
+          ...(!places ? { layer: "house" } : {}),
         }).toString();
         const response = await fetchImpl(url, {
           signal: AbortSignal.timeout(5000),
         });
-        if (response.ok) results = normalizeSuggestions(await response.json());
+        if (response.ok) results = normalizeSuggestions(await response.json(), places);
       } catch {
         /* Suggestions are optional; typed search remains available. */
       }

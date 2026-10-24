@@ -62,6 +62,7 @@ export default function ListingGrid({
                 <b>{num(p.sqft)}</b> sqft
               </p>
               <h3>{p.address}</h3>
+              {p.distanceMiles != null && <p>{p.distanceMiles} miles from your radius center (straight-line)</p>}
               <p>
                 {p.city}, {p.state} {p.zip}
               </p>

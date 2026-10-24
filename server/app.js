@@ -6,8 +6,11 @@ import { search } from "./search/index.js";
 import { LookupError } from "./errors.js";
 import { parseSearch } from './search/parse.js';
 import { config } from './config.js';
+import { resolvePlaces } from './search/places.js';
+import { describedSearch } from './search/described.js';
+import { partialCriteria } from './search/nlParser.js';
 
-export function createApp(lookup, { autocomplete, enrich, parse = parseSearch } = {}) {
+export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, resolve = resolvePlaces } = {}) {
   const app = express();
   app.disable("x-powered-by");
   app.use(express.json({ limit: "200kb" }));
@@ -16,8 +19,22 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch } 
   app.get('/api/search/config', (_req, res) => res.json({ openaiConfigured: !config.useFixtures && Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_key_here') }));
   app.post('/api/search/parse', async (req, res) => {
     res.set('Cache-Control', 'no-store');
-    try { res.json(await parse(req.body, String(req.get('X-Client-Id') || req.ip).slice(0, 100))); }
+    try { res.json(await resolve(await parse(req.body, String(req.get('X-Client-Id') || req.ip).slice(0, 100)))); }
     catch (e) { if (e.status === 429) res.set('Retry-After', '60'); res.status(e.status || 400).json({ error: { message: e.message } }); }
+  });
+  app.post('/api/search/resolve', async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    try {
+      const { parsed, field, choice } = req.body;
+      if (!['location', 'work', 'radius'].includes(field) || !parsed?.extras || !Array.isArray(parsed.questions) || !Array.isArray(parsed.assumptions)) throw new Error('Invalid clarification');
+      parsed.criteria = partialCriteria(parsed.criteria);
+      res.json(await resolve(parsed, { field, choice }));
+    } catch { res.status(400).json({ error: { message: 'Could not resolve this place. Please enter a full US address or city and state.' } }); }
+  });
+  app.post('/api/search/described', async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    try { res.json(await describedSearch(req.body, String(req.get('X-Client-Id') || req.ip).slice(0, 100))); }
+    catch (e) { res.status(400).json({ error: { message: e.message } }); }
   });
   app.get("/api/insights/:module", async (req, res) => {
     try {

@@ -56,10 +56,10 @@ export default function Home() {
     setError("");
     setApplied(c);
     try {
-      const r = await fetch("/api/search", {
+      const r = await fetch(extras ? '/api/search/described' : '/api/search', {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Client-Id": clientId },
-        body: JSON.stringify(c),
+        body: JSON.stringify(extras ? { criteria: c, extras } : c),
         signal: controller.signal,
       });
       const j = await r.json().catch(() => {
