@@ -38,9 +38,12 @@ export function createCache(file, { now = Date.now, ttl = CACHE_TTL } = {}) {
       entries.delete(key);
       return null;
     },
-    async set(address, value) {
+    async set(address, value, entryTtl = ttl) {
       await ready;
-      entries.set(normalizeAddress(address), { expiresAt: now() + ttl, value });
+      entries.set(normalizeAddress(address), {
+        expiresAt: now() + entryTtl,
+        value,
+      });
       writes = writes
         .catch(() => {})
         .then(async () => {

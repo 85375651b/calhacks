@@ -1,9 +1,44 @@
 import express from "express";
 import { LookupError } from "./errors.js";
 
-export function createApp(lookup) {
+export function createApp(lookup, { autocomplete, enrich } = {}) {
   const app = express();
   app.disable("x-powered-by");
+  app.get("/api/autocomplete", async (req, res) => {
+    res.set("Cache-Control", "no-store");
+    try {
+      res.json(autocomplete ? await autocomplete(req.query.q, req.ip) : []);
+    } catch (error) {
+      if (error instanceof LookupError) {
+        if (error.status === 429) res.set("Retry-After", "60");
+        res
+          .status(error.status)
+          .json({ error: { code: error.code, message: error.message } });
+      } else res.json([]);
+    }
+  });
+  app.get("/api/enrich", async (req, res) => {
+    res.set("Cache-Control", "no-store");
+    try {
+      if (!enrich)
+        throw new LookupError(
+          503,
+          "APIFY_UNAVAILABLE",
+          "Zillow data unavailable right now",
+        );
+      res.json(await enrich(req.query.address));
+    } catch (error) {
+      res
+        .status(error instanceof LookupError ? error.status : 502)
+        .json({
+          error: {
+            code:
+              error instanceof LookupError ? error.code : "APIFY_UNAVAILABLE",
+            message: "Zillow data unavailable right now",
+          },
+        });
+    }
+  });
   app.get("/api/lookup", async (req, res) => {
     res.set("Cache-Control", "no-store");
     try {

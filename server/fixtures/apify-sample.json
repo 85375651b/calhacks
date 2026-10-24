@@ -1,0 +1,32 @@
+[
+  {
+    "zpid": "26187246",
+    "url": "https://www.zillow.com/homedetails/5500-Grand-Lake-Dr-San-Antonio-TX-78244/26187246_zpid/",
+    "sourceUrl": "https://www.zillow.com/homedetails/5500-Grand-Lake-Dr-San-Antonio-TX-78244/26187246_zpid/",
+    "street": "5500 GRAND LAKE DR",
+    "city": "San Antonio",
+    "state": "TX",
+    "zip": "78244",
+    "price": 0,
+    "status": "SOLD",
+    "beds": 3,
+    "baths": 2,
+    "sqft": 1878,
+    "homeType": "SINGLE_FAMILY",
+    "latitude": 29.475952,
+    "longitude": -98.35145,
+    "description": "New Ac, 5yr old roof, new flooring, new paint inside and out. This is an amazing little culdesac of neighbors. This home is a true gem and priced to sell. Come make this your new home!",
+    "yearBuilt": 1973,
+    "zestimate": 206900,
+    "rentZestimate": 1771,
+    "lotSizeText": "8,842 sqft",
+    "mlsId": "1806341",
+    "mlsName": "LERA MLS",
+    "brokerageName": "MONARCH RESIDENTIAL MANAGEMENT",
+    "listingPhone": "830-477-9553",
+    "photoCount": 21,
+    "address": "5500 GRAND LAKE DR, San Antonio, TX, 78244",
+    "brokerName": "MONARCH RESIDENTIAL MANAGEMENT",
+    "scrapedAt": "2026-10-24T09:03:15Z"
+  }
+]

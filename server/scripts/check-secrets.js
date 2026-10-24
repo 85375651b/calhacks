@@ -13,16 +13,20 @@ if (forbidden.length)
   throw new Error(
     "An environment file is tracked or staged; stop before committing.",
   );
-const key =
-  config.apiKey && config.apiKey !== "your_key_here" ? config.apiKey : null;
-if (key) {
+const secrets = [config.apiKey, config.apifyToken].filter(
+  (value) => value && !["your_key_here", "your_token_here"].includes(value),
+);
+const containsSecret = (text) =>
+  secrets.some((secret) => text.includes(secret)) ||
+  /apify_api_[a-zA-Z0-9]{20,}/.test(text);
+{
   for (const file of files) {
     const staged = git("show", `:${file}`);
     let working = "";
     try {
       working = await readFile(file, "utf8");
     } catch {}
-    if (staged.includes(key) || working.includes(key))
+    if (containsSecret(staged) || containsSecret(working))
       throw new Error(
         `Credential detected in ${file}; stop before committing.`,
       );
@@ -37,12 +41,12 @@ if (key) {
     for (const entry of entries) {
       const path = join(directory, entry.name);
       if (entry.isDirectory()) await checkBuild(path);
-      else if ((await readFile(path, "utf8")).includes(key))
+      else if (containsSecret(await readFile(path, "utf8")))
         throw new Error("Credential detected in browser build.");
     }
   }
   await checkBuild("dist");
-  if (git("log", "-p", "--all").includes(key))
+  if (containsSecret(git("log", "-p", "--all")))
     throw new Error(
       "Credential detected in Git history. STOP and notify the repository owner.",
     );
