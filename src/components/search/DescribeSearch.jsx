@@ -6,7 +6,7 @@ import { useFavorites } from '../../lib/Favorites';
 
 export function localRead(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } }
 export function localWrite(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
-export default function DescribeSearch({ mode, setMode, text, setText, parsed, setParsed, criteria, setCriteria, onSearch, busy, setUnderstanding }) {
+export default function DescribeSearch({ mode, setMode, text, setText, parsed, setParsed, criteria, setCriteria, onSearch, onStart, busy, setUnderstanding }) {
   const { work, setWork, setModules } = usePreferences(), { clientId: id } = useFavorites();
   const [recent, setRecent] = useState(() => { const v = localRead('propertylens.recentSearches', []); return Array.isArray(v) ? v.filter(s => typeof s === 'string').slice(0, 5) : []; });
   const [configured, setConfigured] = useState(false), [error, setError] = useState(''), [parsing, setParsing] = useState(false);
@@ -24,6 +24,7 @@ export default function DescribeSearch({ mode, setMode, text, setText, parsed, s
     const seq = ++sequence.current;
     request.current?.abort(); const controller = new AbortController(); request.current = controller;
     setText(value); setError(''); setParsing(true); setUnderstanding(true);
+    onStart?.();
     const history = [value, ...recent.filter(s => s !== value)].slice(0, 5); setRecent(history); localWrite('propertylens.recentSearches', history);
     try {
       const r = await fetch('/api/search/parse', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Client-Id': id }, body: JSON.stringify({ text: value, savedWork: work?.lat != null ? work : undefined }), signal: controller.signal });
@@ -60,6 +61,7 @@ export default function DescribeSearch({ mode, setMode, text, setText, parsed, s
       {recent.length > 0 && <div className="describe-recent"><p>Recent searches <button className="quiet-button" onClick={() => { setRecent([]); localWrite('propertylens.recentSearches', []); }}>Clear</button></p><div className="chips">{recent.map(s => <button className="toggle-chip" key={s} disabled={busy || parsing} onClick={() => submit(s)}>{s}</button>)}</div></div>}
     </div>
     <div className="interpretation-slot">
+      {!parsed && <div className="interpretation-placeholder"><h2>Your search, explained</h2><p>Describe a home to see the filters we’ll apply. Review assumptions, answer place questions, or fine-tune everything in filters.</p></div>}
       {parsed && <section className="interpretation" aria-labelledby="interpretation-title">
         <div className="filter-heading"><h2 id="interpretation-title">Here’s how I read that</h2><button className="quiet-button" onClick={() => setMode('filters')}>Edit in filters</button></div>
         <p className="small-note">{parsed.parser === 'openai' ? 'Interpreted by ChatGPT' : 'Interpreted by built-in rules (add an OpenAI key for smarter parsing)'}</p>

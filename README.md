@@ -165,3 +165,15 @@ Run `npm install`, then `npm run dev`. Server environment is loaded from `server
 Privacy: layouts, furniture names, and listing snapshots are stored for this browser's anonymous ID. Product URLs are fetched by the server and may be sent to enabled providers. No secrets are sent to the browser. Clearing the browser ID removes access to that anonymous library; this is not an authenticated account system.
 
 See [planner architecture and limitations](docs/planner.md) and [provider details](docs/providers.md). Validate with `npm test`, `npm run check:secrets`, and `npm run build`.
+
+## Describe it: plain-English home search
+
+Choose **Describe it**, type what you want and press Enter. Try `3 bed house in Austin under $700k with a pool`, `condo in Seattle under 500k, new listings`, or `house in san francisco 2 beds under 600k with a <30 minute commute to work at 1 Market St, San Francisco`. The interpretation shows criteria, assumptions and unsupported text. Resolve any place questions, remove chips, or choose **Edit in filters** to fine-tune the same criteria. The old filter search remains available.
+
+Optional server-only settings in `server/.env`: `OPENAI_API_KEY`, `OPENAI_MODEL=gpt-4.1-mini`, `OPENAI_MAX_CALLS_PER_HOUR=30`. Without a key, on provider failure, or in fixture mode, built-in rules parse the text. The shared provider uses the official OpenAI SDK, Responses API and strict Structured Outputs, with no request storage, an eight-second timeout, and no retries. Furniture extraction shares the same budget.
+
+Prices, bed/bath ranges, exact beds, types, area/lot sizes, years, HOA, features, listing freshness/status, keywords, sort, insights, radius and driving commute are supported. Insight requests enable detail modules; they do not rank or filter homes. Queries and recent searches can contain addresses; the UI explains when text goes to OpenAI and where work coordinates are used.
+
+Commute filtering requests at most 30 candidates per source (configurable up to 50), prunes by straight-line distance, and checks eight routes in a single Apify run (configurable up to 12). Seven-day route caching, the shared hourly actor cap, and one in-flight batch per browser bound costs. **Check more** uses another bounded batch and Apify credits. Unchecked and over-limit homes are clearly separated.
+
+Set `USE_FIXTURES=true` for offline rules, saved Austin listings and sample route data with no paid calls. Sample listings do not move to the requested city; an SF commute constraint may therefore return none. See [the full phrase list, API, privacy and limitations](docs/nl-search.md). Run `npm run dev`; validate with `npm test`, `npm run build` and `npm run check:secrets`.

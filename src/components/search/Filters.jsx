@@ -65,6 +65,7 @@ export default function Filters({
     <label key={k}>
       {LABELS[k]}
       <select value={c[k] ?? ""} onChange={(e) => change(k, e.target.value)}>
+        {c[k] !== '' && c[k] != null && !options.some(([v]) => String(v) === String(c[k])) && <option value={c[k]}>{c[k]}{k.startsWith('min') ? '+' : ''}</option>}
         {options.map(([v, l]) => (
           <option value={v} key={v}>
             {l}
@@ -79,7 +80,7 @@ export default function Filters({
       <input
         type="number"
         min="0"
-        step={k.includes("Lot") && unit === "acres" ? "0.01" : "1"}
+        step={k.includes('Bath') ? '0.5' : k.includes("Lot") && unit === "acres" ? "0.01" : "1"}
         value={
           c[k] == null || c[k] === ""
             ? ""

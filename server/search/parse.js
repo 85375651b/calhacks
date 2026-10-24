@@ -39,7 +39,7 @@ export function reconcile(model, rules, text, savedWork) {
   const assumptions = [...rules.assumptions, ...model.assumptions];
   // Known rule matches are authoritative; this also preserves numeric scope (price vs HOA/time/address).
   for (const [key, v] of Object.entries(rules.criteria)) {
-    if (['sources', 'limit', 'status'].includes(key) || v === '' || (Array.isArray(v) && !v.length)) continue;
+    if (['sources', 'limit'].includes(key) || (key === 'status' && v === 'sale') || v === '' || (Array.isArray(v) && !v.length)) continue;
     if (key in NUMBERS && criteria[key] !== v) assumptions.push(`Used the explicit ${key} value from your text: ${v}.`);
     criteria[key] = v;
   }
@@ -47,6 +47,7 @@ export function reconcile(model, rules, text, savedWork) {
   const literalNumbers = [...text.matchAll(/\d[\d,]*(?:\.\d+)?\s*[km]?/gi)].map(m => Number(m[0].replace(/[km,\s]/gi, '')) * (/m$/i.test(m[0]) ? 1e6 : /k$/i.test(m[0]) ? 1000 : 1));
   for (const key of Object.keys(NUMBERS)) if (criteria[key] != null && rules.criteria[key] == null && !literalNumbers.includes(criteria[key])) { delete criteria[key]; assumptions.push(`Dropped an unsupported ${key} value from the language parser.`); }
   const extras = { ...model.extras, commute: rules.extras.commute || model.extras.commute, radius: rules.extras.radius || model.extras.radius, insights: [...new Set([...rules.extras.insights, ...model.extras.insights])] };
+  extras.sort = rules.extras.sort || extras.sort;
   if (extras.commute) {
     extras.commute.maxMinutes = Math.max(1, Math.min(180, extras.commute.maxMinutes));
     extras.commute.departAt = /^([01]\d|2[0-3]):[0-5]\d$/.test(extras.commute.departAt) ? extras.commute.departAt : '08:00';

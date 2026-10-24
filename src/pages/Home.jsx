@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import { readSession, writeSession } from "../lib/planner/listingSnapshot";
 import { useFavorites } from "../lib/Favorites";
 import React, { useEffect, useRef, useState } from "react";
-import ListingGrid from "../components/search/ListingGrid";
 import Filters, { LABELS } from "../components/search/Filters";
 import DetailModal from "../components/search/DetailModal";
 import WorkAddress from "../components/search/WorkAddress";
@@ -139,12 +138,12 @@ export default function Home() {
         </a>
       </div>
       <div id="home-search" />
-      <DescribeSearch mode={mode} setMode={setMode} text={text} setText={setText} parsed={parsed} setParsed={setParsed} criteria={criteria} setCriteria={setCriteria} onSearch={search} busy={loading} setUnderstanding={setUnderstanding} />
+      <DescribeSearch mode={mode} setMode={setMode} text={text} setText={setText} parsed={parsed} setParsed={setParsed} criteria={criteria} setCriteria={setCriteria} onSearch={search} onStart={() => { request.current?.abort(); setData(null); setApplied(null); setError(''); }} busy={loading} setUnderstanding={setUnderstanding} />
       <div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters" hidden={mode !== 'filters'}>
       <Filters
         value={criteria}
         onChange={setCriteria}
-        onSearch={(c) => { setCriteria(c); search(c); }}
+        onSearch={(c) => { setCriteria(c); if (parsed) setParsed({ ...parsed, criteria: c, questions: parsed.questions.filter(q => q.field !== 'location') }); search(c); }}
         onReset={() => {
           request.current?.abort();
           setLoading(false);

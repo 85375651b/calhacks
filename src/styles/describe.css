@@ -10,8 +10,10 @@
 .describe-search .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
 .describe-search .toggle-chip { white-space: normal; text-align: left; max-width: 100%; overflow-wrap: anywhere; min-height: 44px; }
 .describe-search .toggle-chip:disabled { opacity: .65; }
-.interpretation-slot { min-height: 2rem; }
-.interpretation { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid #b7c6bd; border-radius: 1rem; background: #f3f7f2; }
+.interpretation-slot { height: 22rem; overflow: auto; margin-top: 1.5rem; scrollbar-gutter: stable; }
+.interpretation-placeholder { padding: 1.2rem; color: #506557; border: 1px dashed #b7c6bd; border-radius: 1rem; }
+.interpretation-placeholder h2 { font-size: 1.25rem; }
+.interpretation { padding: 1.2rem; border: 1px solid #b7c6bd; border-radius: 1rem; background: #f3f7f2; }
 .interpretation h2 { font-size: 1.25rem; margin: 0; }
 .interpretation details { margin-top: .9rem; }
 .interpretation summary { cursor: pointer; font-weight: 600; }

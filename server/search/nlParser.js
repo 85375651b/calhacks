@@ -1,4 +1,4 @@
-import { defaults, validateCriteria, NUMBERS } from './criteria.js';
+import { defaults, validateCriteria, NUMBERS, FLAGS, ENUMS } from './criteria.js';
 
 export const EXAMPLES = [
   'house in san francisco 2 beds under 600k with a <30 minute commute to work at 1 Market St, San Francisco',
@@ -13,6 +13,8 @@ export function validPlace(p) {
     Number.isFinite(p.lat) && Math.abs(p.lat) <= 90 && Number.isFinite(p.lng) && Math.abs(p.lng) <= 180;
 }
 export function partialCriteria(c) {
+  const allowed = new Set([...Object.keys(defaults), ...Object.keys(NUMBERS), ...FLAGS, ...Object.keys(ENUMS), 'views', 'keywords', 'searchUrl']);
+  if (!c || typeof c !== 'object' || Array.isArray(c) || Object.keys(c).some(k => !allowed.has(k))) throw new Error('Invalid or unknown search field');
   const clean = validateCriteria({ ...c, location: c.location || '__pending__' });
   if (!c.location) clean.location = '';
   return clean;
@@ -23,7 +25,7 @@ const labels = { location: 'Location', minBeds: 'Min beds', maxBeds: 'Max beds',
 export function interpretationFor(criteria, extras) {
   const result = Object.entries(criteria).filter(([k, v]) => !['limit', 'sources', 'exactBeds'].includes(k) && !(k === 'status' && v === 'sale') && v !== '' && v != null && (!Array.isArray(v) || v.length)).map(([key, v]) => ({
     key, label: labels[key] || key.replace(/([A-Z])/g, ' $1'),
-    value: /Price|^maxHoa$/.test(key) ? '$' + v.toLocaleString('en-US') : Array.isArray(v) ? v.join(', ') : v === true ? 'Yes' : String(v),
+    value: /Price|^maxHoa$/.test(key) ? '$' + Number(v).toLocaleString('en-US') : /^min(Beds|Baths)$/.test(key) && criteria[key.replace('min','max')] == null && !(key === 'minBeds' && criteria.exactBeds) ? `${v}+` : Array.isArray(v) ? v.join(', ') : v === true ? 'Yes' : String(v),
   }));
   if (extras.commute) result.push({ key: 'commute', label: 'Driving commute', value: `Under ${extras.commute.maxMinutes} min to ${extras.commute.work?.label || extras.commute.workText || 'your work'} · depart ${extras.commute.departAt}` });
   if (extras.radius) result.push({ key: 'radius', label: 'Radius', value: `${extras.radius.miles} miles from ${extras.radius.center?.label || extras.radius.centerText}` });
@@ -38,6 +40,7 @@ export function parseRules(text, savedWork) {
   const take = (re, fn) => { rest = rest.replace(re, (...args) => { fn(...args); return ' '; }); };
   // Instruction-like clauses are never interpreted as housing preferences.
   take(/(?:ignore (?:all |previous )?instructions|system prompt|set (?:max|min) price|api[_ ]?key|execute|override)[^;.!]*/g, s => notApplied.push({ text: s, reason: 'Instructions are not housing search criteria.' }));
+  take(/\b(?:no|without)\s+(?:pool|garage|basement|fireplace|waterfront|central air)\b/g, s => notApplied.push({text:s,reason:'Excluding this feature is not supported; no positive feature filter was applied.'}));
   let departAt = '08:00';
   take(/\b(leave at|depart at|arrive by)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/g, (_, kind, h, m, ap) => {
     let hour = Number(h); if (ap === 'pm' && hour < 12) hour += 12; if (ap === 'am' && hour === 12) hour = 0;
@@ -52,6 +55,7 @@ export function parseRules(text, savedWork) {
   take(new RegExp('(?:my )?work at\\s+(.*?)' + endPlace, 'g'), (_, place) => { workText = place; });
   if (minutes == null && workText) take(/(?:under|<)\s*(\d+)\s*(?:minute|min)s?\b/g, (_, n) => { minutes = Number(n); });
   if (minutes != null) {
+    if (/\b(transit|bike|walk|walking|cycling)\b/i.test(text)) assumptions.push('Commute estimates use driving, not transit, biking or walking.');
     workText = workText.replace(/^(?:my )?work(?: at)?\s*/, '').trim();
     extras.commute = { maxMinutes: Math.min(180, Math.max(1, minutes)), workText, work: !workText && validPlace(savedWork) ? { label: savedWork.label, lat: savedWork.lat, lng: savedWork.lng } : null, departAt };
     extras.insights.push('commute');

@@ -1,0 +1,307 @@
+[
+  {
+    "text": "house in san francisco 2 beds under 600k with a <30 minute commute to work at 1 Market St, San Francisco",
+    "parsed": {
+      "parser": "rules",
+      "criteria": {
+        "location": "san francisco",
+        "status": "sale",
+        "sources": [
+          "Redfin",
+          "Zillow"
+        ],
+        "homeTypes": [
+          "house"
+        ],
+        "views": [],
+        "limit": 12,
+        "maxPrice": 600000,
+        "minBeds": 2
+      },
+      "extras": {
+        "commute": {
+          "maxMinutes": 30,
+          "workText": "1 market st, san francisco",
+          "work": null,
+          "departAt": "08:00"
+        },
+        "radius": null,
+        "insights": [
+          "commute"
+        ],
+        "sort": null
+      },
+      "interpretation": [
+        {
+          "key": "location",
+          "label": "Location",
+          "value": "san francisco"
+        },
+        {
+          "key": "homeTypes",
+          "label": "Home type",
+          "value": "house"
+        },
+        {
+          "key": "maxPrice",
+          "label": "Max price",
+          "value": "$600,000"
+        },
+        {
+          "key": "minBeds",
+          "label": "Min beds",
+          "value": "2+"
+        },
+        {
+          "key": "commute",
+          "label": "Driving commute",
+          "value": "Under 30 min to 1 market st, san francisco · depart 08:00"
+        },
+        {
+          "key": "insights",
+          "label": "Insights",
+          "value": "commute"
+        }
+      ],
+      "assumptions": [
+        "2 beds treated as 2 or more; say 'exactly 2 beds' for an exact match.",
+        "Insights like schools and safety are shown when you open a home, not used to filter results. Explicit commute and radius limits are checked separately."
+      ],
+      "notApplied": [],
+      "questions": []
+    }
+  },
+  {
+    "text": "3 bed house in Austin under $700k with a pool",
+    "parsed": {
+      "parser": "rules",
+      "criteria": {
+        "location": "austin",
+        "status": "sale",
+        "sources": [
+          "Redfin",
+          "Zillow"
+        ],
+        "homeTypes": [
+          "house"
+        ],
+        "views": [],
+        "limit": 12,
+        "maxPrice": 700000,
+        "minBeds": 3,
+        "pool": true
+      },
+      "extras": {
+        "commute": null,
+        "radius": null,
+        "insights": [],
+        "sort": null
+      },
+      "interpretation": [
+        {
+          "key": "location",
+          "label": "Location",
+          "value": "austin"
+        },
+        {
+          "key": "homeTypes",
+          "label": "Home type",
+          "value": "house"
+        },
+        {
+          "key": "maxPrice",
+          "label": "Max price",
+          "value": "$700,000"
+        },
+        {
+          "key": "minBeds",
+          "label": "Min beds",
+          "value": "3+"
+        },
+        {
+          "key": "pool",
+          "label": "pool",
+          "value": "Yes"
+        }
+      ],
+      "assumptions": [
+        "3 beds treated as 3 or more; say 'exactly 3 beds' for an exact match."
+      ],
+      "notApplied": [],
+      "questions": []
+    }
+  },
+  {
+    "text": "condo in Seattle under 500k, new listings",
+    "parsed": {
+      "parser": "rules",
+      "criteria": {
+        "location": "seattle",
+        "status": "sale",
+        "sources": [
+          "Redfin",
+          "Zillow"
+        ],
+        "homeTypes": [
+          "condo"
+        ],
+        "views": [],
+        "limit": 12,
+        "maxPrice": 500000,
+        "daysOnMarket": 7
+      },
+      "extras": {
+        "commute": null,
+        "radius": null,
+        "insights": [],
+        "sort": null
+      },
+      "interpretation": [
+        {
+          "key": "location",
+          "label": "Location",
+          "value": "seattle"
+        },
+        {
+          "key": "homeTypes",
+          "label": "Home type",
+          "value": "condo"
+        },
+        {
+          "key": "maxPrice",
+          "label": "Max price",
+          "value": "$500,000"
+        },
+        {
+          "key": "daysOnMarket",
+          "label": "days On Market",
+          "value": "7"
+        }
+      ],
+      "assumptions": [
+        "New listings means listed in the last 7 days."
+      ],
+      "notApplied": [],
+      "questions": []
+    }
+  },
+  {
+    "text": "family home in San Jose near good schools, no HOA",
+    "parsed": {
+      "parser": "rules",
+      "criteria": {
+        "location": "san jose",
+        "status": "sale",
+        "sources": [
+          "Redfin",
+          "Zillow"
+        ],
+        "homeTypes": [],
+        "views": [],
+        "limit": 12,
+        "noHoa": true
+      },
+      "extras": {
+        "commute": null,
+        "radius": null,
+        "insights": [
+          "schools"
+        ],
+        "sort": null
+      },
+      "interpretation": [
+        {
+          "key": "location",
+          "label": "Location",
+          "value": "san jose"
+        },
+        {
+          "key": "noHoa",
+          "label": "no Hoa",
+          "value": "Yes"
+        },
+        {
+          "key": "insights",
+          "label": "Insights",
+          "value": "schools"
+        }
+      ],
+      "assumptions": [
+        "Insights like schools and safety are shown when you open a home, not used to filter results. Explicit commute and radius limits are checked separately."
+      ],
+      "notApplied": [],
+      "questions": []
+    }
+  },
+  {
+    "text": "2 bed under 600k in San Francisco, under 30 min commute to my work",
+    "parsed": {
+      "parser": "rules",
+      "criteria": {
+        "location": "san francisco",
+        "status": "sale",
+        "sources": [
+          "Redfin",
+          "Zillow"
+        ],
+        "homeTypes": [],
+        "views": [],
+        "limit": 12,
+        "maxPrice": 600000,
+        "minBeds": 2
+      },
+      "extras": {
+        "commute": {
+          "maxMinutes": 30,
+          "workText": "",
+          "work": null,
+          "departAt": "08:00"
+        },
+        "radius": null,
+        "insights": [
+          "commute"
+        ],
+        "sort": null
+      },
+      "interpretation": [
+        {
+          "key": "location",
+          "label": "Location",
+          "value": "san francisco"
+        },
+        {
+          "key": "maxPrice",
+          "label": "Max price",
+          "value": "$600,000"
+        },
+        {
+          "key": "minBeds",
+          "label": "Min beds",
+          "value": "2+"
+        },
+        {
+          "key": "commute",
+          "label": "Driving commute",
+          "value": "Under 30 min to your work · depart 08:00"
+        },
+        {
+          "key": "insights",
+          "label": "Insights",
+          "value": "commute"
+        }
+      ],
+      "assumptions": [
+        "2 beds treated as 2 or more; say 'exactly 2 beds' for an exact match.",
+        "Insights like schools and safety are shown when you open a home, not used to filter results. Explicit commute and radius limits are checked separately."
+      ],
+      "notApplied": [],
+      "questions": [
+        {
+          "field": "work",
+          "message": "What is your work address?",
+          "options": []
+        }
+      ]
+    }
+  }
+]
