@@ -4,6 +4,8 @@ import { APP_NAME } from "./lib/config";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import Lookup from "./pages/Lookup";
+import "./styles/search.css";
 import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
 import "./styles/global.css";
@@ -26,6 +28,7 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/lookup" element={<Lookup />} />
         <Route path="/results" element={<Results />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

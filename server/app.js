@@ -1,9 +1,12 @@
 import express from "express";
+import {search} from "./search/index.js";
 import { LookupError } from "./errors.js";
 
 export function createApp(lookup, { autocomplete, enrich } = {}) {
   const app = express();
   app.disable("x-powered-by");
+  app.use(express.json({limit:"100kb"}));
+  app.post("/api/search", async(req,res)=>{try{res.json(await search(req.body));}catch(e){res.status(/Invalid|Enter|Choose|Minimum|HTTPS/.test(e.message)?400:503).json({error:{message:e.message}});}});
   app.get("/api/autocomplete", async (req, res) => {
     res.set("Cache-Control", "no-store");
     try {
