@@ -15,7 +15,10 @@ function Highlight({ label, query }) {
     );
 }
 
-export default function AddressCombobox({onSelect, label = "Start with a US property address"}) {
+export default function AddressCombobox({
+  onSelect,
+  label = "Start with a US property address",
+}) {
   const [address, setAddress] = useState(""),
     [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]),
@@ -88,7 +91,7 @@ export default function AddressCombobox({onSelect, label = "Start with a US prop
     setOpen(false);
     setActive(-1);
     setLoading(false);
-    if(onSelect) onSelect(suggestion || {label:value.trim()});
+    if (onSelect) onSelect(suggestion || { label: value.trim() });
     else navigate(`/results?${new URLSearchParams({ address: value.trim() })}`);
   }
   function submit(event) {

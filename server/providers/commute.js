@@ -1,4 +1,89 @@
-import tzLookup from 'tz-lookup';import {runActor} from './actor.js';import {ACTORS} from '../config/apify.js';
-export function nextTuesday(lat,lng,now=new Date()){const timezone=tzLookup(lat,lng);const parts=new Intl.DateTimeFormat('en-US',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);const get=k=>parts.find(p=>p.type===k).value;const date=new Date(Date.UTC(Number(get('year')),Number(get('month'))-1,Number(get('day'))));date.setUTCDate(date.getUTCDate()+((2-date.getUTCDay()+7)%7||7));return {date:date.toISOString().slice(0,10),timezone};}
-export function normalizeTrip(row){if(row?.status!=='OK'||!Number.isFinite(row.durationInTrafficSeconds??row.durationSeconds))throw new Error('Commute data unavailable for this route');return {minutes:Math.round((row.durationInTrafficSeconds??row.durationSeconds)/60),miles:typeof row.distanceMeters==='number'?Math.round(row.distanceMeters/1609.344*10)/10:null,range:row.typicalRangeText||null,trafficLevel:row.trafficLevel||null};}
-export async function commuteProvider(p){const {date,timezone}=nextTuesday(p.lat,p.lng),home=p.lat+','+p.lng,work=p.workLat+','+p.workLng;async function query(time,routes){return runActor(ACTORS.commute,{routes,travelModes:['driving'],timeMode:'depart_at',travelDate:date,travelTime:time,maxResults:routes.length,maxRoutes:1,includeSteps:false,includePolyline:false},{limit:routes.length});}const forward={origin:home,destination:work,label:'home-to-work'},back={origin:work,destination:home,label:'work-to-home'};const [morning,evening,offpeak]=await Promise.all([query('08:00',[forward]),query('17:30',[back]),query('03:00',[forward,back])]);const am=normalizeTrip(morning[0]),pm=normalizeTrip(evening[0]);const offAm=normalizeTrip(offpeak.find(r=>r.label===forward.label)||offpeak[0]),offPm=normalizeTrip(offpeak.find(r=>r.label===back.label)||offpeak[1]);return {source:'Google Maps via Apify (rastriq)',date,timezone,morning:{...am,offPeak:offAm.minutes,extraMinutes:am.minutes-offAm.minutes},evening:{...pm,offPeak:offPm.minutes,extraMinutes:pm.minutes-offPm.minutes},note:'Traffic-pattern predictions, not live traffic. Morning departs home at 8 AM; evening departs work at 5:30 PM, each in its origin’s local time. Off-peak comparisons depart at 3 AM.'};}
+import tzLookup from "tz-lookup";
+import { runActor } from "./actor.js";
+import { ACTORS } from "../config/apify.js";
+export function nextTuesday(lat, lng, now = new Date()) {
+  const timezone = tzLookup(lat, lng);
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const get = (k) => parts.find((p) => p.type === k).value;
+  const date = new Date(
+    Date.UTC(Number(get("year")), Number(get("month")) - 1, Number(get("day"))),
+  );
+  date.setUTCDate(date.getUTCDate() + ((2 - date.getUTCDay() + 7) % 7 || 7));
+  return { date: date.toISOString().slice(0, 10), timezone };
+}
+export function normalizeTrip(row) {
+  if (
+    row?.status !== "OK" ||
+    !Number.isFinite(row.durationInTrafficSeconds ?? row.durationSeconds)
+  )
+    throw new Error("Commute data unavailable for this route");
+  return {
+    minutes: Math.round(
+      (row.durationInTrafficSeconds ?? row.durationSeconds) / 60,
+    ),
+    miles:
+      typeof row.distanceMeters === "number"
+        ? Math.round((row.distanceMeters / 1609.344) * 10) / 10
+        : null,
+    range: row.typicalRangeText || null,
+    trafficLevel: row.trafficLevel || null,
+  };
+}
+export async function commuteProvider(p) {
+  const { date, timezone } = nextTuesday(p.lat, p.lng),
+    home = p.lat + "," + p.lng,
+    work = p.workLat + "," + p.workLng;
+  async function query(time, routes) {
+    return runActor(
+      ACTORS.commute,
+      {
+        routes,
+        travelModes: ["driving"],
+        timeMode: "depart_at",
+        travelDate: date,
+        travelTime: time,
+        maxResults: routes.length,
+        maxRoutes: 1,
+        includeSteps: false,
+        includePolyline: false,
+      },
+      { limit: routes.length },
+    );
+  }
+  const forward = { origin: home, destination: work, label: "home-to-work" },
+    back = { origin: work, destination: home, label: "work-to-home" };
+  const [morning, evening, offpeak] = await Promise.all([
+    query("08:00", [forward]),
+    query("17:30", [back]),
+    query("03:00", [forward, back]),
+  ]);
+  const am = normalizeTrip(morning[0]),
+    pm = normalizeTrip(evening[0]);
+  const offAm = normalizeTrip(
+      offpeak.find((r) => r.label === forward.label) || offpeak[0],
+    ),
+    offPm = normalizeTrip(
+      offpeak.find((r) => r.label === back.label) || offpeak[1],
+    );
+  return {
+    source: "Google Maps via Apify (rastriq)",
+    date,
+    timezone,
+    morning: {
+      ...am,
+      offPeak: offAm.minutes,
+      extraMinutes: am.minutes - offAm.minutes,
+    },
+    evening: {
+      ...pm,
+      offPeak: offPm.minutes,
+      extraMinutes: pm.minutes - offPm.minutes,
+    },
+    note: "Traffic-pattern predictions, not live traffic. Morning departs home at 8 AM; evening departs work at 5:30 PM, each in its origin’s local time. Off-peak comparisons depart at 3 AM.",
+  };
+}

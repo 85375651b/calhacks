@@ -95,7 +95,7 @@ export default function Results() {
 
   return (
     <main id="main" className="container results">
-      <Link className="back-link" to="/">
+      <Link className="back-link" to="/lookup">
         ← Try another address
       </Link>
       {!property ? (

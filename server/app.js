@@ -1,16 +1,37 @@
 import express from "express";
-import {favoritesRouter} from "./storage/favorites-routes.js";
-import {insightHandlers} from "./insights/index.js";
-import {search} from "./search/index.js";
+import { favoritesRouter } from "./storage/favorites-routes.js";
+import { insightHandlers } from "./insights/index.js";
+import { search } from "./search/index.js";
 import { LookupError } from "./errors.js";
 
 export function createApp(lookup, { autocomplete, enrich } = {}) {
   const app = express();
   app.disable("x-powered-by");
-  app.use(express.json({limit:"100kb"}));
-  app.use("/api/favorites",favoritesRouter);
-  app.get("/api/insights/:module", async(req,res)=>{try{const handler=insightHandlers[req.params.module];if(!handler)return res.status(404).json({error:{message:"Unknown insight"}});res.json(await handler(req.query));}catch(e){res.status(503).json({error:{message:e.message}});}});
-  app.post("/api/search", async(req,res)=>{try{res.json(await search(req.body));}catch(e){res.status(/Invalid|Enter|Choose|Minimum|HTTPS/.test(e.message)?400:503).json({error:{message:e.message}});}});
+  app.use(express.json({ limit: "100kb" }));
+  app.use("/api/favorites", favoritesRouter);
+  app.get("/api/insights/:module", async (req, res) => {
+    try {
+      const handler = Object.hasOwn(insightHandlers, req.params.module)
+        ? insightHandlers[req.params.module]
+        : null;
+      if (!handler)
+        return res.status(404).json({ error: { message: "Unknown insight" } });
+      res.json(await handler(req.query));
+    } catch (e) {
+      res.status(503).json({ error: { message: e.message } });
+    }
+  });
+  app.post("/api/search", async (req, res) => {
+    try {
+      res.json(await search(req.body));
+    } catch (e) {
+      res
+        .status(
+          /Invalid|Enter|Choose|Minimum|HTTPS/.test(e.message) ? 400 : 503,
+        )
+        .json({ error: { message: e.message } });
+    }
+  });
   app.get("/api/autocomplete", async (req, res) => {
     res.set("Cache-Control", "no-store");
     try {
@@ -35,15 +56,12 @@ export function createApp(lookup, { autocomplete, enrich } = {}) {
         );
       res.json(await enrich(req.query.address));
     } catch (error) {
-      res
-        .status(error instanceof LookupError ? error.status : 502)
-        .json({
-          error: {
-            code:
-              error instanceof LookupError ? error.code : "APIFY_UNAVAILABLE",
-            message: "Zillow data unavailable right now",
-          },
-        });
+      res.status(error instanceof LookupError ? error.status : 502).json({
+        error: {
+          code: error instanceof LookupError ? error.code : "APIFY_UNAVAILABLE",
+          message: "Zillow data unavailable right now",
+        },
+      });
     }
   });
   app.get("/api/lookup", async (req, res) => {
@@ -67,6 +85,11 @@ export function createApp(lookup, { autocomplete, enrich } = {}) {
     res
       .status(404)
       .json({ error: { code: "NOT_FOUND", message: "API route not found." } }),
+  );
+  app.use((error, _req, res, _next) =>
+    res
+      .status(error.status === 413 ? 413 : 400)
+      .json({ error: { message: "Invalid or oversized request body." } }),
   );
   return app;
 }

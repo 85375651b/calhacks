@@ -51,6 +51,7 @@ export async function resolveZillowUrl(address, fetchImpl = fetch) {
 export function createApifyClient({
   token,
   fetchImpl = fetch,
+  beforeRun = async () => {},
   resolveUrl = (address) => resolveZillowUrl(address, fetchImpl),
 }) {
   return async (address) => {
@@ -75,6 +76,7 @@ export function createApifyClient({
     let response;
     try {
       const listingUrl = await resolveUrl(address);
+      await beforeRun();
       response = await fetchImpl(url, {
         method: "POST",
         headers: {

@@ -1,3 +1,317 @@
-import React,{useState} from 'react';import {HOME_TYPES,defaults,validateCriteria} from '../../../server/search/criteria';
-export const LABELS={minPrice:'Min price',maxPrice:'Max price',minBeds:'Bedrooms',minBaths:'Bathrooms',minSqft:'Min square feet',maxSqft:'Max square feet',minLotSize:'Min lot size',maxLotSize:'Max lot size',minYearBuilt:'Built after',maxYearBuilt:'Built before',maxHoa:'Max monthly HOA',minParking:'Parking spots',daysOnMarket:'Time on market',exactBeds:'Exact bedrooms',noHoa:'No HOA',garage:'Must have garage',newConstruction:'New construction',priceReduced:'Price reduced',openHouse:'Open house only',virtualTour:'3D / virtual tour',ac:'Air conditioning',pool:'Pool',waterfront:'Waterfront',fireplace:'Fireplace',foreclosure:'Foreclosure',preForeclosure:'Pre-foreclosure',auction:'Auction',senior:'55+ community',homeTypes:'Home type',views:'Views',stories:'Stories',basement:'Basement',status:'Listing status',keywords:'Keywords',location:'Location',searchUrl:'Search URL'};
-export default function Filters({value:c,onChange:set,onSearch,busy}){const [unit,setUnit]=useState('sqft'),[error,setError]=useState('');const change=(k,v)=>set({...c,[k]:v});const toggle=(k,v)=>change(k,(c[k]||[]).includes(v)?c[k].filter(x=>x!==v):[...(c[k]||[]),v]);const select=(k,options)=> <label key={k}>{LABELS[k]}<select value={c[k]??''} onChange={e=>change(k,e.target.value)}>{options.map(([v,l])=><option value={v} key={v}>{l}</option>)}</select></label>;const number=k=><label key={k}>{LABELS[k]}<input type="number" min="0" step={k.includes('Lot')&&unit==='acres'?'0.01':'1'} value={c[k]==null||c[k]===''?'':k.includes('Lot')&&unit==='acres'?Math.round(c[k]/43560*100)/100:c[k]} onChange={e=>change(k,e.target.value===''?'':Number(e.target.value)*(k.includes('Lot')&&unit==='acres'?43560:1))}/></label>;const check=k=><label key={k} className="check"><input type="checkbox" checked={!!c[k]} onChange={e=>change(k,e.target.checked)}/>{LABELS[k]}</label>;const tri=k=>select(k,[['','Include'],['exclude','Exclude'],['only','Only']]);return <form className="filter-panel full-filters" onSubmit={e=>{e.preventDefault();try{const clean=validateCriteria(c);setError('');onSearch(clean)}catch(e){setError(e.message)}}}><div className="filter-heading"><h2>Find your fit</h2><button type="button" className="quiet-button" onClick={()=>set({...defaults})}>Reset filters</button></div><div className="filter-fields core"><label className="location-field">City, state, neighborhood or ZIP<input required={!c.searchUrl} placeholder="Austin, TX" value={c.location} onChange={e=>change('location',e.target.value)} maxLength={150}/></label>{select('status',[['sale','For sale'],['coming-soon','Coming soon'],['pending','Pending / under contract'],['sold','Recently sold']])}{number('minPrice')}{number('maxPrice')}{select('minBeds',[['','Any'],...[1,2,3,4,5].map(n=>[n,n+'+'])])}{select('minBaths',[['','Any'],...[1,1.5,2,3,4].map(n=>[n,n+'+'])])}{check('exactBeds')}</div><fieldset><legend>Home type</legend><div className="chips">{HOME_TYPES.map(t=><button type="button" className="toggle-chip" aria-pressed={c.homeTypes?.includes(t)} onClick={()=>toggle('homeTypes',t)} key={t}>{({condo:'Condo / co-op',land:'Lot / land'})[t]||t}</button>)}</div></fieldset><details className="more-filters"><summary>More filters</summary><fieldset><legend>Size and lot</legend><label>Lot size unit<select value={unit} onChange={e=>setUnit(e.target.value)}><option value="sqft">Square feet</option><option value="acres">Acres</option></select></label><div className="filter-fields">{['minSqft','maxSqft','minLotSize','maxLotSize','minYearBuilt','maxYearBuilt'].map(number)}{select('stories',[['','Any'],['single','Single story'],['multi','2+ stories']])}</div></fieldset><fieldset><legend>Costs and parking</legend><div className="filter-fields">{number('maxHoa')}{check('noHoa')}{select('minParking',[['','Any'],...[1,2,3,4].map(n=>[n,n+'+'])])}{check('garage')}</div></fieldset><fieldset><legend>Listing details</legend><div className="filter-fields">{select('daysOnMarket',[['','Any'],...[1,3,7,14,30,90].map(n=>[n,n+' days'])])}{['newConstruction','priceReduced','openHouse','virtualTour'].map(check)}{['foreclosure','preForeclosure','auction','senior'].map(tri)}</div></fieldset><fieldset><legend>Features</legend><div className="filter-fields">{['ac','pool','waterfront','fireplace'].map(check)}{select('basement',[['','Any'],['has','Has basement']])}<label>Keywords<input maxLength={200} value={c.keywords||''} onChange={e=>change('keywords',e.target.value)}/></label></div><p>Views</p><div className="chips">{['water','mountain','park','city'].map(t=><button type="button" className="toggle-chip" aria-pressed={c.views?.includes(t)} key={t} onClick={()=>toggle('views',t)}>{t}</button>)}</div></fieldset><fieldset><legend>Advanced</legend><label>Paste a Zillow or Redfin search URL<input type="url" placeholder="https://www.zillow.com/…" value={c.searchUrl||''} onChange={e=>change('searchUrl',e.target.value)}/></label><small>That source uses the URL’s filters instead of the form. Other sources still use your form criteria.</small></fieldset></details><div className="filter-actions"><fieldset><legend>Sources</legend>{['Zillow','Redfin'].map(s=><label className="check" key={s}><input type="checkbox" checked={c.sources.includes(s)} onChange={()=>toggle('sources',s)}/>{s}</label>)}</fieldset><button disabled={busy}>{busy?'Finding homes…':'Apply filters ↗'}</button></div>{error&&<p className="error" role="alert">{error}</p>}</form>}
+import React, { useState } from "react";
+import {
+  HOME_TYPES,
+  defaults,
+  validateCriteria,
+} from "../../../server/search/criteria";
+export const LABELS = {
+  minPrice: "Min price",
+  maxPrice: "Max price",
+  minBeds: "Bedrooms",
+  minBaths: "Bathrooms",
+  minSqft: "Min square feet",
+  maxSqft: "Max square feet",
+  minLotSize: "Min lot size",
+  maxLotSize: "Max lot size",
+  minYearBuilt: "Built after",
+  maxYearBuilt: "Built before",
+  maxHoa: "Max monthly HOA",
+  minParking: "Parking spots",
+  daysOnMarket: "Time on market",
+  exactBeds: "Exact bedrooms",
+  noHoa: "No HOA",
+  garage: "Must have garage",
+  newConstruction: "New construction",
+  priceReduced: "Price reduced",
+  openHouse: "Open house only",
+  virtualTour: "3D / virtual tour",
+  ac: "Air conditioning",
+  pool: "Pool",
+  waterfront: "Waterfront",
+  fireplace: "Fireplace",
+  foreclosure: "Foreclosure",
+  preForeclosure: "Pre-foreclosure",
+  auction: "Auction",
+  senior: "55+ community",
+  homeTypes: "Home type",
+  views: "Views",
+  stories: "Stories",
+  basement: "Basement",
+  status: "Listing status",
+  keywords: "Keywords",
+  location: "Location",
+  searchUrl: "Search URL",
+};
+export default function Filters({
+  value: c,
+  onChange: set,
+  onSearch,
+  onReset,
+  busy,
+}) {
+  const [unit, setUnit] = useState("sqft"),
+    [error, setError] = useState("");
+  const change = (k, v) => set({ ...c, [k]: v });
+  const toggle = (k, v) =>
+    change(
+      k,
+      (c[k] || []).includes(v)
+        ? c[k].filter((x) => x !== v)
+        : [...(c[k] || []), v],
+    );
+  const select = (k, options) => (
+    <label key={k}>
+      {LABELS[k]}
+      <select value={c[k] ?? ""} onChange={(e) => change(k, e.target.value)}>
+        {options.map(([v, l]) => (
+          <option value={v} key={v}>
+            {l}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+  const number = (k) => (
+    <label key={k}>
+      {LABELS[k]}
+      <input
+        type="number"
+        min="0"
+        step={k.includes("Lot") && unit === "acres" ? "0.01" : "1"}
+        value={
+          c[k] == null || c[k] === ""
+            ? ""
+            : k.includes("Lot") && unit === "acres"
+              ? Math.round((c[k] / 43560) * 100) / 100
+              : c[k]
+        }
+        onChange={(e) =>
+          change(
+            k,
+            e.target.value === ""
+              ? ""
+              : Number(e.target.value) *
+                  (k.includes("Lot") && unit === "acres" ? 43560 : 1),
+          )
+        }
+      />
+    </label>
+  );
+  const check = (k) => (
+    <label key={k} className="check">
+      <input
+        type="checkbox"
+        checked={!!c[k]}
+        onChange={(e) => change(k, e.target.checked)}
+      />
+      {LABELS[k]}
+    </label>
+  );
+  const tri = (k) =>
+    select(k, [
+      ["", "Include"],
+      ["exclude", "Exclude"],
+      ["only", "Only"],
+    ]);
+  return (
+    <form
+      className="filter-panel full-filters"
+      onSubmit={(e) => {
+        e.preventDefault();
+        try {
+          const clean = validateCriteria(c);
+          setError("");
+          onSearch(clean);
+        } catch (e) {
+          setError(e.message);
+        }
+      }}
+    >
+      <div className="filter-heading">
+        <h2>Find your fit</h2>
+        <button
+          type="button"
+          className="quiet-button"
+          onClick={() => {
+            set({ ...defaults });
+            onReset?.();
+          }}
+        >
+          Reset filters
+        </button>
+      </div>
+      <div className="filter-fields core">
+        <label className="location-field">
+          City, state, neighborhood or ZIP
+          <input
+            required={!c.searchUrl}
+            placeholder="Austin, TX"
+            value={c.location}
+            onChange={(e) => change("location", e.target.value)}
+            maxLength={150}
+          />
+        </label>
+        {select("status", [
+          ["sale", "For sale"],
+          ["coming-soon", "Coming soon"],
+          ["pending", "Pending / under contract"],
+          ["sold", "Recently sold"],
+        ])}
+        {number("minPrice")}
+        {number("maxPrice")}
+        {select("minBeds", [
+          ["", "Any"],
+          ...[1, 2, 3, 4, 5].map((n) => [n, n + "+"]),
+        ])}
+        {select("minBaths", [
+          ["", "Any"],
+          ...[1, 1.5, 2, 3, 4].map((n) => [n, n + "+"]),
+        ])}
+        {check("exactBeds")}
+      </div>
+      <fieldset>
+        <legend>Home type</legend>
+        <div className="chips">
+          {HOME_TYPES.map((t) => (
+            <button
+              type="button"
+              className="toggle-chip"
+              aria-pressed={c.homeTypes?.includes(t)}
+              onClick={() => toggle("homeTypes", t)}
+              key={t}
+            >
+              {{ condo: "Condo / co-op", land: "Lot / land" }[t] || t}
+            </button>
+          ))}
+        </div>
+      </fieldset>
+      <details className="more-filters">
+        <summary>More filters</summary>
+        <fieldset>
+          <legend>Size and lot</legend>
+          <label>
+            Lot size unit
+            <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+              <option value="sqft">Square feet</option>
+              <option value="acres">Acres</option>
+            </select>
+          </label>
+          <div className="filter-fields">
+            {[
+              "minSqft",
+              "maxSqft",
+              "minLotSize",
+              "maxLotSize",
+              "minYearBuilt",
+              "maxYearBuilt",
+            ].map(number)}
+            {select("stories", [
+              ["", "Any"],
+              ["single", "Single story"],
+              ["multi", "2+ stories"],
+            ])}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Costs and parking</legend>
+          <div className="filter-fields">
+            {number("maxHoa")}
+            {check("noHoa")}
+            {select("minParking", [
+              ["", "Any"],
+              ...[1, 2, 3, 4].map((n) => [n, n + "+"]),
+            ])}
+            {check("garage")}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Listing details</legend>
+          <div className="filter-fields">
+            {select("daysOnMarket", [
+              ["", "Any"],
+              ...[1, 3, 7, 14, 30, 90].map((n) => [n, n + " days"]),
+            ])}
+            {[
+              "newConstruction",
+              "priceReduced",
+              "openHouse",
+              "virtualTour",
+            ].map(check)}
+            {["foreclosure", "preForeclosure", "auction", "senior"].map(tri)}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Features</legend>
+          <div className="filter-fields">
+            {["ac", "pool", "waterfront", "fireplace"].map(check)}
+            {select("basement", [
+              ["", "Any"],
+              ["has", "Has basement"],
+            ])}
+            <label>
+              Keywords
+              <input
+                maxLength={200}
+                value={c.keywords || ""}
+                onChange={(e) => change("keywords", e.target.value)}
+              />
+            </label>
+          </div>
+          <p>Views</p>
+          <div className="chips">
+            {["water", "mountain", "park", "city"].map((t) => (
+              <button
+                type="button"
+                className="toggle-chip"
+                aria-pressed={c.views?.includes(t)}
+                key={t}
+                onClick={() => toggle("views", t)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Advanced</legend>
+          <label>
+            Paste a Zillow or Redfin search URL
+            <input
+              type="url"
+              placeholder="https://www.zillow.com/…"
+              value={c.searchUrl || ""}
+              onChange={(e) => change("searchUrl", e.target.value)}
+            />
+          </label>
+          <small>
+            That source uses the URL’s filters instead of the form. Other
+            sources still use your form criteria.
+          </small>
+        </fieldset>
+      </details>
+      <div className="filter-actions">
+        <fieldset>
+          <legend>Sources</legend>
+          {["Zillow", "Redfin"].map((s) => (
+            <label className="check" key={s}>
+              <input
+                type="checkbox"
+                checked={c.sources.includes(s)}
+                onChange={() => toggle("sources", s)}
+              />
+              {s}
+            </label>
+          ))}
+        </fieldset>
+        <button disabled={busy}>
+          {busy ? "Finding homes…" : "Apply filters ↗"}
+        </button>
+      </div>
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
+    </form>
+  );
+}

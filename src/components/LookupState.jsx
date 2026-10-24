@@ -36,7 +36,7 @@ export default function LookupState({ loading = false, error }) {
           <div className="skeleton skeleton-details" />
         </div>
       )}
-      <Link className="button-link" to="/">
+      <Link className="button-link" to="/lookup">
         Try another address <span aria-hidden="true">↗</span>
       </Link>
     </section>

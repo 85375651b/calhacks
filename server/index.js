@@ -1,3 +1,4 @@
+import { claimRun } from "./providers/actor.js";
 import { join } from "node:path";
 import { config, serverDirectory } from "./config.js";
 import { createCache } from "./cache.js";
@@ -21,7 +22,7 @@ const apifyFixtures =
     ? await loadApifyFixtures()
     : undefined;
 const enrich = createEnrichment({
-  request: createApifyClient({ token: config.apifyToken }),
+  request: createApifyClient({ token: config.apifyToken, beforeRun: claimRun }),
   cache: createCache(join(serverDirectory, ".cache", "apify.json")),
   enabled: config.enableApify,
   token: config.apifyToken,
@@ -29,7 +30,38 @@ const enrich = createEnrichment({
   fixtures: apifyFixtures,
 });
 const autocomplete = createAutocomplete({
-  provider: createAutocompleteProvider(),
+  provider: config.useFixtures
+    ? async (query) =>
+        [
+          {
+            label: "5101 Trail West Dr, Austin, TX 78735",
+            street: "5101 Trail West Dr",
+            city: "Austin",
+            state: "TX",
+            zip: "78735",
+            lat: 30.2513564,
+            lng: -97.8332445,
+          },
+          {
+            label: "1601 Faro Dr APT 1303, Austin, TX 78741",
+            street: "1601 Faro Dr APT 1303",
+            city: "Austin",
+            state: "TX",
+            zip: "78741",
+            lat: 30.23,
+            lng: -97.716,
+          },
+          {
+            label: "Austin downtown workplace (sample)",
+            street: "Congress Avenue",
+            city: "Austin",
+            state: "TX",
+            zip: "78701",
+            lat: 30.2672,
+            lng: -97.7431,
+          },
+        ].filter((p) => p.label.toLowerCase().includes(query.toLowerCase()))
+    : createAutocompleteProvider(),
 });
 if (!config.enableApify)
   console.log("Zillow enrichment disabled by ENABLE_APIFY=false.");
