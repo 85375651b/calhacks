@@ -1,10 +1,9 @@
 import React from "react";
-export default function PropertyFactsCard({ facts, type }) {
+export default function PropertyFactsCard({ facts }) {
   return (
     <section className="card facts-card" aria-labelledby="facts-title">
       <div className="card-heading">
-        <h2 id="facts-title">The property at a glance</h2>
-        <span className="quiet-tag">{type}</span>
+        <h2 id="facts-title">Property details</h2>
       </div>
       <dl className="facts-grid">
         {facts.map((fact) => (
@@ -18,7 +17,7 @@ export default function PropertyFactsCard({ facts, type }) {
         ))}
       </dl>
       <p className="card-note">
-        Illustrative property details · Not matched to this address
+        N/A means the data provider did not supply that detail.
       </p>
     </section>
   );

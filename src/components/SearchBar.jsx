@@ -23,6 +23,7 @@ export default function SearchBar() {
           id="address"
           name="address"
           autoComplete="street-address"
+          maxLength={300}
           placeholder="Enter street address, city, state"
           value={address}
           onChange={(e) => {
@@ -42,7 +43,8 @@ export default function SearchBar() {
         </p>
       )}
       <p className="search-note" id="search-note">
-        Explore the demo. All results use sample data.
+        Include city, state, and ZIP for the best match. Data powered by
+        RentCast.
       </p>
     </form>
   );

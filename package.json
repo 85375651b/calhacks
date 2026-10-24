@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n api,web \"npm:dev:server\" \"npm:dev:client\"",
+    "dev": "concurrently -k -n api,web \"node --watch server/index.js\" \"vite\"",
     "dev:server": "node --watch server/index.js",
     "dev:client": "vite",
     "start:server": "node server/index.js",

@@ -10,7 +10,7 @@ export default function Footer() {
       <p>
         Estimates are not appraisals.
         <br />
-        Built for Cal Hacks · Frontend prototype
+        Built for Cal Hacks · Property data by RentCast
       </p>
     </footer>
   );

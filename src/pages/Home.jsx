@@ -91,8 +91,9 @@ export default function Home() {
               <span className="step-number">02</span>
               <h3>We gather the details</h3>
               <p>
-                Public records and market data will bring the property into
-                focus. For now, explore clearly labeled sample data.
+                RentCast property records, sale listings, and market estimates
+                bring the property into focus, with sources alongside the
+                results.
               </p>
             </article>
             <article>

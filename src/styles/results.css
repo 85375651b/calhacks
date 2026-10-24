@@ -1,0 +1,226 @@
+.listing-card {
+  padding: 30px 32px;
+  margin-top: 28px;
+  border-top: 3px solid var(--accent);
+}
+.listing-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.listing-card .price-label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.listing-price {
+  font-size: clamp(2.6rem, 5vw, 3.8rem);
+  font-weight: 550;
+  letter-spacing: -0.055em;
+  line-height: 1.2;
+  margin: 8px 0 0;
+}
+.listing-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 14px 0 0;
+}
+.listing-meta span {
+  margin-inline: 8px;
+}
+.listing-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  margin: 26px 0 0;
+}
+.listing-stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.listing-stats dt {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.listing-stats dd {
+  font-size: 27px;
+  line-height: 1.3;
+  font-weight: 550;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+.listing-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.listing-badges .sample-badge {
+  margin: 0;
+}
+.listing-status {
+  font-size: 12px;
+  background: #eef2ec;
+  border: 1px solid #d7dfd4;
+  padding: 5px 12px;
+  border-radius: 30px;
+  white-space: nowrap;
+}
+.listing-status.for-sale {
+  background: #e0efe4;
+  color: #205337;
+}
+.fixture-notice {
+  padding: 14px 18px;
+  margin-top: 20px;
+  background: #edf2e9;
+  border: 1px solid #d5dfcf;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #49603f;
+  overflow-wrap: anywhere;
+}
+.results .facts-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.fact dd {
+  overflow-wrap: anywhere;
+}
+.sources-line {
+  border-top: 1px solid var(--border);
+  padding-top: 22px;
+}
+.sources-line h2 {
+  font-size: 13px;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+}
+.sources-line ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.sources-line li::before {
+  content: "↗";
+  margin-right: 6px;
+  color: var(--accent);
+}
+.sources-footnote {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+.lookup-state {
+  margin: 28px 0;
+  min-height: 420px;
+  padding: 40px;
+}
+.lookup-state h1 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  margin: 18px 0;
+}
+.lookup-state p {
+  color: var(--muted);
+  font-size: 14px;
+}
+.skeleton-layout {
+  margin-top: 30px;
+}
+.skeleton {
+  background: linear-gradient(100deg, #edf1e9 25%, #f8faf6 45%, #edf1e9 65%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+  height: 65px;
+}
+.skeleton-price {
+  height: 45px;
+  max-width: 250px;
+}
+.skeleton-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-block: 22px;
+}
+.skeleton-details {
+  height: 100px;
+}
+.results-heading > div:first-child {
+  min-width: 0;
+}
+.results-heading h1 {
+  line-height: 1.2;
+}
+.results-heading {
+  align-items: flex-start;
+}
+.results-heading .eyebrow {
+  margin-bottom: 10px;
+}
+.results-grid {
+  margin-top: 24px;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+@media (max-width: 760px) {
+  .listing-card {
+    padding: 24px;
+  }
+  .listing-stats {
+    gap: 14px;
+  }
+  .listing-stats dd {
+    font-size: 24px;
+  }
+  .listing-price-row {
+    align-items: flex-start;
+  }
+  .listing-badges {
+    margin-top: 0;
+  }
+  .lookup-state {
+    padding: 24px;
+  }
+  .skeleton-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .results-heading {
+    gap: 10px;
+  }
+  .listing-stats {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 22px;
+  }
+}
+@media (max-width: 390px) {
+  .listing-price-row {
+    flex-direction: column;
+  }
+  .listing-stats dd {
+    font-size: 23px;
+  }
+  .results .fact {
+    padding: 14px 10px;
+  }
+  .results .fact dd {
+    font-size: 20px;
+  }
+}

@@ -8,6 +8,7 @@ import Results from "./pages/Results";
 import NotFound from "./pages/NotFound";
 import "./styles/global.css";
 import "./styles/layout.css";
+import "./styles/results.css";
 export default function App() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
