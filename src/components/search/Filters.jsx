@@ -8,6 +8,8 @@ export const LABELS = {
   minPrice: "Min price",
   maxPrice: "Max price",
   minBeds: "Bedrooms",
+  maxBeds: "Max bedrooms",
+  maxBaths: "Max bathrooms",
   minBaths: "Bathrooms",
   minSqft: "Min square feet",
   maxSqft: "Max square feet",
@@ -161,12 +163,14 @@ export default function Filters({
         {number("maxPrice")}
         {select("minBeds", [
           ["", "Any"],
-          ...[1, 2, 3, 4, 5].map((n) => [n, n + "+"]),
+          ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20].map((n) => [n, n + "+"]),
         ])}
         {select("minBaths", [
           ["", "Any"],
           ...[1, 1.5, 2, 3, 4].map((n) => [n, n + "+"]),
         ])}
+        {number("maxBeds")}
+        {number("maxBaths")}
         {check("exactBeds")}
       </div>
       <fieldset>

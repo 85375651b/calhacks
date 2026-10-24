@@ -1,3 +1,5 @@
+import DescribeSearch, { localRead, localWrite } from "../components/search/DescribeSearch";
+import "../styles/describe.css";
 import { Link, useLocation } from "react-router-dom";
 import { readSession, writeSession } from "../lib/planner/listingSnapshot";
 import { useFavorites } from "../lib/Favorites";
@@ -11,7 +13,7 @@ import { defaults, SORTS } from "../../server/search/criteria";
 export default function Home() {
   const location = useLocation();
   const restored = useRef(readSession("propertylens.search")).current;
-  const { favorites, toggle } = useFavorites();
+  const { favorites, toggle, clientId } = useFavorites();
   const [criteria, setCriteria] = useState(
       restored?.criteria || {
         ...defaults,
@@ -24,23 +26,29 @@ export default function Home() {
     [error, setError] = useState(""),
     [selected, setSelected] = useState(restored?.selected || null),
     [sort, setSort] = useState(restored?.sort || "relevance");
+  const [mode, updateMode] = useState(restored?.mode || localRead('propertylens.searchMode', 'describe'));
+  const [text, setText] = useState(restored?.text || '');
+  const [parsed, setParsed] = useState(restored?.parsed || null);
+  const [understanding, setUnderstanding] = useState(false);
+  const setMode = value => { updateMode(value); localWrite('propertylens.searchMode', value); };
   const request = useRef(null);
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => {
     writeSession("propertylens.search", {
-      criteria,
+      criteria, mode, text, parsed,
       applied,
       data,
       selected,
       sort,
       scroll: window.scrollY,
     });
-  }, [criteria, applied, data, selected, sort]);
+  }, [criteria, applied, data, selected, sort, mode, text, parsed]);
   useEffect(() => {
     if (restored)
       requestAnimationFrame(() => window.scrollTo(0, restored.scroll || 0));
   }, []);
-  async function search(c) {
+  async function search(c, extras = parsed?.extras) {
+    if (extras?.sort) setSort(extras.sort);
     request.current?.abort();
     const controller = new AbortController();
     request.current = controller;
@@ -50,7 +58,7 @@ export default function Home() {
     try {
       const r = await fetch("/api/search", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Client-Id": clientId },
         body: JSON.stringify(c),
         signal: controller.signal,
       });
@@ -130,22 +138,27 @@ export default function Home() {
         </a>
       </div>
       <div id="home-search" />
+      <DescribeSearch mode={mode} setMode={setMode} text={text} setText={setText} parsed={parsed} setParsed={setParsed} criteria={criteria} setCriteria={setCriteria} onSearch={search} busy={loading} setUnderstanding={setUnderstanding} />
+      <div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters" hidden={mode !== 'filters'}>
       <Filters
         value={criteria}
         onChange={setCriteria}
-        onSearch={search}
+        onSearch={(c) => { setCriteria(c); search(c); }}
         onReset={() => {
           request.current?.abort();
           setLoading(false);
           setApplied(null);
+          setParsed(null);
           setData(null);
           setError("");
         }}
         busy={loading}
       />
+      </div>
+      <p className="sr-only" role="status" aria-live="polite">{understanding ? "Understanding your search…" : loading ? "Searching…" : data ? `${data.listings.length} homes found` : ""}</p>
       <ModuleSelector />
       <WorkAddress />
-      {applied && (
+      {applied && !parsed && (
         <div className="chips active-filters" aria-label="Active filters">
           {Object.entries(applied)
             .filter(
@@ -175,7 +188,7 @@ export default function Home() {
             ))}
         </div>
       )}
-      {loading ? (
+      {loading || understanding ? (
         <div className="listing-grid" role="status" aria-label="Finding homes">
           {[1, 2, 3].map((n) => (
             <div className="listing-skeleton" key={n} />

@@ -10,6 +10,7 @@ export default function WorkAddress() {
         label="Choose your work address for commute estimates"
         onSelect={(p) => setWork(p)}
       />
+      <p className="small-note">Your work location is stored only in your browser and sent to our commute data provider to estimate drive times.</p>
       {work && !Number.isFinite(work.lat) && (
         <p role="status">
           Choose a suggestion to save coordinates for commute estimates.
