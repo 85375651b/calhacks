@@ -1,0 +1,62 @@
+[
+  {
+    "source": "FEMA National Risk Index",
+    "resolution": "Census tract",
+    "tract": "48453001914",
+    "version": "December 2025",
+    "rating": "Relatively Low",
+    "score": 37.43355570618244,
+    "expectedAnnualLoss": 1582921.9535368166,
+    "vulnerability": "Very Low",
+    "resilience": "Relatively High",
+    "hazards": [
+      {
+        "hazard": "Hail",
+        "score": 90.18110901026245,
+        "rating": "Relatively High"
+      },
+      {
+        "hazard": "Tornado",
+        "score": 88.55433864887684,
+        "rating": "Relatively High"
+      },
+      {
+        "hazard": "Wildfire",
+        "score": 84.92264516666073,
+        "rating": "Relatively Low"
+      }
+    ],
+    "insuranceNote": "Higher-rated hazards may affect coverage availability and premiums. Ask an insurer about exclusions and separate flood or wildfire coverage.",
+    "note": "Informational only, not an insurance quote or a FEMA product."
+  },
+  {
+    "source": "FEMA National Risk Index",
+    "resolution": "Census tract",
+    "tract": "48453002325",
+    "version": "December 2025",
+    "rating": "Relatively Low",
+    "score": 29.003603153651312,
+    "expectedAnnualLoss": 720791.1306814592,
+    "vulnerability": "Relatively High",
+    "resilience": "Relatively High",
+    "hazards": [
+      {
+        "hazard": "Tornado",
+        "score": 88.61141831067985,
+        "rating": "Relatively High"
+      },
+      {
+        "hazard": "Heat wave",
+        "score": 78.95633728967061,
+        "rating": "Relatively Moderate"
+      },
+      {
+        "hazard": "Hail",
+        "score": 77.52131568620456,
+        "rating": "Relatively Moderate"
+      }
+    ],
+    "insuranceNote": "Higher-rated hazards may affect coverage availability and premiums. Ask an insurer about exclusions and separate flood or wildfire coverage.",
+    "note": "Informational only, not an insurance quote or a FEMA product."
+  }
+]
