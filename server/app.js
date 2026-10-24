@@ -1,3 +1,4 @@
+import { plannerRouter } from './storage/planner-routes.js';
 import express from "express";
 import { favoritesRouter } from "./storage/favorites-routes.js";
 import { insightHandlers } from "./insights/index.js";
@@ -7,8 +8,9 @@ import { LookupError } from "./errors.js";
 export function createApp(lookup, { autocomplete, enrich } = {}) {
   const app = express();
   app.disable("x-powered-by");
-  app.use(express.json({ limit: "100kb" }));
+  app.use(express.json({ limit: "200kb" }));
   app.use("/api/favorites", favoritesRouter);
+  app.use("/api", plannerRouter);
   app.get("/api/insights/:module", async (req, res) => {
     try {
       const handler = Object.hasOwn(insightHandlers, req.params.module)

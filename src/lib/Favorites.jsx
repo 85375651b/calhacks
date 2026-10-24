@@ -75,7 +75,7 @@ export function FavoritesProvider({ children }) {
     }
   }
   return (
-    <Context.Provider value={{ favorites, toggle, message, loading, refresh }}>
+    <Context.Provider value={{ favorites, toggle, message, loading, refresh, clientId: id }}>
       {children}
       {message && (
         <div className="favorite-toast" role="status">

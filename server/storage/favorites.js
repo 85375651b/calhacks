@@ -1,3 +1,4 @@
+import {atomicJson} from './atomic.js';
 import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import { dirname } from "node:path";
 import { siteUrl, HOME_TYPES } from "../search/criteria.js";
@@ -132,37 +133,12 @@ export function sanitizeListing(p) {
   return out;
 }
 export function createFavorites(file) {
-  let queue = Promise.resolve();
-  async function read() {
-    try {
-      const data = JSON.parse(await readFile(file, "utf8"));
-      if (!data || typeof data !== "object" || Array.isArray(data))
-        throw new Error();
-      return data;
-    } catch (e) {
-      if (e.code === "ENOENT") return {};
-      throw new Error("Saved homes could not be read. Try again later.");
-    }
-  }
-  function mutate(fn) {
-    const job = queue
-      .catch(() => {})
-      .then(async () => {
-        const data = await read(),
-          result = fn(data);
-        await mkdir(dirname(file), { recursive: true });
-        await writeFile(file + ".tmp", JSON.stringify(data), { mode: 0o600 });
-        await rename(file + ".tmp", file);
-        return result;
-      });
-    queue = job;
-    return job;
-  }
+  const store = atomicJson(file);
+  const mutate = store.mutate;
   return {
     async list(id) {
       id = clientId(id);
-      await queue.catch(() => {});
-      return (await read())[id] || [];
+      return (await store.read())[id] || [];
     },
     add(id, listing) {
       id = clientId(id);
