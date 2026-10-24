@@ -1,0 +1,194 @@
+@media (max-width: 1000px) {
+  .hero {
+    gap: 28px;
+  }
+  .hero-art {
+    min-height: 390px;
+  }
+  .art-card {
+    padding: 12px;
+    gap: 8px;
+  }
+  .art-card strong {
+    font-size: 10px;
+  }
+  .art-check {
+    margin-left: 0;
+  }
+  .card-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .results-grid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+  .fact dd {
+    font-size: 21px;
+  }
+  .desktop-break {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .container {
+    width: calc(100% - 36px);
+  }
+  .nav-inner {
+    height: 74px;
+  }
+  .brand {
+    font-size: 20px;
+  }
+  nav {
+    gap: 18px;
+    font-size: 11px;
+  }
+  nav span {
+    display: none;
+  }
+  .brand-icon {
+    width: 27px;
+    height: 27px;
+    font-size: 23px;
+    margin-right: 7px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding-block: 44px;
+    gap: 34px;
+  }
+  .hero h1 {
+    font-size: clamp(2.35rem, 7.8vw, 3.5rem);
+  }
+  .hero-art {
+    min-height: 350px;
+    max-width: 520px;
+    width: 100%;
+    justify-self: center;
+  }
+  .house {
+    width: 330px;
+    margin-top: -55px;
+  }
+  .art-card {
+    padding: 14px 22px;
+    margin-top: -12px;
+  }
+  .art-card strong {
+    font-size: 12px;
+  }
+  .art-caption {
+    margin: 20px;
+  }
+  .section-heading {
+    display: block;
+  }
+  .section-heading > p {
+    margin-top: 14px;
+  }
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .steps article {
+    position: relative;
+    padding-left: 42px;
+  }
+  .step-number {
+    position: absolute;
+    left: 0;
+    top: 24px;
+  }
+  .steps p {
+    max-width: none;
+  }
+  .how-section {
+    padding-block: 36px;
+  }
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 22px;
+  }
+  .results-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0;
+  }
+  .sample-badge {
+    margin-bottom: 16px;
+  }
+  .source-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 18px;
+  }
+  .source-status {
+    grid-column: 2;
+  }
+  .source-row p {
+    font-size: 11px;
+  }
+  .site-footer {
+    gap: 20px;
+  }
+  .site-footer p {
+    font-size: 9px;
+  }
+  .hero-assurances {
+    gap: 20px;
+  }
+  .not-found {
+    padding-block: 70px;
+  }
+}
+@media (max-width: 390px) {
+  .container {
+    width: calc(100% - 32px);
+  }
+  nav {
+    gap: 12px;
+  }
+  .brand {
+    font-size: 18px;
+  }
+  .brand-icon {
+    display: none;
+  }
+  .hero h1 {
+    font-size: 2.25rem;
+  }
+  .hero-subhead {
+    font-size: 14px;
+  }
+  .search-box button {
+    padding: 13px 14px;
+  }
+  .search-box button span {
+    display: none;
+  }
+  .search-icon {
+    margin: 0 5px;
+  }
+  .search-box input {
+    font-size: 12px;
+  }
+  .facts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hero-assurances {
+    font-size: 10px;
+  }
+  .art-card {
+    padding: 12px;
+  }
+  .source-row {
+    grid-template-columns: 1fr;
+  }
+  .source-status {
+    grid-column: 1;
+  }
+  .source-row p {
+    margin-top: 4px;
+  }
+}
