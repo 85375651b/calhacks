@@ -1,3 +1,4 @@
+import {resolveFurniture,allowResolve} from '../furniture/resolve.js';
 import {Router} from 'express';
 import {join} from 'node:path';
 import {serverDirectory} from '../config.js';
@@ -13,7 +14,7 @@ plannerRouter.get('/furniture',handle(req=>library.list(req.clientId)));
 plannerRouter.post('/furniture',handle(req=>library.put(req.clientId,req.body)));
 plannerRouter.patch('/furniture/:id',handle(async req=>{const old=(await library.list(req.clientId)).find(i=>i.id===req.params.id);if(!old)throw new Error('Furniture not found.');return library.put(req.clientId,{...old,...req.body,id:req.params.id});}));
 plannerRouter.delete('/furniture/:id',handle(req=>library.remove(req.clientId,req.params.id)));
-plannerRouter.post('/furniture/resolve',handle(req=>{if(typeof req.body?.query!=='string'||req.body.query.length>500)throw new Error('Enter a furniture name, up to 500 characters.');return resolveName(req.body.query);}));
+plannerRouter.post('/furniture/resolve',async(req,res)=>{if(!allowResolve(req.clientId)){res.set('Retry-After','60');return res.status(429).json({error:{code:'rate_limited',message:'Please wait a minute before resolving more furniture.'}});}try{res.json(await resolveFurniture(req.body));}catch(e){const code=['blocked','no_dimensions','invalid_url','timeout','rate_limited'].includes(e.code)?e.code:'blocked';res.status(code==='timeout'?504:400).json({error:{code,message:code==='timeout'?'Product page timed out. Try manual dimensions.':code==='invalid_url'?'Enter a public HTTPS product URL or furniture name.':'This product page cannot be read. Try manual dimensions.'}});}});
 plannerRouter.get('/planner/layouts',handle(req=>layouts.list(req.clientId)));
 plannerRouter.get('/planner/layouts/:homeId',handle(async req=>(await layouts.list(req.clientId)).find(l=>l.homeId===req.params.homeId)||null));
 plannerRouter.put('/planner/layouts/:homeId',handle(req=>layouts.put(req.clientId,req.body,req.params.homeId)));
