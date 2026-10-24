@@ -1,1 +1,1 @@
-import {schools} from './schools.js';import {hazards} from './hazards.js';import {crime} from './crime.js';export const insightHandlers={crime,hazards,schools};
+import {commute} from './commute.js';import {schools} from './schools.js';import {hazards} from './hazards.js';import {crime} from './crime.js';export const insightHandlers={crime,hazards,schools,commute};

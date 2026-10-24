@@ -1,0 +1,46 @@
+[
+  {
+    "source": "Google Maps via Apify (rastriq)",
+    "date": "2026-10-27",
+    "timezone": "America/Chicago",
+    "morning": {
+      "minutes": 26,
+      "miles": 8.2,
+      "range": "18–40 min",
+      "trafficLevel": "heavy",
+      "offPeak": 16,
+      "extraMinutes": 10
+    },
+    "evening": {
+      "minutes": 28,
+      "miles": 8.3,
+      "range": "20–40 min",
+      "trafficLevel": "heavy",
+      "offPeak": 16,
+      "extraMinutes": 12
+    },
+    "note": "Traffic-pattern predictions, not live traffic. Morning departs home at 8 AM; evening departs work at 5:30 PM, each in its origin’s local time. Off-peak comparisons depart at 3 AM."
+  },
+  {
+    "source": "Google Maps via Apify (rastriq)",
+    "date": "2026-10-27",
+    "timezone": "America/Chicago",
+    "morning": {
+      "minutes": 20,
+      "miles": 4,
+      "range": "12–30 min",
+      "trafficLevel": "heavy",
+      "offPeak": 12,
+      "extraMinutes": 8
+    },
+    "evening": {
+      "minutes": 22,
+      "miles": 4,
+      "range": "14–35 min",
+      "trafficLevel": "heavy",
+      "offPeak": 14,
+      "extraMinutes": 8
+    },
+    "note": "Traffic-pattern predictions, not live traffic. Morning departs home at 8 AM; evening departs work at 5:30 PM, each in its origin’s local time. Off-peak comparisons depart at 3 AM."
+  }
+]
