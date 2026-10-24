@@ -1,0 +1,74 @@
+[
+  {
+    "source": "GreatSchools ratings in Zillow data via Apify",
+    "schools": [
+      {
+        "name": "Oak Hill Elementary School",
+        "level": "Primary",
+        "rating": 6,
+        "grades": "PK-5",
+        "distance": 1.8
+      },
+      {
+        "name": "O Henry Middle School",
+        "level": "Middle",
+        "rating": 7,
+        "grades": "6-8",
+        "distance": 4.3
+      },
+      {
+        "name": "Austin High School",
+        "level": "High",
+        "rating": 7,
+        "grades": "9-12",
+        "distance": 4.2
+      }
+    ],
+    "average": 6.7,
+    "yearBuilt": 1982,
+    "photos": [
+      "https://photos.zillowstatic.com/fp/3874be575da3658ab6812b5f151edabe-uncropped_scaled_within_1536_1152.jpg",
+      "https://photos.zillowstatic.com/fp/9b35fcf54371410bea8b0944abdb9daf-uncropped_scaled_within_1536_1152.jpg",
+      "https://photos.zillowstatic.com/fp/acc8524c9f06bf7a9ae695e33e5d493e-uncropped_scaled_within_1536_1152.jpg",
+      "https://photos.zillowstatic.com/fp/3eabbea122da18d07b4472ee3b47c403-uncropped_scaled_within_1536_1152.jpg"
+    ],
+    "insuranceEstimate": null,
+    "note": "Nearby public schools; verify attendance boundaries and enrollment directly. Ratings are one limited measure."
+  },
+  {
+    "source": "GreatSchools ratings in Zillow data via Apify",
+    "schools": [
+      {
+        "name": "Baty Elementary School",
+        "level": "Primary",
+        "rating": 3,
+        "grades": "PK-5",
+        "distance": 0.5
+      },
+      {
+        "name": "John P Ojeda Junior High School",
+        "level": "Middle",
+        "rating": 3,
+        "grades": "6-8",
+        "distance": 3
+      },
+      {
+        "name": "Del Valle High School",
+        "level": "High",
+        "rating": 2,
+        "grades": "9-12",
+        "distance": 7
+      }
+    ],
+    "average": 2.7,
+    "yearBuilt": 1983,
+    "photos": [
+      "https://photos.zillowstatic.com/fp/867de96e8622cfae2f523d8f28fae166-uncropped_scaled_within_1536_1152.jpg",
+      "https://photos.zillowstatic.com/fp/2bca2a36ff49fe23fbd6a93de116954d-uncropped_scaled_within_1536_1152.jpg",
+      "https://photos.zillowstatic.com/fp/94c416c078b859b2a25f09de746650a0-uncropped_scaled_within_1536_1152.jpg",
+      "https://photos.zillowstatic.com/fp/e77a71dbd556140a46e3335641ee6270-uncropped_scaled_within_1536_1152.jpg"
+    ],
+    "insuranceEstimate": null,
+    "note": "Nearby public schools; verify attendance boundaries and enrollment directly. Ratings are one limited measure."
+  }
+]
