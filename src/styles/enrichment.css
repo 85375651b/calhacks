@@ -1,0 +1,166 @@
+.zillow-card {
+  margin: 0 0 28px;
+  padding: 30px;
+}
+.zillow-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.apify-label {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: #315e45;
+  background: #edf3e9;
+  border: 1px solid #d3dfcd;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+.zillow-card .eyebrow {
+  margin-bottom: 10px;
+}
+.zillow-status {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 22px 0 16px;
+}
+.zillow-status strong {
+  color: #314b3b;
+  font-weight: 500;
+}
+.enrichment-message {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 20px 0;
+}
+.enrichment-skeleton {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-block: 22px;
+}
+.estimate-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #f3f6ef;
+  border: 1px solid #dfe7d9;
+  border-radius: 12px;
+  margin: 24px 0 10px;
+  padding: 24px;
+}
+.estimate-comparison > div + div {
+  border-left: 1px solid #d7e1d0;
+  padding-left: 28px;
+}
+.estimate-comparison dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+.estimate-comparison dd {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  letter-spacing: -0.04em;
+  margin: 7px 0 0;
+  line-height: 1.2;
+}
+.comparison-note {
+  font-size: 11px;
+  color: var(--muted);
+}
+.zillow-details {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  margin-top: 30px;
+}
+.zillow-details h3 {
+  font-size: 16px;
+  letter-spacing: -0.015em;
+}
+.zillow-description,
+.zillow-brokerage {
+  font-size: 13px;
+  color: #536359;
+  line-height: 1.8;
+}
+.zillow-link {
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  display: inline-block;
+  padding: 8px 0;
+}
+.zillow-link span {
+  margin-left: 8px;
+}
+.zillow-disclaimer {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin: 25px 0 0;
+}
+.photo-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin: 20px 0;
+}
+.photo-strip img {
+  width: calc(25% - 8px);
+  min-width: 180px;
+  max-width: 350px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.photo-strip img[hidden] {
+  display: none;
+}
+.price-history {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.price-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+  font-size: 12px;
+}
+.price-history small {
+  display: block;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.price-history strong {
+  font-weight: 550;
+}
+@media (max-width: 760px) {
+  .zillow-card {
+    padding: 22px;
+  }
+  .zillow-details {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .estimate-comparison {
+    padding: 18px;
+    gap: 12px;
+  }
+  .estimate-comparison > div + div {
+    padding-left: 15px;
+  }
+  .estimate-comparison dt {
+    font-size: 11px;
+  }
+  .photo-strip img {
+    min-width: 220px;
+  }
+}

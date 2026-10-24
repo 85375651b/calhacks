@@ -5,6 +5,8 @@ import PropertyListingCard from "../components/PropertyListingCard";
 import EstimateCard from "../components/EstimateCard";
 import SourcesList from "../components/SourcesList";
 import LookupState from "../components/LookupState";
+import ZillowData from "../components/ZillowData";
+import useEnrichment from "../lib/useEnrichment";
 import { formatArea, formatCurrency, formatDate } from "../lib/format";
 
 const fallbackError = {
@@ -58,6 +60,13 @@ export default function Results() {
   }, [address]);
 
   const property = state.address === address ? state.data : null;
+  const enrichment = useEnrichment(property);
+  const sources = [
+    ...new Set([
+      ...(property?.sources || []),
+      ...(enrichment?.data?.sources || []),
+    ]),
+  ];
   const error = !address
     ? {
         code: "INVALID_ADDRESS",
@@ -125,7 +134,8 @@ export default function Results() {
             <PropertyFactsCard facts={facts} />
             <EstimateCard estimate={property.estimate} />
           </div>
-          <SourcesList sources={property.sources} />
+          <ZillowData state={enrichment} rentcastEstimate={property.estimate} />
+          <SourcesList sources={sources} />
         </>
       )}
     </main>
