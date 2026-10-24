@@ -4,13 +4,21 @@ import { favoritesRouter } from "./storage/favorites-routes.js";
 import { insightHandlers } from "./insights/index.js";
 import { search } from "./search/index.js";
 import { LookupError } from "./errors.js";
+import { parseSearch } from './search/parse.js';
+import { config } from './config.js';
 
-export function createApp(lookup, { autocomplete, enrich } = {}) {
+export function createApp(lookup, { autocomplete, enrich, parse = parseSearch } = {}) {
   const app = express();
   app.disable("x-powered-by");
   app.use(express.json({ limit: "200kb" }));
   app.use("/api/favorites", favoritesRouter);
   app.use("/api", plannerRouter);
+  app.get('/api/search/config', (_req, res) => res.json({ openaiConfigured: !config.useFixtures && Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_key_here') }));
+  app.post('/api/search/parse', async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    try { res.json(await parse(req.body, String(req.get('X-Client-Id') || req.ip).slice(0, 100))); }
+    catch (e) { if (e.status === 429) res.set('Retry-After', '60'); res.status(e.status || 400).json({ error: { message: e.message } }); }
+  });
   app.get("/api/insights/:module", async (req, res) => {
     try {
       const handler = Object.hasOwn(insightHandlers, req.params.module)

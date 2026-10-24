@@ -40,7 +40,7 @@ export function furniture(v) {
     color: /^#[\da-f]{6}$/i.test(v.color) ? v.color : "#b48b65",
     imageUrl: url(v.imageUrl),
     sourceUrl: url(v.sourceUrl),
-    source: ["catalog", "manual", "json-ld", "claude", "heuristic"].includes(
+    source: ["catalog", "manual", "json-ld", "openai", "heuristic"].includes(
       v.source,
     )
       ? v.source

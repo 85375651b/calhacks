@@ -22,7 +22,9 @@ export const NUMBERS = {
   minPrice: [0, 100000000],
   maxPrice: [0, 100000000],
   minBeds: [0, 20],
+  maxBeds: [0, 20],
   minBaths: [0, 20],
+  maxBaths: [0, 20],
   minSqft: [0, 1000000],
   maxSqft: [0, 1000000],
   minLotSize: [0, 1000000000],
@@ -100,7 +102,7 @@ export function validateCriteria(input = {}) {
     )
       throw new Error("Invalid " + key);
     c[key] = Math.min(max, Math.max(min, Number(input[key])));
-    if (!["minBaths"].includes(key)) c[key] = Math.round(c[key]);
+    if (!["minBaths", "maxBaths"].includes(key)) c[key] = Math.round(c[key]);
   }
   for (const key of FLAGS) if (input[key] === true) c[key] = true;
   for (const [key, values] of Object.entries(ENUMS)) {
@@ -140,6 +142,8 @@ export function validateCriteria(input = {}) {
   c.limit = Math.min(50, Math.max(1, Math.floor(Number(input.limit) || 12)));
   for (const [a, b] of [
     ["minPrice", "maxPrice"],
+    ["minBeds", "maxBeds"],
+    ["minBaths", "maxBaths"],
     ["minSqft", "maxSqft"],
     ["minLotSize", "maxLotSize"],
     ["minYearBuilt", "maxYearBuilt"],

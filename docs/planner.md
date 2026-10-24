@@ -34,11 +34,11 @@ Fixture URLs:
 - `https://example.com/queen-bed`
 - `https://example.com/desk`
 
-With `USE_FIXTURES=true`, these return sample dimensions. Other URLs get labelled local heuristics without DNS, web, Claude, or Apify requests. Without a server, names and manual forms still work locally; live URL reading is unavailable.
+With `USE_FIXTURES=true`, these return sample dimensions. Other URLs get labelled local heuristics without DNS, web, OpenAI, or Apify requests. Without a server, names and manual forms still work locally; live URL reading is unavailable.
 
 ## Storage and API
 
-All routes require the same `X-Client-Id` UUID used for favorites. This is browser-scoped anonymous storage, not account authentication. Losing the ID loses access to its server-side records. Do not store private information in furniture names or product URLs. Product URLs are sent to their host, and may be sent to configured Apify and Claude services; Claude receives at most 6,000 characters of extracted product content, never the API key in browser code.
+All routes require the same `X-Client-Id` UUID used for favorites. This is browser-scoped anonymous storage, not account authentication. Losing the ID loses access to its server-side records. Do not store private information in furniture names or product URLs. Product URLs are sent to their host, and may be sent to configured Apify and OpenAI services; OpenAI receives at most 6,000 characters of extracted product content, never the API key in browser code.
 
 `GET/POST /api/furniture`, `PATCH/DELETE /api/furniture/:id`, and `POST /api/furniture/resolve` manage the shared library. Each definition has `id`, `name`, `category`, `widthIn`, `depthIn`, `heightIn`, `color`, `imageUrl`, `sourceUrl`, `source`, `estimated`, and `createdAt`. The library cap is 50. Definitions used by a saved layout cannot be deleted until those placements are removed.
 

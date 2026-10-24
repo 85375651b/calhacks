@@ -138,6 +138,8 @@ export function mergeListings(rows) {
   return [...map.values()];
 }
 export const POST_FILTERS = [
+  "maxBeds",
+  "maxBaths",
   "minPrice",
   "maxPrice",
   "minBeds",
@@ -160,7 +162,9 @@ export function postFilter(p, c) {
     ["minPrice", "price", 1],
     ["maxPrice", "price", -1],
     ["minBeds", "beds", 1],
+    ["maxBeds", "beds", -1],
     ["minBaths", "baths", 1],
+    ["maxBaths", "baths", -1],
     ["minSqft", "sqft", 1],
     ["maxSqft", "sqft", -1],
     ["minLotSize", "lotSizeSqft", 1],

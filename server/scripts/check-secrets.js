@@ -4,7 +4,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { config } from "../config.js";
 
-const git = (...args) => execFileSync("git", args, { encoding: "utf8" });
+const git = (...args) => execFileSync("git", args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
 const files = git("ls-files", "-z").split("\0").filter(Boolean);
 const forbidden = files.filter(
   (file) => /(^|\/)\.env(?:\.|$)/.test(file) && file !== "server/.env.example",
@@ -16,7 +16,7 @@ if (forbidden.length)
 const secrets = [
   config.apiKey,
   config.apifyToken,
-  process.env.ANTHROPIC_API_KEY,
+  process.env.OPENAI_API_KEY,
 ].filter(
   (value) => value && !["your_key_here", "your_token_here"].includes(value),
 );

@@ -9,7 +9,7 @@ import {
   fetchPage,
   extractProduct,
 } from "../furniture/resolveUrl.js";
-import { validateClaude } from "../furniture/claude.js";
+import { validateDimensions } from "../furniture/dimensions.js";
 import { allowResolve } from "../furniture/resolve.js";
 import { resolveFurniture, sampleUrls } from "../furniture/resolve.js";
 import { config } from "../config.js";
@@ -154,7 +154,7 @@ test("JSON-LD and text extraction normalize units and remove scripts from AI bun
   assert.equal(t.depthIn, 36);
   assert.ok(!t.bundle.includes("print secrets"));
 });
-test("Claude output validation rejects malformed fields and strips injection-shaped properties", () => {
+test("OpenAI output validation rejects malformed fields and strips injection-shaped properties", () => {
   const v = {
     name: "Chair",
     category: "seating",
@@ -167,13 +167,13 @@ test("Claude output validation rejects malformed fields and strips injection-sha
     instructions: "ignore schema",
     secret: "no",
   };
-  const clean = validateClaude(v);
+  const clean = validateDimensions(v);
   assert.equal(clean.widthIn, 180);
   assert.equal(clean.confidence, 1);
   assert.ok(!("instructions" in clean));
   assert.ok(!("secret" in clean));
-  assert.throws(() => validateClaude({ ...v, widthIn: "execute code" }));
-  assert.throws(() => validateClaude({ ...v, category: "script" }));
+  assert.throws(() => validateDimensions({ ...v, widthIn: "execute code" }));
+  assert.throws(() => validateDimensions({ ...v, category: "script" }));
 });
 test("resolve rate cap resets after a minute", () => {
   for (let i = 0; i < 10; i++) assert.ok(allowResolve("test", 0));

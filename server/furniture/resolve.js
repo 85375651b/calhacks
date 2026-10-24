@@ -13,7 +13,7 @@ import {
   safeUrl,
   validateUrl,
 } from "./resolveUrl.js";
-import { claudeDimensions, validateClaude } from "./claude.js";
+import { aiDimensions, validateDimensions } from "./dimensions.js";
 const memo = persistentMemo(
   join(serverDirectory, ".cache", "furniture-resolve.json"),
 );
@@ -102,7 +102,7 @@ export async function resolveFurniture(body) {
         const base = resolveName(query);
         return matchCatalog(query)
           ? base
-          : (await claudeDimensions(query)) || base;
+          : (await aiDimensions(query)) || base;
       }
       let html;
       try {
@@ -133,10 +133,10 @@ export async function resolveFurniture(body) {
       }
       let result = extractProduct(html, url);
       if (result.source !== "json-ld") {
-        const ai = await claudeDimensions(result.bundle);
+        const ai = await aiDimensions(result.bundle);
         if (ai) result = { ...result, ...ai };
       }
-      const safe = validateClaude({
+      const safe = validateDimensions({
         ...result,
         color: result.color || "#b48b65",
       });
@@ -148,8 +148,8 @@ export async function resolveFurniture(body) {
         bundle: undefined,
         notes:
           result.notes +
-          (!process.env.ANTHROPIC_API_KEY
-            ? " No Anthropic key: using catalog and page heuristics."
+          (!process.env.OPENAI_API_KEY
+            ? " No OpenAI key: using catalog and page heuristics."
             : ""),
       };
     },

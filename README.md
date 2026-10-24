@@ -139,7 +139,7 @@ Rename the app in `src/lib/config.js`. Unknown routes render the not-found page.
 
 ## Planned next
 
-Claude-generated summaries, Azure deployment, Visa payments and a cloud storage adapter remain future work. No accounts, maps, AI, payments or cloud services are implemented in this phase.
+OpenAI-generated summaries, Azure deployment, Visa payments and a cloud storage adapter remain future work. No accounts, maps, AI, payments or cloud services are implemented in this phase.
 
 ## Verification
 
@@ -157,9 +157,9 @@ Furniture libraries (50 items) and layouts (10 homes, 80 placements each) persis
 
 Run `npm install`, then `npm run dev`. Server environment is loaded from `server/.env`, following `server/.env.example`. Optional furniture-only settings:
 
-- `ANTHROPIC_API_KEY=your_key_here` (server only; omit for catalog/heuristic fallback)
-- `ANTHROPIC_MODEL=claude-haiku-5-5`
-- `ANTHROPIC_MAX_CALLS_PER_HOUR=30`
+- `OPENAI_API_KEY=your_key_here` (server only; omit for catalog/heuristic fallback)
+- `OPENAI_MODEL=gpt-4.1-mini`
+- `OPENAI_MAX_CALLS_PER_HOUR=30`
 - `ENABLE_FURNITURE_APIFY=false` (opt in to single-page fallback; shares `APIFY_MAX_RUNS_PER_HOUR`)
 
 Privacy: layouts, furniture names, and listing snapshots are stored for this browser's anonymous ID. Product URLs are fetched by the server and may be sent to enabled providers. No secrets are sent to the browser. Clearing the browser ID removes access to that anonymous library; this is not an authenticated account system.
