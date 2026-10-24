@@ -14,7 +14,7 @@ export default function Navbar() {
         </Link>
         <nav aria-label="Main navigation">
           <NavLink to="/" end>
-            Home
+            Search
           </NavLink>
           <Link to="/#how-it-works">
             How it works <span aria-hidden="true">↗</span>

@@ -15,7 +15,7 @@ function Highlight({ label, query }) {
     );
 }
 
-export default function AddressCombobox() {
+export default function AddressCombobox({onSelect, label = "Start with a US property address"}) {
   const [address, setAddress] = useState(""),
     [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]),
@@ -77,7 +77,7 @@ export default function AddressCombobox() {
     return () => document.removeEventListener("pointerdown", outside);
   }, []);
 
-  function search(value) {
+  function search(value, suggestion) {
     if (!value.trim()) {
       setError("Enter a property address to get started.");
       return;
@@ -88,7 +88,8 @@ export default function AddressCombobox() {
     setOpen(false);
     setActive(-1);
     setLoading(false);
-    navigate(`/results?${new URLSearchParams({ address: value.trim() })}`);
+    if(onSelect) onSelect(suggestion || {label:value.trim()});
+    else navigate(`/results?${new URLSearchParams({ address: value.trim() })}`);
   }
   function submit(event) {
     event.preventDefault();
@@ -120,13 +121,13 @@ export default function AddressCombobox() {
       suggestions[active]
     ) {
       event.preventDefault();
-      search(suggestions[active].label);
+      search(suggestions[active].label, suggestions[active]);
     }
   }
 
   return (
     <form ref={formRef} className="search-form" onSubmit={submit} noValidate>
-      <label htmlFor={id}>Start with a US property address</label>
+      <label htmlFor={id}>{label}</label>
       <div className="autocomplete-wrap">
         <div className={`search-box ${error ? "has-error" : ""}`}>
           <span aria-hidden="true" className="search-icon">
@@ -168,7 +169,7 @@ export default function AddressCombobox() {
             aria-describedby={error ? `${id}-error` : `${id}-note`}
           />
           <button type="submit">
-            Search <span aria-hidden="true">↗</span>
+            {onSelect ? "Set" : "Search"} <span aria-hidden="true">↗</span>
           </button>
         </div>
         <div className="autocomplete-dropdown" hidden={!expanded}>
@@ -187,7 +188,7 @@ export default function AddressCombobox() {
                 className={active === index ? "highlighted" : ""}
                 onMouseMove={() => setActive(index)}
                 onPointerDown={(event) => event.preventDefault()}
-                onClick={() => search(suggestion.label)}
+                onClick={() => search(suggestion.label, suggestion)}
               >
                 <span aria-hidden="true" className="suggestion-pin">
                   ⌖

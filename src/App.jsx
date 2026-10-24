@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { APP_NAME } from "./lib/config";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import {PreferencesProvider} from "./lib/Preferences";
 import Home from "./pages/Home";
 import Lookup from "./pages/Lookup";
 import "./styles/search.css";
@@ -21,7 +22,7 @@ export default function App() {
     else window.scrollTo(0, 0);
   }, [pathname, hash]);
   return (
-    <>
+    <PreferencesProvider>
       <a className="skip-link" href="#main">
         Skip to content
       </a>
@@ -33,6 +34,6 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
-    </>
+    </PreferencesProvider>
   );
 }
