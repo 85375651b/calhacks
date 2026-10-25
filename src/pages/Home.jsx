@@ -556,27 +556,6 @@ export default function Home({ addressOnly = false }) {
           onFavorite={toggle}
         ></DetailModal>
       )}
-      <section id="how-it-works" className="search-how">
-        <h2>A clearer way to compare.</h2>
-        <div className="steps">
-          <article>
-            <h3>01 Set your criteria</h3>
-            <p>
-              Choose a location, home features and the insights you care about.
-            </p>
-          </article>
-          <article>
-            <h3>02 Explore together</h3>
-            <p>
-              Compare Zillow and Redfin results, with duplicate homes merged.
-            </p>
-          </article>
-          <article>
-            <h3>03 Look a little closer</h3>
-            <p>Open a home, review your insights and save your favorites.</p>
-          </article>
-        </div>
-      </section>
     </main>
   );
 }

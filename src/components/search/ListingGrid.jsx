@@ -1,6 +1,7 @@
 import PlannerLink from '../PlannerLink';
 import { sameHome } from "../../lib/search/address";
 import React, { useState } from "react";
+import Pagination, { usePagination } from './Pagination';
 export const money = (v) =>
   typeof v === "number" && Number.isFinite(v)
     ? new Intl.NumberFormat("en-US", {
@@ -39,10 +40,13 @@ export default function ListingGrid({
   onOpen,
   onFavorite = () => {},
   favorites = [],
+  paginate = true,
 }) {
+  const pagination = usePagination(listings);
   return (
+    <>
     <div className="listing-grid">
-      {listings.map((p) => (
+      {(paginate ? pagination.items : listings).map((p) => (
         <article className="listing-card" key={p.id}>
           <button
             className="listing-open"
@@ -91,5 +95,7 @@ export default function ListingGrid({
         </article>
       ))}
     </div>
+    {paginate && <Pagination {...pagination} />}
+    </>
   );
 }

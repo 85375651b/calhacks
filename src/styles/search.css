@@ -622,6 +622,18 @@ nav .count-badge {
   display: inline-block;
 }
 
+.listing-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 28px 0;
+}
+.listing-pagination button:disabled {
+  cursor: not-allowed;
+}
+
 .planner-link {
   background: #234c3c;
   color: white;

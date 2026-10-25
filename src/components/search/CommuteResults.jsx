@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import ListingGrid from './ListingGrid';
+import Pagination, { usePagination } from './Pagination';
 export default function CommuteResults({ data, listings, onUpdate, clientId, ...grid }) {
   const [over, setOver] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState('');
+  const [showUnchecked, setShowUnchecked] = useState(false);
   const c = data.commute;
-  if (!c) return <ListingGrid listings={listings} {...grid} />;
-  const verified = listings.filter(p => Number.isFinite(p.commute?.minutes) && p.commute.minutes <= c.maxMinutes);
-  const tooLong = listings.filter(p => Number.isFinite(p.commute?.minutes) && p.commute.minutes > c.maxMinutes);
+  const verified = listings.filter(p => Number.isFinite(p.commute?.minutes) && p.commute.minutes <= c?.maxMinutes);
+  const tooLong = listings.filter(p => Number.isFinite(p.commute?.minutes) && p.commute.minutes > c?.maxMinutes);
   const unchecked = listings.filter(p => !Number.isFinite(p.commute?.minutes));
+  const pagination = usePagination([...verified, ...(over ? tooLong : []), ...(showUnchecked ? unchecked : [])]);
+  const pageIds = new Set(pagination.items.map(p => p.id));
+  const onPage = items => items.filter(p => pageIds.has(p.id));
+  if (!c) return <ListingGrid listings={listings} {...grid} />;
   async function more() {
     setBusy(true); setError('');
     try {
@@ -22,9 +27,10 @@ export default function CommuteResults({ data, listings, onUpdate, clientId, ...
     {error && <p role="alert">{error}</p>}
     {c.remaining > 0 && <p><button disabled={busy} onClick={more}>{busy ? 'Checking commute…' : `Check ${Math.min(c.batchSize,c.remaining)} more`}</button> <small>uses Apify credits (live mode)</small></p>}
     {verified.length === 0 && <p>No homes have a verified commute within your limit yet.</p>}
-    <ListingGrid listings={verified} {...grid} />
+    <ListingGrid listings={onPage(verified)} {...grid} paginate={false} />
     <label className="check"><input type="checkbox" checked={over} onChange={e=>setOver(e.target.checked)} /> Show homes over {c.maxMinutes} min ({tooLong.length})</label>
-    {over && <ListingGrid listings={tooLong} {...grid} />}
-    <details><summary>Not checked for commute ({unchecked.length})</summary><ListingGrid listings={unchecked.map(p=>({...p,commute:p.commute || {error:c.usingFixtures ? 'Commute not verified (sample data)' : 'Commute not verified'}}))} {...grid} /></details>
+    {over && <ListingGrid listings={onPage(tooLong)} {...grid} paginate={false} />}
+    <details open={showUnchecked} onToggle={e => setShowUnchecked(e.currentTarget.open)}><summary>Not checked for commute ({unchecked.length})</summary>{showUnchecked && <ListingGrid listings={onPage(unchecked).map(p=>({...p,commute:p.commute || {error:c.usingFixtures ? 'Commute not verified (sample data)' : 'Commute not verified'}}))} {...grid} paginate={false} />}</details>
+    <Pagination {...pagination} />
   </section>;
 }

@@ -206,7 +206,7 @@ export default function DescribeSearch({
             }}
             bias={bias}
             disabled={busy || parsing}
-            placeholder="Describe the home you want, or enter an address (e.g. 4 bed house in Los Angeles under $1.5M, or 147 Midway Ln)"
+            placeholder="Describe the home you want, or enter an address (e.g. 4 bed house in Los Angeles under $1.5M)"
           />
           <div className="describe-actions">
             <small id="describe-help">
@@ -230,7 +230,7 @@ export default function DescribeSearch({
         <div className="describe-examples">
           <p>Try an example</p>
           <div className="chips">
-            {[...EXAMPLES, "147 Midway Ln"].map((s) => (
+            {EXAMPLES.map((s) => (
               <button
                 className="toggle-chip"
                 disabled={busy || parsing}

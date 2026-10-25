@@ -22,9 +22,6 @@ export default function Navbar() {
           <NavLink to="/favorites">
             Favorites <span className="count-badge">{favorites.length}</span>
           </NavLink>
-          <Link to="/#how-it-works">
-            How it works <span aria-hidden="true">↗</span>
-          </Link>
         </nav>
       </div>
     </header>
