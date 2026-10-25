@@ -1,11 +1,51 @@
-[
-  {
-    "inputAddress": "134 Athens St, San Francisco, CA 94112",
-    "normalizedAddress": "134 Athens St, San Francisco, CA 94112",
-    "status": "found",
-    "listingUrls": ["https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/"],
-    "floorPlans": [{"key":"sample-floorplan.png","url":null,"sourceUrl":null,"source":"Sample","contentType":"image/png","sha256":null,"confidence":1,"signals":{"keyword":1,"explicit":true,"ocrRoomWords":0,"ocrDimensions":false},"ocrRoomWords":0}],
-    "attempts": [{"source":"webSearch","step":"extract","ok":true,"detail":"1 candidate(s)"}],
-    "facts": {"source":"Sample"}
+{
+  "inputAddress": "134 Athens St, San Francisco, CA 94112",
+  "normalizedAddress": "134 Athens St, San Francisco, CA 94112",
+  "status": "found",
+  "listingUrls": [
+    "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/"
+  ],
+  "floorPlans": [
+    {
+      "key": "sample-floorplan.png",
+      "url": null,
+      "sourceUrl": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+      "source": "Sample",
+      "contentType": "image/png",
+      "sha256": null,
+      "confidence": 1,
+      "signals": {
+        "keyword": 1,
+        "explicit": true,
+        "lightness": 0.926,
+        "saturation": 0.082,
+        "edgeDensity": 1,
+        "heuristic": 1,
+        "phash": null,
+        "ocrRoomWords": 0,
+        "ocrDimensions": false
+      },
+      "ocrRoomWords": 0
+    }
+  ],
+  "attempts": [
+    {
+      "source": "extract",
+      "step": "listing-provided",
+      "ok": true,
+      "detail": "skipped discovery"
+    },
+    {
+      "source": "zillow",
+      "step": "extract",
+      "url": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+      "ok": true,
+      "detail": "1 candidate(s)"
+    }
+  ],
+  "scrapedAt": "2026-10-25T02:26:38.452Z",
+  "facts": {
+    "listingUrl": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+    "source": "zillow"
   }
-]
+}

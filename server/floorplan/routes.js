@@ -1,7 +1,9 @@
 import express, { Router } from 'express';
 import { clientId } from '../storage/favorites.js';
 import { createJobManager } from './jobs.js';
-export function createFloorPlanRouter({manager=createJobManager(),assets=null,convert=null}={}) {
+import { assets as assetStore, storeActorPlans, samplePlans } from './assets.js';
+const defaultManager=createJobManager({storePlans:storeActorPlans,sample:samplePlans});
+export function createFloorPlanRouter({manager=defaultManager,assets=assetStore,convert=null}={}) {
   const router=Router(),limits=new Map();
   router.use((req,res,next)=>{
     res.set('Cache-Control','no-store');
@@ -17,5 +19,23 @@ export function createFloorPlanRouter({manager=createJobManager(),assets=null,co
   router.post('/jobs',handle(req=>manager.start(req.body,req.clientId)));
   router.get('/jobs/:jobId',handle(req=>manager.get(req.params.jobId,req.clientId)));
   router.delete('/jobs/:jobId',handle(req=>manager.cancel(req.params.jobId,req.clientId)));
+  router.post('/sample',handle(()=>samplePlans()));
+  router.get('/metadata/:assetId',handle(async req=>{
+    const {ownerClientId,pngPath,addressKey,expiresAt,...publicAsset}=await assets.get(req.params.assetId,req.clientId);
+    return publicAsset;
+  }));
+  router.delete('/uploads/:assetId',handle(req=>assets.remove(req.params.assetId,req.clientId)));
+  router.get('/assets/:filename',async(req,res)=>{
+    try {
+      if(!/^[a-f0-9]{32}\.png$/.test(req.params.filename))throw Error();
+      const asset=await assets.get(req.params.filename.slice(0,-4),req.get('X-Client-Id'));
+      res.set({'Content-Type':'image/png','X-Content-Type-Options':'nosniff','Cache-Control':asset.source==='upload'?'private, no-store':'private, max-age=3600'});
+      res.sendFile(asset.pngPath);
+    } catch {res.status(404).json({error:{message:'Plan not found, expired, or belongs to another browser.'}});}
+  });
+  router.post('/uploads',express.raw({type:['image/png','image/jpeg','image/webp','application/pdf','application/octet-stream'],limit:'10mb'}),async(req,res)=>{
+    try {const plans=await assets.ingest(req.body,{source:'upload',ownerClientId:req.clientId,sourceName:'Your upload'});res.json({...plans[0],plans});}
+    catch(e){res.status(400).json({error:{message:/10|PDF|PNG|SVG/.test(e.message)?e.message:'File could not be decoded. Upload a PNG, JPG, WebP or PDF.'}});}
+  });
   return router;
 }
