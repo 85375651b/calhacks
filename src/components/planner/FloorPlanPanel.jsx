@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {floorPlanApi,useAssetImage} from '../../lib/planner/floorPlanApi';
+import {parseLength,planSize} from '../../lib/planner/calibration';
 import PlanViewer from './PlanViewer';
 export function FloorPlanStatus({state}) {
   const j=state.job;if(!j)return null;
@@ -8,12 +9,13 @@ export function FloorPlanStatus({state}) {
   return <span className="floorplan-status" role="status" aria-live="polite">{title} {pending?<button onClick={state.cancel}>Cancel</button>:['error','blocked','capped'].includes(j.status)&&<button onClick={state.retry}>Retry</button>}</span>;
 }
 function Thumbnail({plan,clientId,onOpen}){const url=useAssetImage(plan.assetId,clientId);return <button className="plan-thumbnail" onClick={onOpen} disabled={!url}>{url?<img src={url} alt={`${plan.sample?'Sample floor plan':plan.floorLabel||'Floor plan'} preview`}/>:<span>Preview unavailable</span>}</button>;}
-export default function FloorPlanPanel({state,clientId,homeId,address,floorPlan,onChange,onKeepEstimated,onRooms,onCalibrate}) {
+export default function FloorPlanPanel({state,clientId,homeId,address,floorPlan,onChange,onKeepEstimated,onRooms,onCalibrate,onCeilingChange}) {
   const [selected,setSelected]=useState(null),[pending,setPending]=useState([]),[error,setError]=useState(''),[uploading,setUploading]=useState(false),input=useRef();
   const chosen=state.plans.find(p=>p.assetId===selected)||pending.find(p=>p.assetId===selected);
   async function upload(file){if(!file)return;setError('');if(file.size>10*1024*1024){setError('Choose a file up to 10 MB.');return;}setUploading(true);try{const r=await floorPlanApi(clientId,'/uploads',{method:'POST',headers:{'Content-Type':file.type||'application/octet-stream'},body:file});setPending(r.plans);setSelected(r.plans[0]?.assetId);}catch(e){setError(e.message);}finally{setUploading(false);input.current.value='';}}
   return <aside className="planner-panel floorplan-panel" aria-label="Floor plan panel">
     <h2>Floor plan</h2><p className="small-note">We look up public listings for this address to find a floor plan.</p>
+    <form onSubmit={e=>{e.preventDefault();try{const n=parseLength(new FormData(e.currentTarget).get('ceiling'));if(n<72||n>240)throw Error('Ceiling height must be 6–20 ft.');onCeilingChange(n);setError('');}catch(err){setError(err.message);}}}><label>Ceiling height ({floorPlan.ceilingSource==='listing'?'from listing':floorPlan.ceilingSource==='user'?'set by you':'default'})<input key={floorPlan.ceilingHeightIn} name="ceiling" defaultValue={floorPlan.ceilingHeightIn/12} placeholder="8 ft or 2.44 m"/></label><button>Set ceiling height</button></form>
     {state.job?.message&&<p>{state.job.message}</p>}
     <label>Upload your own floor plan (PNG, JPG, WebP or PDF, up to 10 MB)<input ref={input} type="file" accept="image/png,image/jpeg,image/webp,application/pdf" disabled={uploading} onChange={e=>upload(e.target.files[0])}/></label>
     {uploading&&<p role="status">Preparing your preview…</p>}{error&&<p role="alert">{error}</p>}
@@ -26,12 +28,13 @@ export default function FloorPlanPanel({state,clientId,homeId,address,floorPlan,
         {p.assetId?<Thumbnail plan={p} clientId={clientId} onOpen={()=>setSelected(p.assetId)}/>:<p>{p.reason||'Preview unavailable. Upload a screenshot instead.'}</p>}
         <strong>{p.sample?'Sample floor plan':p.floorLabel||'Floor plan'}</strong>
         {p.confidence!=null&&<span> · {Math.round(p.confidence*100)}% detection confidence</span>}
-        {p.assetId&&<label>Assign floor<select value={saved?.levelIndex??Math.min(i,3)} onChange={e=>onChange?.(p,{levelIndex:+e.target.value})}>{['Level 1','Level 2','Level 3','Basement'].map((s,n)=><option key={s} value={n}>{s}</option>)}</select></label>}
+        {p.assetId&&<label>Assign floor<select value={saved?.levelIndex??(/basement/i.test(p.floorLabel)?3:Math.max(0,Math.min(2,(Number(p.floorLabel?.match(/\d+/)?.[0])||1)-1)))} onChange={e=>onChange?.(p,{levelIndex:+e.target.value})}>{['Level 1','Level 2','Level 3','Basement'].map((s,n)=><option key={s} value={n}>{s}</option>)}</select></label>}
         <p className="small-note">Floor plan from {p.sourcePageUrl?<a href={p.sourcePageUrl} target="_blank" rel="noopener noreferrer">{p.sourceName||'listing source'}</a>:p.sourceName||'listing source'}. For your personal evaluation only.</p>
         {p.assetId&&<button onClick={()=>{setSelected(p.assetId);onCalibrate?.(p);}}>{saved?.calibration?'Re-calibrate':'Set the scale to use this plan'}</button>}
+        {saved?.calibration&&<p>This plan covers about {(planSize(p,saved).widthIn/12).toFixed(1)} ft by {(planSize(p,saved).depthIn/12).toFixed(1)} ft.</p>}
         <button disabled aria-disabled="true" title="Coming soon: detect walls, rooms, doors and windows from your calibrated floor plan.">Convert to 3D · Coming soon</button>
       </article>;
     })}
-    {chosen&&<PlanViewer plan={chosen} clientId={clientId} address={address} onClose={()=>setSelected(null)} />}
+    {chosen&&<PlanViewer plan={chosen} saved={floorPlan.plans.find(p=>p.assetId===chosen.assetId)} onChange={pending.some(p=>p.assetId===chosen.assetId)?null:onChange} clientId={clientId} address={address} onClose={()=>setSelected(null)} />}
   </aside>;
 }

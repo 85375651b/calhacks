@@ -1,3 +1,4 @@
+import {validateFloorPlan,transformPlacements} from '../lib/planner/calibration';
 import FloorPlanPanel, { FloorPlanStatus } from "../components/planner/FloorPlanPanel";
 import { useFloorPlans } from "../lib/planner/floorPlanApi";
 import "../styles/floorplan.css";
@@ -69,7 +70,14 @@ function PlannerHome() {
     [dismissed, setDismissed] = useState(false);
   const [floorPlan,setFloorPlan]=useState({mode:'estimated',ceilingHeightIn:96,ceilingSource:'default',plans:[]});
   const floorPlans=useFloorPlans({snapshot,homeId,clientId,savedPlans:floorPlan.plans});
-  function updatePlan(plan,patch){setFloorPlan(old=>({...old,plans:[...old.plans.filter(p=>p.assetId!==plan.assetId),{assetId:plan.assetId,levelIndex:0,rotationDeg:0,calibration:null,...old.plans.find(p=>p.assetId===plan.assetId),...patch}]}));}
+  function updatePlan(plan,patch){
+    const previous=floorPlan.plans.find(p=>p.assetId===plan.assetId);
+    const next={assetId:plan.assetId,levelIndex:/basement/i.test(plan.floorLabel)?3:Math.max(0,Math.min(2,(Number(plan.floorLabel?.match(/\d+/)?.[0])||1)-1)),rotationDeg:0,calibration:null,...previous,...patch};
+    if(previous?.calibration&&next.calibration)setHistory(h=>({past:[],future:[],present:transformPlacements(h.present,plan,previous,next)}));
+    const plans=[...floorPlan.plans.filter(p=>p.assetId!==plan.assetId&&(!next.calibration||p.levelIndex!==next.levelIndex||!p.calibration)),next];
+    setFloorPlan(old=>({...old,mode:patch.calibration?'plan':plans.some(p=>p.calibration)?old.mode:'estimated',plans}));
+    if(next.calibration)setLevel(next.levelIndex);
+  }
   const heading = useRef(),
     canvas = useRef(),
     project = useRef(),
@@ -126,6 +134,7 @@ function PlannerHome() {
       setLibrary(lib);
       localWrite(clientId + ".library", lib);
       setOverrides(saved?.roomOverrides || {});
+      setFloorPlan(validateFloorPlan(saved?.floorPlan));
       const defs = [...catalog, ...lib];
       const placed = (
         saved?.placements ||
@@ -162,6 +171,7 @@ function PlannerHome() {
       homeId,
       homeSnapshot: snapshot,
       roomOverrides: overrides,
+      floorPlan,
       placements: history.present.map(
         ({
           id,
@@ -223,7 +233,11 @@ function PlannerHome() {
         });
     }, 650);
     return () => clearTimeout(timer);
-  }, [history.present, overrides, ready, homeId, snapshot, library, clientId]);
+  }, [history.present, overrides, floorPlan, ready, homeId, snapshot, library, clientId]);
+  useEffect(()=>{
+    const ft=floorPlans.job?.result?.listingFacts?.ceilingHeightFt;
+    if(ready&&Number.isFinite(ft)&&ft>=6&&ft<=20)setFloorPlan(p=>p.ceilingSource==='default'?{...p,ceilingHeightIn:ft*12,ceilingSource:'listing'}:p);
+  },[ready,floorPlans.job?.result?.listingFacts?.ceilingHeightFt]);
   async function saveFurniture(def) {
     if (!library.some((d) => d.id === def.id) && library.length >= 50) {
       setAnnouncement("Maximum 50 library items. Delete an item first.");
@@ -595,7 +609,7 @@ function PlannerHome() {
         <FloorPlanStatus state={floorPlans}/>
       </header>
       <div className="floorplan-switch"><button aria-expanded={mobilePanel==='floorplan'} onClick={()=>setMobilePanel(mobilePanel==='floorplan'?'':'floorplan')}>Floor plan</button></div>
-      {mobilePanel==='floorplan'&&<FloorPlanPanel state={floorPlans} clientId={clientId} homeId={homeId} address={snapshot.address} floorPlan={floorPlan} onChange={updatePlan} onKeepEstimated={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('');}} onRooms={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('rooms');}}/>}
+      {mobilePanel==='floorplan'&&<FloorPlanPanel state={floorPlans} clientId={clientId} homeId={homeId} address={snapshot.address} floorPlan={floorPlan} onCeilingChange={height=>setFloorPlan(p=>({...p,ceilingHeightIn:height,ceilingSource:'user'}))} onChange={updatePlan} onKeepEstimated={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('');}} onRooms={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('rooms');}}/>}
       {house.limited && !dismissed && (
         <p className="planner-notice">
           Limited listing data: using typical sizes for a 3 bed, 2 bath home.

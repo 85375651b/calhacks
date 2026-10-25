@@ -1,3 +1,4 @@
+import { validateFloorPlan } from '../../src/lib/planner/calibration.js';
 import { atomicJson } from "./atomic.js";
 import { clientId } from "./favorites.js";
 import { categories } from "../../src/lib/planner/catalog.js";
@@ -109,7 +110,7 @@ export function layout(v, homeId) {
   const placements = v.placements.map((p) => ({
     id: validId(p.id),
     furnitureId: validId(p.furnitureId),
-    level: Math.round(number(p.level, 0, 2)),
+    level: Math.round(number(p.level, 0, 3)),
     xIn: number(p.xIn, 0, 30000),
     zIn: number(p.zIn, 0, 30000),
     rotationDeg: number(p.rotationDeg, -36000, 36000) % 360,
@@ -127,6 +128,7 @@ export function layout(v, homeId) {
     homeSnapshot: s,
     roomOverrides,
     placements,
+    ...(v.floorPlan ? {floorPlan:validateFloorPlan(v.floorPlan)} : {}),
     updatedAt: new Date().toISOString(),
   };
 }

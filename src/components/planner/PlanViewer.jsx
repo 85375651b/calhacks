@@ -1,19 +1,36 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {useAssetImage} from '../../lib/planner/floorPlanApi';
-export default function PlanViewer({plan,clientId,address,onClose}) {
-  const dialog=useRef(),url=useAssetImage(plan.assetId,clientId),[zoom,setZoom]=useState(1),[pan,setPan]=useState({x:0,y:0}),pointers=useRef(new Map()),last=useRef();
-  useEffect(()=>{const focus=document.activeElement;dialog.current.showModal();return()=>focus?.focus();},[]);
-  const scale=n=>setZoom(z=>Math.max(.25,Math.min(8,n??z)));
-  return <dialog ref={dialog} className="floorplan-viewer" aria-labelledby="plan-viewer-title" onCancel={e=>{e.preventDefault();onClose();}}>
-    <header><h2 id="plan-viewer-title">{plan.sample?'Sample floor plan':`Floor plan for ${address}`}</h2><button autoFocus onClick={onClose}>Close</button></header>
-    <div className="plan-viewer-toolbar"><button onClick={()=>scale(zoom*1.25)}>Zoom in</button><button onClick={()=>scale(zoom/1.25)}>Zoom out</button><button onClick={()=>{setZoom(1);setPan({x:0,y:0});}}>Fit to screen</button></div>
-    <p>Drag to pan. Use arrow keys to pan, +/− to zoom, or pinch on a touch screen.</p>
-    <div className="plan-viewport" tabIndex={0} role="group" aria-label="Floor plan image controls" onKeyDown={e=>{const delta={ArrowLeft:[-20,0],ArrowRight:[20,0],ArrowUp:[0,-20],ArrowDown:[0,20]}[e.key];if(delta){e.preventDefault();setPan(p=>({x:p.x+delta[0],y:p.y+delta[1]}));}if(e.key==='+'||e.key==='=')scale(zoom*1.2);if(e.key==='-')scale(zoom/1.2);}}
-      onWheel={e=>scale(zoom*(e.deltaY<0?1.1:.9))}
-      onPointerDown={e=>{e.currentTarget.setPointerCapture(e.pointerId);pointers.current.set(e.pointerId,{x:e.clientX,y:e.clientY});last.current={x:e.clientX,y:e.clientY};}}
-      onPointerMove={e=>{if(!pointers.current.has(e.pointerId))return;const before=[...pointers.current.values()];pointers.current.set(e.pointerId,{x:e.clientX,y:e.clientY});const after=[...pointers.current.values()];if(after.length===2){const dist=a=>Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(dist(before)>0)scale(zoom*dist(after)/dist(before));}else if(last.current)setPan(p=>({x:p.x+e.clientX-last.current.x,y:p.y+e.clientY-last.current.y}));last.current={x:e.clientX,y:e.clientY};}}
-      onPointerUp={e=>{pointers.current.delete(e.pointerId);last.current=null;}} onPointerCancel={()=>{pointers.current.clear();last.current=null;}}>
-      {url?<img draggable="false" src={url} alt={`Floor plan for ${address}`} style={{transform:`translate(${pan.x}px, ${pan.y}px) scale(${zoom})`}}/>:<p>Loading preview…</p>}
-    </div><p>Floor plan from {plan.sourceName||'listing source'}. For your personal evaluation only.</p>
-  </dialog>;
+import {calibrate,parseLength,planSize} from '../../lib/planner/calibration';
+export default function PlanViewer({plan,saved,clientId,address,onClose,onChange}) {
+ const dialog=useRef(),svg=useRef(),url=useAssetImage(plan.assetId,clientId),[zoom,setZoom]=useState(1),[pan,setPan]=useState({x:0,y:0}),pointers=useRef(new Map()),last=useRef(),drag=useRef(null);
+ const [measure,setMeasure]=useState(false),[points,setPoints]=useState(saved?.calibration?[saved.calibration.p1,saved.calibration.p2]:[]),[length,setLength]=useState(saved?.calibration?String(saved.calibration.realLengthIn/12):''),[unit,setUnit]=useState('ft'),[message,setMessage]=useState('');
+ useEffect(()=>{const focus=document.activeElement;dialog.current.showModal();return()=>focus?.focus();},[]);
+ const scale=n=>setZoom(Math.max(.25,Math.min(8,n)));
+ const point=e=>{const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.current.getScreenCTM().inverse());return{x:Math.max(0,Math.min(plan.widthPx,p.x)),y:Math.max(0,Math.min(plan.heightPx,p.y))};};
+ const move=(index,p)=>setPoints(old=>old.map((v,i)=>i===index?p:v));
+ const arrows={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+ function apply(){try{const calibration=calibrate(points[0],points[1],parseLength(length,unit),plan.widthPx,plan.heightPx);onChange(plan,{calibration,calibratedAt:new Date().toISOString()});const size=planSize(plan,{...saved,calibration});setMessage(`This plan now covers about ${(size.widthIn/12).toFixed(1)} ft by ${(size.depthIn/12).toFixed(1)} ft.${size.widthIn<120||size.widthIn>4800?' Check the scale: the implied width is outside 10–400 ft.':''}`);setMeasure(false);}catch(e){setMessage(e.message);}}
+ return <dialog ref={dialog} className="floorplan-viewer" aria-labelledby="plan-viewer-title" onCancel={e=>{e.preventDefault();if(measure){setMeasure(false);setPoints(saved?.calibration?[saved.calibration.p1,saved.calibration.p2]:[]);}else onClose();}}>
+ <header><h2 id="plan-viewer-title">{plan.sample?'Sample floor plan':`Floor plan for ${address}`}</h2><button autoFocus onClick={onClose}>Close</button></header>
+ <div className="plan-viewer-toolbar"><button onClick={()=>scale(zoom*1.25)}>Zoom in</button><button onClick={()=>scale(zoom/1.25)}>Zoom out</button><button onClick={()=>{setZoom(1);setPan({x:0,y:0});}}>Fit to screen</button>
+ {onChange&&<><button onClick={()=>{setMeasure(true);setMessage('');}}>{saved?.calibration?'Re-calibrate':'Set the scale to use this plan'}</button><button onClick={()=>onChange(plan,{rotationDeg:((saved?.rotationDeg||0)+90)%360})}>Rotate plan 90°</button><button onClick={()=>{onChange(plan,{calibration:null,calibratedAt:null,rotationDeg:0});setPoints([]);setMessage('Scale reset.');}}>Reset scale</button></>}
+ </div>
+ <p>{measure?(points.length<2?`Step ${points.length+1}: click ${points.length?'the second':'the first'} point. Keyboard: Add point, then use arrow keys to position it.`:'Drag either point or focus its marker and use arrow keys (Shift for 10 pixels). Enter the real length, then apply. Escape cancels.'):'Drag to pan. Use arrow keys to pan, +/− to zoom, or pinch on a touch screen.'}</p>
+ {measure&&<div className="calibration-controls"><button disabled={points.length>=2} onClick={()=>setPoints(p=>[...p,{x:plan.widthPx*(p.length?.7:.3),y:plan.heightPx/2}])}>Add measurement point</button><button onClick={()=>setPoints([])}>Choose points again</button><span>{points.length===2?`${Math.hypot(points[1].x-points[0].x,points[1].y-points[0].y).toFixed(1)} pixels`:''}</span><label>Real length<input value={length} onChange={e=>setLength(e.target.value)} placeholder="14'6&#34;"/></label><label>Units<select value={unit} onChange={e=>setUnit(e.target.value)}><option value="ft">Feet / inches</option><option value="m">Meters / centimeters</option></select></label><button onClick={apply}>Apply scale</button></div>}
+ <p role="status" aria-live="polite">{message}</p>
+ <div className="plan-viewport" tabIndex={0} role="group" aria-label="Floor plan image controls" onKeyDown={e=>{if(e.target!==e.currentTarget)return;const d=arrows[e.key];if(d){e.preventDefault();setPan(p=>({x:p.x+d[0]*20,y:p.y+d[1]*20}));}if(e.key==='+'||e.key==='=')scale(zoom*1.2);if(e.key==='-')scale(zoom/1.2);}} onWheel={e=>scale(zoom*(e.deltaY<0?1.1:.9))}
+ onPointerDown={e=>{if(measure)return;e.currentTarget.setPointerCapture(e.pointerId);pointers.current.set(e.pointerId,{x:e.clientX,y:e.clientY});last.current={x:e.clientX,y:e.clientY};}}
+ onPointerMove={e=>{if(!pointers.current.has(e.pointerId))return;const before=[...pointers.current.values()];pointers.current.set(e.pointerId,{x:e.clientX,y:e.clientY});const after=[...pointers.current.values()];if(after.length===2){const dist=a=>Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(dist(before)>0)scale(zoom*dist(after)/dist(before));}else if(last.current)setPan(p=>({x:p.x+e.clientX-last.current.x,y:p.y+e.clientY-last.current.y}));last.current={x:e.clientX,y:e.clientY};}}
+ onPointerUp={e=>{pointers.current.delete(e.pointerId);last.current=null;}} onPointerCancel={()=>{pointers.current.clear();last.current=null;}}>
+ {url?<div className="plan-image-layer" style={{aspectRatio:`${plan.widthPx}/${plan.heightPx}`,width:`min(100%, ${48*plan.widthPx/plan.heightPx}dvh)`,transform:`translate(${pan.x}px, ${pan.y}px) scale(${zoom}) rotate(${saved?.rotationDeg||0}deg)`}}>
+ <img draggable="false" src={url} alt={`Floor plan for ${address}${plan.sample?' (sample)':''}`}/>
+ {measure&&<svg ref={svg} viewBox={`0 0 ${plan.widthPx} ${plan.heightPx}`} onPointerDown={e=>{e.stopPropagation();if(points.length<2)setPoints(p=>[...p,point(e)]);}} onPointerMove={e=>{if(drag.current!==null)move(drag.current,point(e));}} onPointerUp={()=>drag.current=null} onPointerCancel={()=>drag.current=null}>
+ {plan.detectedLabels?.map((l,i)=>l.bbox&&<g key={i}><title>OCR suggestion: {l.text}. May be wrong. Measure the wall yourself.</title><circle cx={l.bbox.x} cy={l.bbox.y} r={10} fill="#895b0d"/><text x={l.bbox.x+14} y={l.bbox.y} fontSize={18} fill="#563800">{l.text}</text></g>)}
+ {points.length===2&&<line x1={points[0].x} y1={points[0].y} x2={points[1].x} y2={points[1].y} stroke="#bd1437" strokeWidth={3}/>}
+ {points.map((p,i)=><g key={i} tabIndex={0} role="button" aria-label={`Measurement point ${i+1}. Arrow keys move, Shift moves ten pixels.`} onPointerDown={e=>{e.stopPropagation();drag.current=i;e.currentTarget.setPointerCapture(e.pointerId);}} onKeyDown={e=>{const d=arrows[e.key];if(d){e.preventDefault();e.stopPropagation();const step=e.shiftKey?10:1;move(i,{x:Math.max(0,Math.min(plan.widthPx,p.x+d[0]*step)),y:Math.max(0,Math.min(plan.heightPx,p.y+d[1]*step))});}}}><circle cx={p.x} cy={p.y} r={18} fill="white" stroke="#bd1437" strokeWidth={3}/><path d={`M${p.x-25},${p.y}h50 M${p.x},${p.y-25}v50`} stroke="#bd1437" strokeWidth={3}/><text x={p.x+24} y={p.y-20} fontSize={24}>{i+1}</text></g>)}
+ </svg>}
+ </div>:<p>Loading preview… If unavailable, close and upload a screenshot.</p>}
+ </div>{measure&&plan.detectedLabels?.length>0&&<p>OCR labels are suggestions about what to measure and may be wrong. Click both ends of that wall and enter its labeled length. Scale is never set automatically.</p>}<p>Floor plan from {plan.sourceName||'listing source'}. For your personal evaluation only.</p>
+ </dialog>;
 }
+
