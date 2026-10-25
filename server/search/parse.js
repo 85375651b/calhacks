@@ -129,7 +129,7 @@ export function createParseService({extract=extractStructured,fixtureMode=()=>co
     if(limits.size>=5000&&!limits.has(client))throw Object.assign(Error('Parsing is busy. Try again shortly.'),{status:429});
     const entry=limits.get(client)||{n:0,until:now()+60000};limits.set(client,entry);
     if(++entry.n>20)throw Object.assign(Error('Too many searches. Try again in a minute.'),{status:429});
-    const text=body.text.trim(),debug=body.debug===true&&process.env.NODE_ENV!=='production';
+    const text=body.text,debug=body.debug===true&&process.env.NODE_ENV!=='production';
     const modelKey=JSON.stringify([normalizeText(text),body.fallbackDescription===true,body.savedWork||null,body.lastLocation||null,fixtureMode(),modelEnabled(),process.env.OPENAI_MODEL]);
     // Original text is part of the presentation cache so spans always address the exact input.
     // The paid model cache below is keyed by normalized text/context, independent of whitespace/case.

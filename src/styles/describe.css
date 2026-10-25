@@ -10,7 +10,7 @@
 .describe-search .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
 .describe-search .toggle-chip { white-space: normal; text-align: left; max-width: 100%; overflow-wrap: anywhere; min-height: 44px; }
 .describe-search .toggle-chip:disabled { opacity: .65; }
-.interpretation-slot { height: 22rem; overflow: auto; margin-top: 1.5rem; scrollbar-gutter: stable; }
+.interpretation-slot { min-height: 14rem; margin-top: 1.5rem; }
 .interpretation-placeholder { padding: 1.2rem; color: #506557; border: 1px dashed #b7c6bd; border-radius: 1rem; }
 .interpretation-placeholder h2 { font-size: 1.25rem; }
 .interpretation { padding: 1.2rem; border: 1px solid #b7c6bd; border-radius: 1rem; background: #f3f7f2; }
@@ -20,7 +20,8 @@
 .interpretation li { margin-bottom: .4rem; }
 .clarification { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #b7c6bd; }
 .clarification-input { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
-.clarification-input input { flex: 1; min-width: 160px; font: inherit; padding: .7rem; }
+.clarification-input input { flex: 1; min-width: min(160px, 100%); max-width: 100%; box-sizing: border-box; font: inherit; padding: .7rem; }
+.unrecognized-run { margin-top: 1rem; border-top: 1px solid #b7c6bd; padding-top: .5rem; overflow-wrap: anywhere; }
 .describe-search :focus-visible, .commute-results :focus-visible { outline: 3px solid #a55e14; outline-offset: 3px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 [hidden] { display: none !important; }

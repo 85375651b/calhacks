@@ -65,7 +65,7 @@ for (const [phrase, key, value] of cases)
   test(`rules: ${phrase}`, () =>
     assert.deepEqual(parseRules(phrase + " in Austin").criteria[key], value));
 test("examples and commute forms keep numerical scope and defaults", () => {
-  const p = parseRules(EXAMPLES[0]);
+  const p = parseRules('house in san francisco 2 beds under 600k with a <30 minute commute to work at 1 Market St, San Francisco');
   assert.equal(p.criteria.maxPrice, 600000);
   assert.equal(p.criteria.location, "san francisco");
   assert.equal(p.extras.commute.maxMinutes, 30);

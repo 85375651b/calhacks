@@ -76,13 +76,13 @@ export function createPlaceResolver({provider=placeProvider,addressGeocoder=addr
     else for(const run of runs){
       const matched=[];
       for(const candidate of splitKnown(run).slice(0,3)) {
-        const result=await lookup(candidate.text);
+        const result=await lookup(candidate.text,candidate.relation==='near'&&!builtIn(candidate.text)?'landmark':'location');
         if(result.region){regions.push({text:candidate.text,options:result.region});matched.push(candidate);continue;}
         if(result.state){questions.push({field:'location',message:`${candidate.text} is a broad area. Which city should I search?`,options:samplePlaces.filter(v=>v.state===result.state&&!/\d/.test(v.label)).slice(0,5).map(publicPlace)});matched.push(candidate);continue;}
         if(result.hits?.length){
           const unique=result.hits.filter((v,i,a)=>a.findIndex(x=>x.label===v.label)===i);
           if(unique.length>1){questions.push({field:'location',message:`Which ${candidate.text} did you mean?`,options:unique.map(publicPlace)});}
-          else hits.push({...unique[0],raw:candidate.text,relation:candidate.relation});
+          else hits.push({...unique[0],raw:candidate.text,relation:candidate.relation,...(candidate.relation==='near'&&result.method==='geocoder'&&!['city','town','county','district','postcode'].includes(unique[0].resultType)?{landmark:true}:{})});
           matched.push(candidate);
           if(!candidate.selected){p.understood.push({start:candidate.start,end:candidate.end,text:candidate.text,kind:'location',confidence:result.correction?0.9:1});}
           if(result.correction)p.assumptions.push(`Read '${candidate.text}' as ${unique[0].label}. Choose another place below if that is not right.`);
@@ -117,7 +117,7 @@ export function createPlaceResolver({provider=placeProvider,addressGeocoder=addr
       else if(!questions.some(q=>q.field===field))questions.push({field,message:field==='work'?'What is your work address?':'Where should the radius be centered?',options:[]});
     }
     p.questions=questions.filter((v,i,a)=>a.findIndex(q=>q.field===v.field)===i);
-    p.unrecognized=chosen?(p.unrecognized||[]):unrecognized;
+    p.unrecognized=chosen?(p.unrecognized||[]):[...unrecognized,...(p.leftover||[]).filter(run=>!runs.includes(run)&&!runs.some(r=>r.text===run.text)).map(run=>({text:run.text,suggestions:['Search it as a keyword','Ignore it','Edit in filters']}))];
     p.placeTrace=trace;p.placesResolved=true;p.criteria=partialCriteria(p.criteria);
     if(fixtureMode())p.assumptions.push('Offline mode uses saved place coordinates; listing fixtures are Austin homes regardless of search area.');
     p.assumptions=[...new Set(p.assumptions)];p.interpretation=interpretationFor(p.criteria,p.extras);

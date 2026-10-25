@@ -7,14 +7,14 @@ import {
 } from "./criteria.js";
 
 export const EXAMPLES = [
-  "house in san francisco 2 beds under 600k with a <30 minute commute to work at 1 Market St, San Francisco",
-  "3 bed house in Austin under $700k with a pool",
-  "condo in Seattle under 500k, new listings",
-  "family home in San Jose near good schools, no HOA",
-  "2 bed under 600k in San Francisco, under 30 min commute to my work",
+  "4 bed los angeles",
+  "sf condo under 1m",
+  "austin tx 3/2 with pool",
+  "condo in Seattle under 700k",
+  "1600 Pennsylvania Ave NW",
 ];
 export const normalizeText = (text) =>
-  text.trim().replace(/\s+/g, " ").toLowerCase();
+  normalizeWithOffsets(text).normalized;
 export function validPlace(p) {
   return (
     p &&
