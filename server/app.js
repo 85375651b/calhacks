@@ -1,3 +1,4 @@
+import {lookupAddress} from './search/address.js';
 import {isDisplayable,normalizeListingStatus,visibleListings} from './search/status.js';
 import { plannerRouter } from './storage/planner-routes.js';
 import express from "express";
@@ -13,7 +14,7 @@ import { partialCriteria } from './search/nlParser.js';
 import { commuteSearch } from './search/commute.js';
 import { createFloorPlanRouter } from './floorplan/routes.js';
 
-export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, resolve = resolvePlaces } = {}) {
+export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, resolve = resolvePlaces, addressLookup = lookupAddress } = {}) {
   const app = express();
   app.disable("x-powered-by");
   app.use(express.json({ limit: "200kb" }));
@@ -21,6 +22,11 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
   app.use("/api/favorites", favoritesRouter);
   app.use("/api", plannerRouter);
   app.get('/api/search/config', (_req, res) => res.json({ openaiConfigured: !config.useFixtures && Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_key_here') }));
+  app.post('/api/search/address', async (req,res)=>{
+    res.set('Cache-Control','no-store');
+    try {const v=await addressLookup(req.body,String(req.get('X-Client-Id')||req.ip).slice(0,100));res.json({...v,...(v.listings?{listings:visibleListings(v.listings)}:{})});}
+    catch(e){res.status(e.status||503).json({error:{message:e.status?e.message:'Address lookup is temporarily unavailable.'}});}
+  });
   app.post('/api/search/parse', async (req, res) => {
     res.set('Cache-Control', 'no-store');
     try { const parsed=await parse(req.body, String(req.get('X-Client-Id') || req.ip).slice(0,100));res.json(parsed.intent==='address'?parsed:await resolve(parsed)); }
@@ -105,6 +111,7 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
   app.get("/api/lookup", async (req, res) => {
     res.set("Cache-Control", "no-store");
     try {
+      if(!lookup){const v=await addressLookup({text:req.query.address},String(req.get('X-Client-Id')||req.ip).slice(0,100));return res.json({...v,...(v.listings?{listings:visibleListings(v.listings)}:{})});}
       const result=await lookup(req.query.address);
       if(normalizeListingStatus(result?.listing?.status,'RentCast',result?.listing||{})!=='for_sale')return res.status(404).json({error:{code:'NOT_FOR_SALE',message:"This home isn't currently for sale, so we're not showing it. Try another address."}});
       res.json({...result,status:'for_sale',checkedAt:new Date().toISOString()});

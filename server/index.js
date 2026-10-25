@@ -72,7 +72,7 @@ else if (
   console.log(
     "Zillow enrichment unavailable: add APIFY_TOKEN to server/.env and restart to enable it.",
   );
-const server = createApp(lookup, { autocomplete, enrich }).listen(
+const server = createApp(undefined, { autocomplete, enrich }).listen(
   config.port,
   "127.0.0.1",
   () => {

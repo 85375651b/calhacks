@@ -79,7 +79,7 @@ export function normalize(item, source, forSaleQuery = false) {
     text(item.address?.streetAddress) ||
     text(item.address) ||
     text(item.streetLine) ||
-    text(item.formattedAddress);
+    (text(item.addressLine1) ? [item.addressLine1,item.addressLine2].filter(Boolean).join(' ') : text(item.formattedAddress));
   const p = {
     address,
     city: text(item.city) || text(item.address?.city),

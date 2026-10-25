@@ -1,3 +1,5 @@
+import AddressResults from '../components/search/AddressResults';
+import {usePreferences} from '../lib/Preferences';
 import DescribeSearch, { localRead, localWrite } from "../components/search/DescribeSearch";
 import CommuteResults from '../components/search/CommuteResults';
 import "../styles/describe.css";
@@ -10,8 +12,9 @@ import DetailModal from "../components/search/DetailModal";
 import WorkAddress from "../components/search/WorkAddress";
 import { ModuleSelector } from "../lib/Preferences";
 import { defaults, SORTS } from "../../server/search/criteria";
-export default function Home() {
+export default function Home({addressOnly=false}) {
   const location = useLocation();
+  const {work}=usePreferences();
   const restored = useRef(readSession("propertylens.search")).current;
   const { favorites, toggle, clientId } = useFavorites();
   const [criteria, setCriteria] = useState(
@@ -24,30 +27,32 @@ export default function Home() {
     [data, setData] = useState(restored?.data || null),
     [loading, setLoading] = useState(false),
     [error, setError] = useState(""),
-    [selected, setSelected] = useState(restored?.selected || null),
+    [selected, setSelected] = useState(restored?.selected?.status==='for_sale'?restored.selected:null),
     [sort, setSort] = useState(restored?.sort || "relevance");
   const [mode, updateMode] = useState(restored?.mode || localRead('propertylens.searchMode', 'describe'));
   const [text, setText] = useState(restored?.text || '');
   const [parsed, setParsed] = useState(restored?.parsed || null);
+  const [addressResult,setAddressResult]=useState(restored?.addressResult||null);
   const [understanding, setUnderstanding] = useState(false);
   const setMode = value => { updateMode(value); localWrite('propertylens.searchMode', value); };
   const request = useRef(null);
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => {
     writeSession("propertylens.search", {
-      criteria, mode, text, parsed,
+      criteria, mode, text, parsed, addressResult,
       applied,
       data,
       selected,
       sort,
       scroll: window.scrollY,
     });
-  }, [criteria, applied, data, selected, sort, mode, text, parsed]);
+  }, [criteria, applied, data, selected, sort, mode, text, parsed, addressResult]);
   useEffect(() => {
     if (restored)
       requestAnimationFrame(() => window.scrollTo(0, restored.scroll || 0));
   }, []);
   async function search(c, extras = parsed?.extras) {
+    setAddressResult(null); setSelected(null);
     if (extras?.sort) setSort(extras.sort);
     request.current?.abort();
     const controller = new AbortController();
@@ -74,6 +79,20 @@ export default function Home() {
       if (!controller.signal.aborted) setLoading(false);
     }
   }
+  async function addressSearch(value) {
+    request.current?.abort();const controller=new AbortController();request.current=controller;
+    setLoading(true);setError('');setData(null);setSelected(null);setAddressResult(null);
+    const bias=addressResult?.address||data?.listings?.find(p=>p.lat!=null&&p.lng!=null)||work;
+    try {
+      const r=await fetch('/api/search/address',{method:'POST',headers:{'Content-Type':'application/json','X-Client-Id':clientId},body:JSON.stringify({...value,bias,savedWork:work}),signal:controller.signal});
+      const v=await r.json();if(!r.ok)throw Error(v.error?.message||'Address lookup unavailable');
+      setAddressResult(v);setParsed({intent:'address',address:{text:v.address?.standardized||value.text||value.selected?.label},notApplied:[]});
+      if(v.address?.standardized)setText(v.address.standardized);
+      if(v.result==='for_sale'&&v.listings.length===1)setSelected(v.listings[0]);
+    }catch(e){if(!controller.signal.aborted)setError(e.message);}finally{if(!controller.signal.aborted)setLoading(false);}
+  }
+  useEffect(()=>{const q=new URLSearchParams(location.search).get('address');if(q&&q!==restored?.text){setText(q);addressSearch({text:q});}},[]);
+  function nearby(p){const c={...defaults,location:p.city+', '+p.state};setCriteria(c);setParsed(null);search(c,{radius:{miles:5,center:{label:p.standardized,lat:p.lat,lng:p.lng}},commute:null,insights:[],sort:null});}
   const rows = (data?.listings || []).filter(p=>p.status==='for_sale');
   if (sort !== "relevance") {
     const key =
@@ -138,12 +157,12 @@ export default function Home() {
         </a>
       </div>
       <div id="home-search" />
-      <DescribeSearch mode={mode} setMode={setMode} text={text} setText={setText} parsed={parsed} setParsed={setParsed} criteria={criteria} setCriteria={setCriteria} onSearch={search} onStart={() => { request.current?.abort(); setData(null); setApplied(null); setError(''); }} busy={loading} setUnderstanding={setUnderstanding} />
+      <DescribeSearch mode={mode} setMode={setMode} text={text} setText={setText} parsed={parsed} setParsed={setParsed} criteria={criteria} setCriteria={setCriteria} onSearch={search} onAddress={addressSearch} bias={addressResult?.address||data?.listings?.[0]||work} onStart={() => { request.current?.abort(); setData(null); setAddressResult(null); setSelected(null); setApplied(null); setError(''); }} busy={loading} setUnderstanding={setUnderstanding} />
       <div id="panel-filters" role="tabpanel" aria-labelledby="tab-filters" hidden={mode !== 'filters'}>
       <Filters
         value={criteria}
         onChange={setCriteria}
-        onSearch={(c) => { setCriteria(c); if (parsed) setParsed({ ...parsed, criteria: c, questions: parsed.questions.filter(q => q.field !== 'location') }); search(c); }}
+        onSearch={(c) => { setCriteria(c); if (parsed?.intent!=='address' && parsed) setParsed({ ...parsed, criteria: c, questions: parsed.questions.filter(q => q.field !== 'location') }); search(c); }}
         onReset={() => {
           request.current?.abort();
           setLoading(false);
@@ -197,11 +216,11 @@ export default function Home() {
       ) : error ? (
         <div className="empty-state" role="alert">
           <p>{error}</p>
-          <button onClick={() => search(applied || criteria)}>
+          <button onClick={() => parsed?.intent==='address'?addressSearch({text}):search(applied || criteria)}>
             Retry search
           </button>
         </div>
-      ) : data ? (
+      ) : addressResult ? <AddressResults result={addressResult} onChoose={p=>addressSearch({selected:p})} onNearby={nearby} onReset={()=>{setAddressResult(null);setParsed(null);setText('');document.getElementById('describe-input')?.focus();}} onOpen={setSelected} favorites={favorites} onFavorite={toggle}/> : data ? (
         <>
           {data.hiddenCount>0&&<p className="small-note">{data.hiddenCount} homes hidden because they aren’t currently for sale</p>}
           <div className="results-toolbar">
