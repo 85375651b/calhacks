@@ -1,4 +1,4 @@
-import { exactAddress, splitAddress } from "../src/lib/search/address.js";
+import { exactAddress, splitAddress, parseAddressText } from "../src/lib/search/address.js";
 import { fastSuggestion } from "../src/lib/search/suggestions.js";
 import { verifyAddress } from "./providers/census.js";
 import { lookupAddress, cleanSelected } from "./search/address.js";
@@ -92,11 +92,12 @@ export function createApp(
     res.set("Cache-Control", "no-store");
     try {
       const v = await addressLookup(
-        req.body,
+        { ...req.body, debug: process.env.NODE_ENV !== "production" && req.body?.debug === true },
         String(req.get("X-Client-Id") || req.ip).slice(0, 100),
       );
       res.json({
         ...v,
+        ...(process.env.NODE_ENV === "production" ? { debug: undefined } : {}),
         ...(v.listings ? { listings: visibleListings(v.listings) } : {}),
       });
     } catch (e) {
@@ -248,7 +249,7 @@ export function createApp(
           query.base.split(",")[0] + (query.unit ? " Apt " + query.unit : "");
       if (
         !exactAddress(
-          { line1, zip: String(req.query.address).match(/\b\d{5}\b/)?.[0] },
+          { ...parseAddressText(req.query.address), line1 },
           result,
         )
       )

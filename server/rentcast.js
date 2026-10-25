@@ -1,4 +1,5 @@
 import { LookupError } from "./errors.js";
+import { trace } from "./search/address-trace.js";
 
 export function createRentCastClient({ apiKey, fetchImpl = fetch }) {
   return async function request(path, address, extra = {}) {
@@ -10,7 +11,7 @@ export function createRentCastClient({ apiKey, fetchImpl = fetch }) {
       );
     }
     const url = new URL(`https://api.rentcast.io/v1${path}`);
-    url.search = new URLSearchParams({ address, ...extra }).toString();
+    url.search = new URLSearchParams({ ...(address ? { address } : {}), ...extra }).toString();
     let response;
     try {
       response = await fetchImpl(url, {
@@ -24,6 +25,7 @@ export function createRentCastClient({ apiKey, fetchImpl = fetch }) {
         "The property data service is taking too long. Please try again later.",
       );
     }
+    trace("rentcast-http", { status: response.status });
     if (response.status === 404) return null;
     if (response.status === 400)
       throw new LookupError(

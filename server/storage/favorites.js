@@ -1,6 +1,7 @@
 import { atomicJson } from "./atomic.js";
 import { siteUrl, HOME_TYPES } from "../search/criteria.js";
 import { photo } from "../search/listing.js";
+import { addressKey, exactAddress } from "../../src/lib/search/address.js";
 export const MAX_FAVORITES = 5;
 export function clientId(value) {
   if (
@@ -151,7 +152,7 @@ export function createFavorites(file) {
       const p = sanitizeListing(listing);
       return mutate((data) => {
         const rows = data[id] || [];
-        const index = rows.findIndex((r) => r.id === p.id);
+        const index = rows.findIndex((r) => r.id === p.id || (addressKey(r) === addressKey(p) && exactAddress(r, p)));
         if (index < 0 && rows.length >= MAX_FAVORITES)
           throw new Error(
             "You can save up to 5 homes. Remove one to add another.",

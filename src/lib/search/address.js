@@ -38,6 +38,7 @@ export function normalizeAddress(value = "") {
     .toLowerCase()
     .replace(/[.,]/g, " ")
     .replace(/[^a-z0-9\s-]/g, " ")
+    .replace(/\b(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b/g, s => ({ first:"1st", second:"2nd", third:"3rd", fourth:"4th", fifth:"5th", sixth:"6th", seventh:"7th", eighth:"8th", ninth:"9th", tenth:"10th" })[s])
     .replace(/\b[a-z]+\b/g, (s) => expansions[s] || s)
     .replace(/\s+/g, " ")
     .trim();
@@ -59,7 +60,8 @@ export function addressKey(address) {
 export function parseAddressText(text = "") {
   const match = text.trim().match(/^(.+?),\s*([^,]+),\s*([a-z]{2})(?:\s*,?\s*(\d{5})(?:-\d{4})?)?\s*$/i)
     || text.trim().match(/^(.+?\b(?:st(?:reet)?|ave(?:nue)?|ln|lane|rd|road|dr|drive|blvd|boulevard|ct|court|cir(?:cle)?|pkwy|parkway|hwy|highway|trl|trail|way|pl|place)\.?\s*(?:(?:apt|unit|ste|#)\s*[a-z0-9-]+)?)[,\s]+(.+?)\s+([a-z]{2})(?:\s+(\d{5})(?:-\d{4})?)?$/i);
-  return match ? { line1: match[1], street: match[1], city: match[2].trim(), state: match[3].toUpperCase(), zip: match[4] || "", label: text } : null;
+  const states = "AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY PR GU VI AS MP".split(" ");
+  return match && states.includes(match[3].toUpperCase()) ? { line1: match[1], street: match[1], city: match[2].trim(), state: match[3].toUpperCase(), zip: match[4] || "", label: text } : null;
 }
 export function distanceMeters(a, b) {
   if (!validBias(a) || !validBias(b)) return Infinity;

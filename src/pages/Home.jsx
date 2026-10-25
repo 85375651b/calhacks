@@ -1,4 +1,4 @@
-import { classifyIntent } from "../lib/search/intent";
+import { shouldRetryAddress, shouldRetryDescription } from "../lib/search/intent";
 import { exactAddress, addressLabel } from "../lib/search/address";
 import AddressResults from "../components/search/AddressResults";
 import { usePreferences } from "../lib/Preferences";
@@ -59,6 +59,7 @@ export default function Home({ addressOnly = false }) {
     localWrite("propertylens.searchMode", value);
   };
   const request = useRef(null);
+  const lastAddress = useRef(null);
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => {
     writeSession("propertylens.search", {
@@ -88,7 +89,7 @@ export default function Home({ addressOnly = false }) {
     if (restored)
       requestAnimationFrame(() => window.scrollTo(0, restored.scroll || 0));
   }, []);
-  async function search(c, extras = parsed?.extras) {
+  async function search(c, extras = parsed?.extras, originalText = text, allowFallback = true) {
     setAddressResult(null);
     setSelected(null);
     if (extras?.sort) setSort(extras.sort);
@@ -112,6 +113,11 @@ export default function Home({ addressOnly = false }) {
         throw new Error("Search is temporarily unavailable. Please retry.");
       });
       if (!r.ok) throw new Error(j.error?.message);
+      if (controller.signal.aborted) return;
+      if (!j.listings?.length && allowFallback && shouldRetryAddress(originalText)) {
+        await addressSearch({ text: originalText, safetyRetried: true });
+        return;
+      }
       setData(j);
     } catch (e) {
       if (!controller.signal.aborted)
@@ -121,6 +127,7 @@ export default function Home({ addressOnly = false }) {
     }
   }
   async function addressSearch(value) {
+    lastAddress.current = value;
     request.current?.abort();
     const controller = new AbortController();
     request.current = controller;
@@ -145,10 +152,11 @@ export default function Home({ addressOnly = false }) {
       });
       const v = await r.json();
       if (!r.ok) throw Error(v.error?.message || "Address lookup unavailable");
+      if (controller.signal.aborted) return;
       if (
         v.result === "not_found" &&
         value.text &&
-        classifyIntent(value.text).confidence < 0.9
+        !value.safetyRetried && shouldRetryDescription(value.text)
       ) {
         const response = await fetch("/api/search/parse", {
           method: "POST",
@@ -163,10 +171,10 @@ export default function Home({ addressOnly = false }) {
         if (!response.ok) throw Error(p.error?.message || "Search unavailable");
         setParsed(p);
         setCriteria(p.criteria);
-        if (!p.questions.length) await search(p.criteria, p.extras);
+        if (!p.questions.length) await search(p.criteria, p.extras, value.text, false);
         return;
       }
-      setAddressResult(v);
+      setAddressResult({ ...v, ...(value.safetyRetried ? { triedNote: "No homes matched the description. We also tried an exact address lookup." } : {}) });
       setParsed({
         intent: "address",
         address: {
@@ -428,6 +436,7 @@ export default function Home({ addressOnly = false }) {
       ) : addressResult ? (
         <AddressResults
           result={addressResult}
+          onRetry={() => addressSearch({ ...(lastAddress.current || { text }), bypassCache: true })}
           onChoose={(p) => addressSearch({ selected: p })}
           onNearby={nearby}
           onReset={() => {

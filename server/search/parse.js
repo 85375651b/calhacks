@@ -1,4 +1,4 @@
-import { classifyIntent } from "../../src/lib/search/intent.js";
+import { classifyIntent, shouldRetryDescription } from "../../src/lib/search/intent.js";
 import { NUMBERS, FLAGS, ENUMS, HOME_TYPES, SORTS } from "./criteria.js";
 import {
   parseRules,
@@ -207,7 +207,7 @@ export function createParseService({
       if (
         body.fallbackDescription === true &&
         intent.intent === "address" &&
-        intent.confidence < 0.9
+        (intent.confidence < 0.9 || shouldRetryDescription(text))
       ) {
         intent.intent = "description";
         intent.confidence = 1;

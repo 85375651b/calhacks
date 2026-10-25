@@ -272,6 +272,7 @@ export function createAutocompleteProvider({
     if (inFlight.has(key)) return inFlight.get(key);
     const task = (async () => {
       let results = [];
+      let answered = false;
       async function call(source) {
         const u = new URL(
           source === "geoapify"
@@ -305,6 +306,7 @@ export function createAutocompleteProvider({
         const r = await fetchImpl(u, { signal: AbortSignal.timeout(5000) });
         trace("autocomplete-provider", { provider: source, status: r.status });
         if (!r.ok) throw Error("Provider unavailable");
+        answered = true;
         return normalizeProviderResults(
           await r.json(),
           source,
@@ -346,6 +348,11 @@ export function createAutocompleteProvider({
           Number(house(b)) - Number(house(a)) ||
           Number(b.forSale) - Number(a.forSale),
       );
+      if (!answered) {
+        Object.defineProperty(results, "unavailable", { value: true });
+        trace("autocomplete-error", { reason: "all enabled geocoders unavailable" });
+        return results;
+      }
       for (const [k, v] of cache) if (v.until <= now()) cache.delete(k);
       if (cache.size >= 1000) cache.delete(cache.keys().next().value);
       cache.set(key, { value: results, until: now() + 600000 });

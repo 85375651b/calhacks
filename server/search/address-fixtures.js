@@ -1,7 +1,13 @@
 import {
   normalizeAddress,
   addressLabel,
+  addressParts,
+  parseAddressText,
 } from "../../src/lib/search/address.js";
+import zillow from "../fixtures/search-zillow.json" with { type: "json" };
+import redfin from "../fixtures/search-redfin.json" with { type: "json" };
+import { normalize } from "./listing.js";
+import { visibleListings } from "./status.js";
 const row = (line1, city, state, zip, lat, lng, status = "Active") => ({
   line1,
   street: line1,
@@ -23,9 +29,20 @@ export const addressFixtures = [
   row("147 Midway Ln", "Los Angeles", "CA", "90001", 33.97, -118.25),
   row("147 Midway Ln", "Springfield", "IL", "62704", 39.77, -89.68),
 ];
+// Every home displayed in offline criteria search must also resolve offline by address.
+for (const p of visibleListings([
+  ...zillow.map(p => normalize(p, "Zillow", true)),
+  ...redfin.map(p => normalize(p, "Redfin", true)),
+])) {
+  if (!addressFixtures.some(a => addressParts(a).street === addressParts(p).street && addressParts(a).unit === addressParts(p).unit && a.city === p.city && a.state === p.state))
+    addressFixtures.push(row(p.address, p.city, p.state, p.zip, p.lat, p.lng, "Active"));
+}
 export function fixtureCandidates(text) {
   const q = normalizeAddress(text);
+  const typed = parseAddressText(text);
   return addressFixtures
-    .filter((p) => normalizeAddress(p.label).includes(q))
+    .filter((p) => normalizeAddress(p.label).includes(q) || (addressParts(p).street === addressParts(typed || text).street &&
+      (!typed || (normalizeAddress(typed.city) === normalizeAddress(p.city) && typed.state === p.state)) &&
+      (!addressParts(typed || text).unit || addressParts(typed || text).unit === addressParts(p).unit)))
     .map(({ status, ...p }) => ({ ...p }));
 }

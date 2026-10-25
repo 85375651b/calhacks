@@ -1,3 +1,4 @@
+import { addressKey, normalizeAddress } from "../../src/lib/search/address.js";
 import { saleStatus, isDisplayable } from "./status.js";
 import { createHash } from "node:crypto";
 import { siteUrl } from "./criteria.js";
@@ -43,35 +44,7 @@ export function homeType(v) {
   );
 }
 export function identity(p) {
-  let a = String(p.address || "")
-    .split(",")
-    .filter(
-      (part, index) =>
-        index === 0 || /^\s*(apt\b|apartment\b|unit\b|suite\b|#)/i.test(part),
-    )
-    .join(" ")
-    .toLowerCase()
-    .replace(/\b(apartment|apt|unit|suite)\b|#/g, " unit ")
-    .replace(/[^a-z0-9 ]/g, " ")
-    .replace(
-      /\b(street|avenue|road|drive|boulevard|lane|court|circle|place|trail)\b/g,
-      (s) =>
-        ({
-          street: "st",
-          avenue: "ave",
-          road: "rd",
-          drive: "dr",
-          boulevard: "blvd",
-          lane: "ln",
-          court: "ct",
-          circle: "cir",
-          place: "pl",
-          trail: "trl",
-        })[s],
-    )
-    .replace(/\s+/g, " ")
-    .trim();
-  return a + "|" + (p.zip || [p.city, p.state].join("|").toLowerCase());
+  return addressKey(p) + "|" + normalizeAddress(p.city || "") + "|" + String(p.state || "").toUpperCase();
 }
 export function normalize(item, source, forSaleQuery = false) {
   const z = source === "Zillow";
@@ -213,3 +186,4 @@ export function unapplied(c, native) {
       !POST_FILTERS.includes(k),
   );
 }
+

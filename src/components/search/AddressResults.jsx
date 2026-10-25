@@ -8,6 +8,7 @@ export default function AddressResults({
   onOpen,
   favorites,
   onFavorite,
+  onRetry,
 }) {
   return (
     <section className="address-results" aria-live="polite" aria-atomic="false">
@@ -21,6 +22,7 @@ export default function AddressResults({
         </p>
       )}
       <p role="status">{result.message}</p>
+      {result.triedNote && <p className="small-note">{result.triedNote}</p>}
       {result.result === "ambiguous" && (
         <div className="chips">
           {result.candidates.map((p) => (
@@ -44,6 +46,9 @@ export default function AddressResults({
         />
       )}
       <div className="chips">
+        {["check_failed", "not_for_sale"].includes(result.result) && (
+          <button onClick={onRetry}>{result.result === "check_failed" ? "Retry" : "Check again"}</button>
+        )}
         {result.address && (
           <button onClick={() => onNearby(result.address)}>
             {result.result === "for_sale"

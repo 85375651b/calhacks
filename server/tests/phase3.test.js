@@ -53,11 +53,11 @@ test("Photon normalization requires a US house, formats state, drops duplicates,
   });
   assert.equal(data.length, 5);
   assert.deepEqual(data[0], {
-    label: "123 Main Street, Austin, TX 78701",
+    label: "123 Main Street, Austin, TX",
     street: "123 Main Street",
     city: "Austin",
     state: "TX",
-    zip: "78701",
+    zip: "",
     lat: 30.27,
     lng: -97.74,
   });

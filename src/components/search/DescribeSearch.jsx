@@ -60,7 +60,7 @@ export default function DescribeSearch({
       input.current.style.height = `${input.current.scrollHeight}px`;
     }
   }, [text, mode]);
-  async function accept(p) {
+  async function accept(p, originalText = text) {
     setParsed(p);
     if (p.intent === "address") {
       await onAddress({ text: p.address.text, notApplied: p.notApplied });
@@ -69,7 +69,7 @@ export default function DescribeSearch({
     setCriteria(p.criteria);
     setModules((old) => [...new Set([...old, ...p.extras.insights])]);
     if (p.extras.commute?.work) setWork(p.extras.commute.work);
-    if (!p.questions.length) await onSearch(p.criteria, p.extras);
+    if (!p.questions.length) await onSearch(p.criteria, p.extras, originalText);
   }
   async function submit(value = text) {
     if (!value.trim() || busy) return;
@@ -103,7 +103,7 @@ export default function DescribeSearch({
       if (seq !== sequence.current) return;
       setParsing(false);
       setUnderstanding(false);
-      await accept(p);
+      await accept(p, value);
     } catch (e) {
       if (!controller.signal.aborted) setError(e.message);
     } finally {

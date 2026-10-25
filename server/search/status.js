@@ -81,6 +81,8 @@ export function normalizeListingStatus(rawStatus, source, extra = {}) {
 }
 export function saleStatus(raw, source, extra = {}, forSaleQuery = false) {
   const status = normalizeListingStatus(raw, source, extra);
+  if (status === "unknown" && forSaleQuery && raw && process.env.NODE_ENV === "development")
+    console.warn("Unmapped sale listing status:", source, String(raw).slice(0, 60).replace(/[^a-zA-Z _-]/g, ""));
   return status === "unknown" && forSaleQuery ? "for_sale" : status;
 }
 export const isDisplayable = (p) => DISPLAYABLE_STATUSES.includes(p?.status);

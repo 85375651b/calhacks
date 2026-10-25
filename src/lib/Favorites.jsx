@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { addressKey, exactAddress } from "./search/address";
 const Context = createContext();
 export function FavoritesProvider({ children }) {
   const [favorites, setFavorites] = useState([]),
@@ -52,17 +53,18 @@ export function FavoritesProvider({ children }) {
   async function toggle(p) {
     if (pending.current) return;
     const old = favorites,
-      exists = old.some((x) => x.id === p.id);
+      existing = old.find((x) => x.id === p.id || (addressKey(x) === addressKey(p) && exactAddress(x, p))),
+      exists = Boolean(existing);
     if (!exists && old.length >= 5) {
       setMessage("You can save up to 5 homes. Remove one to add another.");
       return;
     }
     pending.current = true;
     setMessage("");
-    setFavorites(exists ? old.filter((x) => x.id !== p.id) : [...old, p]);
+    setFavorites(exists ? old.filter((x) => x.id !== existing.id) : [...old, p]);
     try {
       setFavorites(
-        await api(exists ? "/" + p.id : "", {
+        await api(exists ? "/" + existing.id : "", {
           method: exists ? "DELETE" : "POST",
           ...(!exists ? { body: JSON.stringify(p) } : {}),
         }),

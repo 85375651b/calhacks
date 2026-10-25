@@ -2,6 +2,8 @@ const suffix =
   "(?:st(?:reet)?|ave(?:nue)?|ln|lane|rd|road|dr|drive|blvd|boulevard|ct|court|way|pl|place|ter(?:race)?|cir(?:cle)?|hwy|highway|pkwy|parkway|trl|trail)";
 const preferences =
   /\b(?:beds?|bedrooms?|bd|baths?|bathrooms?|ba|sqft|square feet|acres?|under|over|below|above|max|min|between|price|million|house|home|condo|townhouse|listing|commute|near|with|hoa|pool|garage|studio)\b/i;
+export const shouldRetryAddress = value => new RegExp(`\\b\\d+[a-z]?\\s+(?:[a-z0-9.'-]+\\s+){1,6}${suffix}\\b`, "i").test(value || "");
+export const shouldRetryDescription = value => /\b(?:beds?|bedrooms?|under|below|above|with|in\s+[a-z])\b/i.test(value || "");
 export function classifyIntent(value) {
   const text =
     typeof value === "string"
