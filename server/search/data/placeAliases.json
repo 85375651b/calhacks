@@ -1,0 +1,82 @@
+{
+  "la": {
+    "place": "Los Angeles, CA"
+  },
+  "sf": {
+    "place": "San Francisco, CA"
+  },
+  "san fran": {
+    "place": "San Francisco, CA"
+  },
+  "nyc": {
+    "place": "New York, NY"
+  },
+  "dc": {
+    "place": "Washington, DC"
+  },
+  "philly": {
+    "place": "Philadelphia, PA"
+  },
+  "vegas": {
+    "place": "Las Vegas, NV"
+  },
+  "atx": {
+    "place": "Austin, TX"
+  },
+  "pdx": {
+    "place": "Portland, OR"
+  },
+  "oc": {
+    "place": "Orange County, CA"
+  },
+  "orange county": {
+    "place": "Orange County, CA"
+  },
+  "bay area": {
+    "region": [
+      "San Francisco, CA",
+      "Oakland, CA",
+      "San Jose, CA"
+    ]
+  },
+  "silicon valley": {
+    "region": [
+      "San Jose, CA",
+      "Palo Alto, CA",
+      "Mountain View, CA"
+    ]
+  },
+  "downtown la": {
+    "place": "Los Angeles, CA",
+    "label": "Downtown Los Angeles, CA",
+    "lat": 34.0407,
+    "lng": -118.2468
+  },
+  "silver lake": {
+    "place": "Los Angeles, CA",
+    "label": "Silver Lake, Los Angeles, CA",
+    "lat": 34.0869,
+    "lng": -118.2702
+  },
+  "ucla": {
+    "place": "Los Angeles, CA",
+    "label": "UCLA, Los Angeles, CA",
+    "lat": 34.0689,
+    "lng": -118.4452,
+    "landmark": true
+  },
+  "golden gate park": {
+    "place": "San Francisco, CA",
+    "label": "Golden Gate Park, San Francisco, CA",
+    "lat": 37.7694,
+    "lng": -122.4862,
+    "landmark": true
+  },
+  "stanford": {
+    "place": "Palo Alto, CA",
+    "label": "Stanford University, Palo Alto, CA",
+    "lat": 37.4275,
+    "lng": -122.1697,
+    "landmark": true
+  }
+}

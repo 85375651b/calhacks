@@ -13,8 +13,11 @@ import { fixtureCandidates } from "../search/address-fixtures.js";
 import savedExamples from "../fixtures/autocomplete-examples.json" with { type: "json" };
 import { plausibleZip } from "./zip.js";
 import { trace } from "../search/address-trace.js";
+import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
+import { join, dirname } from 'node:path';
+import { serverDirectory } from '../config.js';
 // Photon API: https://github.com/komoot/photon/blob/master/docs/api-v1.md
-const STATE_CODES = Object.fromEntries(
+export const STATE_CODES = Object.fromEntries(
   [
     ["Alabama", "AL"],
     ["Alaska", "AK"],
@@ -365,5 +368,49 @@ export function createAutocompleteProvider({
     })().finally(() => inFlight.delete(key));
     inFlight.set(key, task);
     return task;
+  };
+}
+
+// Separate administrative-place search: address suggestions above retain their contract.
+export function createPlacesProvider({ fetchImpl=fetch, apiKey=process.env.GEOAPIFY_API_KEY, claim=claimGeoapify, now=Date.now, administrativeOnly=true, cacheFile=join(serverDirectory,'.cache',administrativeOnly?'places.json':'place-points.json') }={}) {
+  const cache=new Map(),inFlight=new Map();
+  let loaded=false,saveQueue=Promise.resolve();
+  return async function places(query, budget={calls:0,deadline:now()+2200}) {
+    if(!loaded){loaded=true;if(cacheFile)try{const saved=JSON.parse(await readFile(cacheFile,'utf8'));for(const[k,v]of Object.entries(saved).slice(0,1000))if(v.until>now()&&Array.isArray(v.value))cache.set(k,v);}catch{}}
+    const key=query.toLowerCase().trim();
+    if(cache.get(key)?.until>now())return cache.get(key).value;
+    if(inFlight.has(key))return inFlight.get(key);
+    const task=(async()=>{
+      for(const provider of apiKey&&apiKey!=='your_key_here'?['geoapify','photon']:['photon']) {
+        if(budget.calls>=3||now()>=budget.deadline)break;
+        if(provider==='geoapify'&&!(await claim()))continue;
+        budget.calls++;
+        try {
+          const url=new URL(provider==='geoapify'?'https://api.geoapify.com/v1/geocode/autocomplete':'https://photon.komoot.io/api/');
+          url.search=new URLSearchParams(provider==='geoapify'?{text:query,filter:'countrycode:us',...(administrativeOnly?{type:'locality'}:{}),limit:'5',format:'json',apiKey}:{q:query,countrycode:'US',limit:'5',lang:'en'});
+          const response=await fetchImpl(url,{signal:AbortSignal.timeout(Math.max(1,Math.min(3000,budget.deadline-now())))});
+          if(!response.ok)continue;
+          const data=await response.json();
+          const rows=provider==='geoapify'?data.results||[]:(data.features||[]).map(f=>({...f.properties,lon:f.geometry?.coordinates?.[0],lat:f.geometry?.coordinates?.[1]}));
+          const values=rows.flatMap(p=>{
+            const country=String(p.country_code||p.countrycode||'').toLowerCase();
+            const state=STATE_CODES[String(p.state||'').toLowerCase()]||p.state_code||p.state;
+            if(country!=='us'||!/^([A-Z]{2})$/.test(state||'')||!validBias({lat:p.lat,lng:p.lon}))return [];
+            const type=p.result_type||p.osm_value;
+            if(administrativeOnly&&provider==='geoapify'&&!['city','suburb','district','postcode','county'].includes(type))return [];
+            if(administrativeOnly&&provider==='photon'&&!['city','town','village','suburb','neighbourhood','quarter','district','county','administrative','postcode'].includes(type))return [];
+            const area=p.city||p.town||p.village||p.county||p.name;
+            if(!area)return [];
+            const zip=/^\d{5}$/.test(query)?query:null;
+            return [{label:zip||`${p.name||[p.housenumber,p.street,area].filter(Boolean).join(', ')}, ${state}`,city:area,state,lat:p.lat,lng:p.lon,resultType:type,provider}];
+          }).slice(0,5);
+          if(values.length){if(cache.size>=1000)cache.delete(cache.keys().next().value);cache.set(key,{until:now()+30*86400000,value:values});
+            if(cacheFile){saveQueue=saveQueue.catch(()=>{}).then(async()=>{await mkdir(dirname(cacheFile),{recursive:true});await writeFile(cacheFile+'.tmp',JSON.stringify(Object.fromEntries(cache)),{mode:0o600});await rename(cacheFile+'.tmp',cacheFile);});saveQueue.catch(()=>{});}
+            return values;}
+        }catch{/* Bounded fallback; no URLs, keys or raw provider failures in logs. */}
+      }
+      return [];
+    })().finally(()=>inFlight.delete(key));
+    inFlight.set(key,task);return task;
   };
 }

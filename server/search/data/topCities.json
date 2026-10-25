@@ -1,0 +1,1338 @@
+[
+  {
+    "label": "New York, NY",
+    "city": "New York",
+    "state": "NY",
+    "lat": 40.662712,
+    "lng": -73.938677,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Los Angeles, CA",
+    "city": "Los Angeles",
+    "state": "CA",
+    "lat": 34.019394,
+    "lng": -118.410825,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Chicago, IL",
+    "city": "Chicago",
+    "state": "IL",
+    "lat": 41.837045,
+    "lng": -87.684939,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Houston, TX",
+    "city": "Houston",
+    "state": "TX",
+    "lat": 29.785743,
+    "lng": -95.388806,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Phoenix, AZ",
+    "city": "Phoenix",
+    "state": "AZ",
+    "lat": 33.572154,
+    "lng": -112.090132,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Philadelphia, PA",
+    "city": "Philadelphia",
+    "state": "PA",
+    "lat": 40.009376,
+    "lng": -75.133346,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "San Antonio, TX",
+    "city": "San Antonio",
+    "state": "TX",
+    "lat": 29.462809,
+    "lng": -98.524635,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "San Diego, CA",
+    "city": "San Diego",
+    "state": "CA",
+    "lat": 32.814977,
+    "lng": -117.135562,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Dallas, TX",
+    "city": "Dallas",
+    "state": "TX",
+    "lat": 32.793333,
+    "lng": -96.766513,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Jacksonville, FL",
+    "city": "Jacksonville",
+    "state": "FL",
+    "lat": 30.336864,
+    "lng": -81.661603,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Fort Worth, TX",
+    "city": "Fort Worth",
+    "state": "TX",
+    "lat": 32.781954,
+    "lng": -97.348573,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "San Jose, CA",
+    "city": "San Jose",
+    "state": "CA",
+    "lat": 37.296011,
+    "lng": -121.814552,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Austin, TX",
+    "city": "Austin",
+    "state": "TX",
+    "lat": 30.298622,
+    "lng": -97.754134,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Charlotte, NC",
+    "city": "Charlotte",
+    "state": "NC",
+    "lat": 35.209045,
+    "lng": -80.83099,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Columbus, OH",
+    "city": "Columbus",
+    "state": "OH",
+    "lat": 39.983938,
+    "lng": -82.984882,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "San Francisco, CA",
+    "city": "San Francisco",
+    "state": "CA",
+    "lat": 37.727239,
+    "lng": -123.032229,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Seattle, WA",
+    "city": "Seattle",
+    "state": "WA",
+    "lat": 47.619335,
+    "lng": -122.351538,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Denver, CO",
+    "city": "Denver",
+    "state": "CO",
+    "lat": 39.76185,
+    "lng": -104.881105,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Oklahoma City, OK",
+    "city": "Oklahoma City",
+    "state": "OK",
+    "lat": 35.467079,
+    "lng": -97.513657,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Nashville, TN",
+    "city": "Nashville",
+    "state": "TN",
+    "lat": 36.1718,
+    "lng": -86.785002,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Washington, DC",
+    "city": "Washington",
+    "state": "DC",
+    "lat": 38.904247,
+    "lng": -77.016517,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "El Paso, TX",
+    "city": "El Paso",
+    "state": "TX",
+    "lat": 31.84778,
+    "lng": -106.431106,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Las Vegas, NV",
+    "city": "Las Vegas",
+    "state": "NV",
+    "lat": 36.233499,
+    "lng": -115.264037,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Boston, MA",
+    "city": "Boston",
+    "state": "MA",
+    "lat": 42.338551,
+    "lng": -71.018253,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Detroit, MI",
+    "city": "Detroit",
+    "state": "MI",
+    "lat": 42.383037,
+    "lng": -83.102237,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Portland, OR",
+    "city": "Portland",
+    "state": "OR",
+    "lat": 45.536951,
+    "lng": -122.649971,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Louisville, KY",
+    "city": "Louisville",
+    "state": "KY",
+    "lat": 38.165376,
+    "lng": -85.647377,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Memphis, TN",
+    "city": "Memphis",
+    "state": "TN",
+    "lat": 35.109164,
+    "lng": -89.968511,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Baltimore, MD",
+    "city": "Baltimore",
+    "state": "MD",
+    "lat": 39.300032,
+    "lng": -76.610476,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Milwaukee, WI",
+    "city": "Milwaukee",
+    "state": "WI",
+    "lat": 43.063348,
+    "lng": -87.966695,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Albuquerque, NM",
+    "city": "Albuquerque",
+    "state": "NM",
+    "lat": 35.10478,
+    "lng": -106.646809,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Tucson, AZ",
+    "city": "Tucson",
+    "state": "AZ",
+    "lat": 32.153036,
+    "lng": -110.870773,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Fresno, CA",
+    "city": "Fresno",
+    "state": "CA",
+    "lat": 36.782684,
+    "lng": -119.793359,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Sacramento, CA",
+    "city": "Sacramento",
+    "state": "CA",
+    "lat": 38.567694,
+    "lng": -121.468161,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Mesa, AZ",
+    "city": "Mesa",
+    "state": "AZ",
+    "lat": 33.400626,
+    "lng": -111.716487,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Atlanta, GA",
+    "city": "Atlanta",
+    "state": "GA",
+    "lat": 33.762909,
+    "lng": -84.422675,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Kansas City, MO",
+    "city": "Kansas City",
+    "state": "MO",
+    "lat": 39.125155,
+    "lng": -94.550313,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Colorado Springs, CO",
+    "city": "Colorado Springs",
+    "state": "CO",
+    "lat": 38.867255,
+    "lng": -104.760749,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Omaha, NE",
+    "city": "Omaha",
+    "state": "NE",
+    "lat": 41.262705,
+    "lng": -96.053475,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Raleigh, NC",
+    "city": "Raleigh",
+    "state": "NC",
+    "lat": 35.831868,
+    "lng": -78.641042,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Miami, FL",
+    "city": "Miami",
+    "state": "FL",
+    "lat": 25.775163,
+    "lng": -80.208615,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Virginia Beach, VA",
+    "city": "Virginia Beach",
+    "state": "VA",
+    "lat": 36.779525,
+    "lng": -76.029142,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Long Beach, CA",
+    "city": "Long Beach",
+    "state": "CA",
+    "lat": 33.780791,
+    "lng": -118.16818,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Oakland, CA",
+    "city": "Oakland",
+    "state": "CA",
+    "lat": 37.769846,
+    "lng": -122.22569,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Minneapolis, MN",
+    "city": "Minneapolis",
+    "state": "MN",
+    "lat": 44.963324,
+    "lng": -93.26832,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Bakersfield, CA",
+    "city": "Bakersfield",
+    "state": "CA",
+    "lat": 35.353171,
+    "lng": -119.037919,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Tulsa, OK",
+    "city": "Tulsa",
+    "state": "OK",
+    "lat": 36.127949,
+    "lng": -95.902316,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Tampa, FL",
+    "city": "Tampa",
+    "state": "FL",
+    "lat": 27.970086,
+    "lng": -82.479673,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Arlington, TX",
+    "city": "Arlington",
+    "state": "TX",
+    "lat": 32.700708,
+    "lng": -97.124691,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Wichita, KS",
+    "city": "Wichita",
+    "state": "KS",
+    "lat": 37.690638,
+    "lng": -97.345836,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Aurora, CO",
+    "city": "Aurora",
+    "state": "CO",
+    "lat": 39.709537,
+    "lng": -104.720509,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "New Orleans, LA",
+    "city": "New Orleans",
+    "state": "LA",
+    "lat": 30.05342,
+    "lng": -89.934502,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Cleveland, OH",
+    "city": "Cleveland",
+    "state": "OH",
+    "lat": 41.478462,
+    "lng": -81.679435,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Anaheim, CA",
+    "city": "Anaheim",
+    "state": "CA",
+    "lat": 33.855502,
+    "lng": -117.758657,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Henderson, NV",
+    "city": "Henderson",
+    "state": "NV",
+    "lat": 36.008958,
+    "lng": -115.0268,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Orlando, FL",
+    "city": "Orlando",
+    "state": "FL",
+    "lat": 28.40865,
+    "lng": -81.254805,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Stockton, CA",
+    "city": "Stockton",
+    "state": "CA",
+    "lat": 37.976553,
+    "lng": -121.308598,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Riverside, CA",
+    "city": "Riverside",
+    "state": "CA",
+    "lat": 33.938143,
+    "lng": -117.393168,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Corpus Christi, TX",
+    "city": "Corpus Christi",
+    "state": "TX",
+    "lat": 27.754252,
+    "lng": -97.173385,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Irvine, CA",
+    "city": "Irvine",
+    "state": "CA",
+    "lat": 33.678399,
+    "lng": -117.771254,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Cincinnati, OH",
+    "city": "Cincinnati",
+    "state": "OH",
+    "lat": 39.140183,
+    "lng": -84.505829,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Santa Ana, CA",
+    "city": "Santa Ana",
+    "state": "CA",
+    "lat": 33.736332,
+    "lng": -117.8829,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Newark, NJ",
+    "city": "Newark",
+    "state": "NJ",
+    "lat": 40.72422,
+    "lng": -74.172574,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Pittsburgh, PA",
+    "city": "Pittsburgh",
+    "state": "PA",
+    "lat": 40.439936,
+    "lng": -79.975676,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Greensboro, NC",
+    "city": "Greensboro",
+    "state": "NC",
+    "lat": 36.09485,
+    "lng": -79.823624,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Lincoln, NE",
+    "city": "Lincoln",
+    "state": "NE",
+    "lat": 40.810284,
+    "lng": -96.674856,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Durham, NC",
+    "city": "Durham",
+    "state": "NC",
+    "lat": 35.977928,
+    "lng": -78.898109,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Plano, TX",
+    "city": "Plano",
+    "state": "TX",
+    "lat": 33.050769,
+    "lng": -96.747944,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Anchorage, AK",
+    "city": "Anchorage",
+    "state": "AK",
+    "lat": 61.17425,
+    "lng": -149.284329,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Jersey City, NJ",
+    "city": "Jersey City",
+    "state": "NJ",
+    "lat": 40.711417,
+    "lng": -74.06476,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Chula Vista, CA",
+    "city": "Chula Vista",
+    "state": "CA",
+    "lat": 32.62767,
+    "lng": -117.01517,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Chandler, AZ",
+    "city": "Chandler",
+    "state": "AZ",
+    "lat": 33.282765,
+    "lng": -111.851819,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Gilbert, AZ",
+    "city": "Gilbert",
+    "state": "AZ",
+    "lat": 33.310345,
+    "lng": -111.743121,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Madison, WI",
+    "city": "Madison",
+    "state": "WI",
+    "lat": 43.087815,
+    "lng": -89.429856,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Reno, NV",
+    "city": "Reno",
+    "state": "NV",
+    "lat": 39.549097,
+    "lng": -119.849907,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Buffalo, NY",
+    "city": "Buffalo",
+    "state": "NY",
+    "lat": 42.892492,
+    "lng": -78.859686,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "North Las Vegas, NV",
+    "city": "North Las Vegas",
+    "state": "NV",
+    "lat": 36.289865,
+    "lng": -115.089181,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Fort Wayne, IN",
+    "city": "Fort Wayne",
+    "state": "IN",
+    "lat": 41.088193,
+    "lng": -85.142791,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "St. Petersburg, FL",
+    "city": "St. Petersburg",
+    "state": "FL",
+    "lat": 27.762727,
+    "lng": -82.644131,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Lubbock, TX",
+    "city": "Lubbock",
+    "state": "TX",
+    "lat": 33.561901,
+    "lng": -101.888883,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Irving, TX",
+    "city": "Irving",
+    "state": "TX",
+    "lat": 32.857748,
+    "lng": -96.970022,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Laredo, TX",
+    "city": "Laredo",
+    "state": "TX",
+    "lat": 27.560379,
+    "lng": -99.489181,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Winston-Salem, NC",
+    "city": "Winston-Salem",
+    "state": "NC",
+    "lat": 36.102863,
+    "lng": -80.260829,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Chesapeake, VA",
+    "city": "Chesapeake",
+    "state": "VA",
+    "lat": 36.679376,
+    "lng": -76.301788,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Glendale, AZ",
+    "city": "Glendale",
+    "state": "AZ",
+    "lat": 33.533111,
+    "lng": -112.189901,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Garland, TX",
+    "city": "Garland",
+    "state": "TX",
+    "lat": 32.909826,
+    "lng": -96.630334,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Scottsdale, AZ",
+    "city": "Scottsdale",
+    "state": "AZ",
+    "lat": 33.684272,
+    "lng": -111.861448,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Boise, ID",
+    "city": "Boise",
+    "state": "ID",
+    "lat": 43.599335,
+    "lng": -116.229817,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Norfolk, VA",
+    "city": "Norfolk",
+    "state": "VA",
+    "lat": 36.923015,
+    "lng": -76.244641,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Port St. Lucie, FL",
+    "city": "Port St. Lucie",
+    "state": "FL",
+    "lat": 27.280554,
+    "lng": -80.388261,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Spokane, WA",
+    "city": "Spokane",
+    "state": "WA",
+    "lat": 47.666935,
+    "lng": -117.433322,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Richmond, VA",
+    "city": "Richmond",
+    "state": "VA",
+    "lat": 37.531399,
+    "lng": -77.476009,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Fremont, CA",
+    "city": "Fremont",
+    "state": "CA",
+    "lat": 37.49446,
+    "lng": -121.94115,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Huntsville, AL",
+    "city": "Huntsville",
+    "state": "AL",
+    "lat": 34.69772,
+    "lng": -86.67667,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Frisco, TX",
+    "city": "Frisco",
+    "state": "TX",
+    "lat": 33.155427,
+    "lng": -96.822596,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Cape Coral, FL",
+    "city": "Cape Coral",
+    "state": "FL",
+    "lat": 26.643192,
+    "lng": -81.997364,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Santa Clarita, CA",
+    "city": "Santa Clarita",
+    "state": "CA",
+    "lat": 34.416504,
+    "lng": -118.500693,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "San Bernardino, CA",
+    "city": "San Bernardino",
+    "state": "CA",
+    "lat": 34.14114,
+    "lng": -117.294635,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Tacoma, WA",
+    "city": "Tacoma",
+    "state": "WA",
+    "lat": 47.252199,
+    "lng": -122.459832,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Hialeah, FL",
+    "city": "Hialeah",
+    "state": "FL",
+    "lat": 25.869941,
+    "lng": -80.302865,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Baton Rouge, LA",
+    "city": "Baton Rouge",
+    "state": "LA",
+    "lat": 30.440443,
+    "lng": -91.133166,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Modesto, CA",
+    "city": "Modesto",
+    "state": "CA",
+    "lat": 37.637533,
+    "lng": -121.003049,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Fontana, CA",
+    "city": "Fontana",
+    "state": "CA",
+    "lat": 34.109686,
+    "lng": -117.462888,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "McKinney, TX",
+    "city": "McKinney",
+    "state": "TX",
+    "lat": 33.201125,
+    "lng": -96.664161,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Moreno Valley, CA",
+    "city": "Moreno Valley",
+    "state": "CA",
+    "lat": 33.923253,
+    "lng": -117.205685,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Des Moines, IA",
+    "city": "Des Moines",
+    "state": "IA",
+    "lat": 41.57259,
+    "lng": -93.610243,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Fayetteville, NC",
+    "city": "Fayetteville",
+    "state": "NC",
+    "lat": 35.082766,
+    "lng": -78.973515,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Salt Lake City, UT",
+    "city": "Salt Lake City",
+    "state": "UT",
+    "lat": 40.776928,
+    "lng": -111.930991,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Yonkers, NY",
+    "city": "Yonkers",
+    "state": "NY",
+    "lat": 40.945862,
+    "lng": -73.867446,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Worcester, MA",
+    "city": "Worcester",
+    "state": "MA",
+    "lat": 42.269478,
+    "lng": -71.807783,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Rochester, NY",
+    "city": "Rochester",
+    "state": "NY",
+    "lat": 43.169927,
+    "lng": -77.616891,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Little Rock, AR",
+    "city": "Little Rock",
+    "state": "AR",
+    "lat": 34.725393,
+    "lng": -92.358556,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Amarillo, TX",
+    "city": "Amarillo",
+    "state": "TX",
+    "lat": 35.198064,
+    "lng": -101.833107,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Tallahassee, FL",
+    "city": "Tallahassee",
+    "state": "FL",
+    "lat": 30.453529,
+    "lng": -84.252272,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Grand Rapids, MI",
+    "city": "Grand Rapids",
+    "state": "MI",
+    "lat": 42.961156,
+    "lng": -85.65557,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Columbus, GA",
+    "city": "Columbus",
+    "state": "GA",
+    "lat": 32.510191,
+    "lng": -84.874946,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Augusta, GA",
+    "city": "Augusta",
+    "state": "GA",
+    "lat": 33.365531,
+    "lng": -82.073422,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Sioux Falls, SD",
+    "city": "Sioux Falls",
+    "state": "SD",
+    "lat": 43.540696,
+    "lng": -96.731962,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Peoria, AZ",
+    "city": "Peoria",
+    "state": "AZ",
+    "lat": 33.786186,
+    "lng": -112.308042,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Vancouver, WA",
+    "city": "Vancouver",
+    "state": "WA",
+    "lat": 45.637156,
+    "lng": -122.596567,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Knoxville, TN",
+    "city": "Knoxville",
+    "state": "TN",
+    "lat": 35.97068,
+    "lng": -83.94927,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Overland Park, KS",
+    "city": "Overland Park",
+    "state": "KS",
+    "lat": 38.889042,
+    "lng": -94.690584,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Montgomery, AL",
+    "city": "Montgomery",
+    "state": "AL",
+    "lat": 32.348503,
+    "lng": -86.267307,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Shreveport, LA",
+    "city": "Shreveport",
+    "state": "LA",
+    "lat": 32.466879,
+    "lng": -93.792193,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Brownsville, TX",
+    "city": "Brownsville",
+    "state": "TX",
+    "lat": 25.995689,
+    "lng": -97.450848,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Tempe, AZ",
+    "city": "Tempe",
+    "state": "AZ",
+    "lat": 33.388414,
+    "lng": -111.931782,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Akron, OH",
+    "city": "Akron",
+    "state": "OH",
+    "lat": 41.080456,
+    "lng": -81.521429,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Newport News, VA",
+    "city": "Newport News",
+    "state": "VA",
+    "lat": 37.076136,
+    "lng": -76.52198,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Chattanooga, TN",
+    "city": "Chattanooga",
+    "state": "TN",
+    "lat": 35.065958,
+    "lng": -85.248386,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Fort Lauderdale, FL",
+    "city": "Fort Lauderdale",
+    "state": "FL",
+    "lat": 26.141227,
+    "lng": -80.146731,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Mobile, AL",
+    "city": "Mobile",
+    "state": "AL",
+    "lat": 30.668246,
+    "lng": -88.107853,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Ontario, CA",
+    "city": "Ontario",
+    "state": "CA",
+    "lat": 34.037648,
+    "lng": -117.604433,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Elk Grove, CA",
+    "city": "Elk Grove",
+    "state": "CA",
+    "lat": 38.414621,
+    "lng": -121.384961,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Cary, NC",
+    "city": "Cary",
+    "state": "NC",
+    "lat": 35.781302,
+    "lng": -78.823444,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Santa Rosa, CA",
+    "city": "Santa Rosa",
+    "state": "CA",
+    "lat": 38.445824,
+    "lng": -122.706181,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Rancho Cucamonga, CA",
+    "city": "Rancho Cucamonga",
+    "state": "CA",
+    "lat": 34.130306,
+    "lng": -117.566067,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Oceanside, CA",
+    "city": "Oceanside",
+    "state": "CA",
+    "lat": 33.224601,
+    "lng": -117.306291,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Salem, OR",
+    "city": "Salem",
+    "state": "OR",
+    "lat": 44.9239,
+    "lng": -123.023007,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Pembroke Pines, FL",
+    "city": "Pembroke Pines",
+    "state": "FL",
+    "lat": 26.014716,
+    "lng": -80.340171,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Garden Grove, CA",
+    "city": "Garden Grove",
+    "state": "CA",
+    "lat": 33.778782,
+    "lng": -117.960472,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Lancaster, CA",
+    "city": "Lancaster",
+    "state": "CA",
+    "lat": 34.693558,
+    "lng": -118.175305,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Palmdale, CA",
+    "city": "Palmdale",
+    "state": "CA",
+    "lat": 34.591038,
+    "lng": -118.105403,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Corona, CA",
+    "city": "Corona",
+    "state": "CA",
+    "lat": 33.861969,
+    "lng": -117.565495,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Springfield, MO",
+    "city": "Springfield",
+    "state": "MO",
+    "lat": 37.194157,
+    "lng": -93.292642,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Eugene, OR",
+    "city": "Eugene",
+    "state": "OR",
+    "lat": 44.056848,
+    "lng": -123.119019,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Salinas, CA",
+    "city": "Salinas",
+    "state": "CA",
+    "lat": 36.690217,
+    "lng": -121.633793,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Killeen, TX",
+    "city": "Killeen",
+    "state": "TX",
+    "lat": 31.077669,
+    "lng": -97.731952,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Pasadena, TX",
+    "city": "Pasadena",
+    "state": "TX",
+    "lat": 29.654996,
+    "lng": -95.151055,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Sunnyvale, CA",
+    "city": "Sunnyvale",
+    "state": "CA",
+    "lat": 37.385797,
+    "lng": -122.026316,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Bellevue, WA",
+    "city": "Bellevue",
+    "state": "WA",
+    "lat": 47.597837,
+    "lng": -122.15648,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Roseville, CA",
+    "city": "Roseville",
+    "state": "CA",
+    "lat": 38.770296,
+    "lng": -121.319634,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Denton, TX",
+    "city": "Denton",
+    "state": "TX",
+    "lat": 33.217449,
+    "lng": -97.141346,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Escondido, CA",
+    "city": "Escondido",
+    "state": "CA",
+    "lat": 33.133053,
+    "lng": -117.074043,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Pomona, CA",
+    "city": "Pomona",
+    "state": "CA",
+    "lat": 34.058494,
+    "lng": -117.761091,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Berkeley, CA",
+    "city": "Berkeley",
+    "state": "CA",
+    "lat": 37.865673,
+    "lng": -122.298725,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Palo Alto, CA",
+    "city": "Palo Alto",
+    "state": "CA",
+    "lat": 37.39652,
+    "lng": -122.143088,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Mountain View, CA",
+    "city": "Mountain View",
+    "state": "CA",
+    "lat": 38.009205,
+    "lng": -122.11685,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Portland, ME",
+    "city": "Portland",
+    "state": "ME",
+    "lat": 43.633157,
+    "lng": -70.185305,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Springfield, IL",
+    "city": "Springfield",
+    "state": "IL",
+    "lat": 39.791063,
+    "lng": -89.644572,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Springfield, MA",
+    "city": "Springfield",
+    "state": "MA",
+    "lat": 42.115454,
+    "lng": -72.539978,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Columbus, IN",
+    "city": "Columbus",
+    "state": "IN",
+    "lat": 39.208684,
+    "lng": -85.919059,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Columbia, SC",
+    "city": "Columbia",
+    "state": "SC",
+    "lat": 34.040519,
+    "lng": -80.906099,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Beverly Hills, CA",
+    "city": "Beverly Hills",
+    "state": "CA",
+    "lat": 34.07923,
+    "lng": -118.402437,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Indianapolis, IN",
+    "city": "Indianapolis",
+    "state": "IN",
+    "lat": 39.776664,
+    "lng": -86.145935,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Honolulu, HI",
+    "city": "Honolulu",
+    "state": "HI",
+    "lat": 21.324347,
+    "lng": -157.84764,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "Lexington, KY",
+    "city": "Lexington",
+    "state": "KY",
+    "lat": 38.040678,
+    "lng": -84.458272,
+    "source": "2024 US Census Gazetteer"
+  },
+  {
+    "label": "St. Paul, MN",
+    "city": "St. Paul",
+    "state": "MN",
+    "lat": 44.948901,
+    "lng": -93.104063,
+    "source": "2024 US Census Gazetteer"
+  }
+]
