@@ -139,7 +139,7 @@ Rename the app in `src/lib/config.js`. Unknown routes render the not-found page.
 
 ## Planned next
 
-OpenAI-generated summaries, Azure deployment, Visa payments and a cloud storage adapter remain future work. No accounts, maps, AI, payments or cloud services are implemented in this phase.
+OpenAI-generated listing summaries, Azure deployment, Visa payments and a cloud storage adapter remain future work. Optional OpenAI search/furniture interpretation is described below; accounts, payments and cloud deployment are not implemented.
 
 ## Verification
 
@@ -168,15 +168,15 @@ See [planner architecture and limitations](docs/planner.md) and [provider detail
 
 ## Describe it: plain-English home search
 
-Choose **Describe it**, type what you want and press Enter. Try `3 bed house in Austin under $700k with a pool`, `condo in Seattle under 500k, new listings`, or `house in san francisco 2 beds under 600k with a <30 minute commute to work at 1 Market St, San Francisco`. The interpretation shows criteria, assumptions and unsupported text. Resolve any place questions, remove chips, or choose **Edit in filters** to fine-tune the same criteria. The old filter search remains available.
+Choose **Describe it**, type what you want and press Enter. Try `4 bed los angeles`, `LA 3br 2ba under 1.5m`, `sf condo under 1m`, `austin tx 3/2 with pool`, `90210 2 bed`, or `houses near UCLA`. Bare cities, aliases, common typos, number words and shorthand work without an AI key. Chips show understood criteria; unknown text offers keyword/ignore/edit actions. Missing locations, ambiguous cities, regions and multiple places ask for a choice instead of guessing. Exact street addresses still route to the existing address lookup first.
 
-Optional server-only settings in `server/.env`: `OPENAI_API_KEY`, `OPENAI_MODEL=gpt-4.1-mini`, `OPENAI_MAX_CALLS_PER_HOUR=30`. Without a key, on provider failure, or in fixture mode, built-in rules parse the text. The shared provider uses the official OpenAI SDK, Responses API and strict Structured Outputs, with no request storage, an eight-second timeout, and no retries. Furniture extraction shares the same budget.
+Optional server-only settings in `server/.env`: `OPENAI_API_KEY`, `OPENAI_MODEL=gpt-4.1-mini`, `OPENAI_MAX_CALLS_PER_HOUR=30`. Rules and place resolution always run first. ChatGPT is called only for missing locations, unexplained wording or low confidence; fully understood queries and confident addresses bypass it. Without a key, on provider failure, or in fixture mode, built-in rules parse the text. The shared provider uses the official OpenAI SDK, Responses API and strict Structured Outputs, with no request storage, an eight-second timeout, and no retries. Furniture extraction shares the same budget.
 
 Prices, bed/bath ranges, exact beds, types, area/lot sizes, years, HOA, features, listing freshness/status, keywords, sort, insights, radius and driving commute are supported. Insight requests enable detail modules; they do not rank or filter homes. Queries and recent searches can contain addresses; the UI explains when text goes to OpenAI and where work coordinates are used.
 
 Commute filtering requests at most 30 candidates per source (configurable up to 50), prunes by straight-line distance, and checks eight routes in a single Apify run (configurable up to 12). Seven-day route caching, the shared hourly actor cap, and one in-flight batch per browser bound costs. **Check more** uses another bounded batch and Apify credits. Unchecked and over-limit homes are clearly separated.
 
-Set `USE_FIXTURES=true` for offline rules, saved Austin listings and sample route data with no paid calls. Sample listings do not move to the requested city; an SF commute constraint may therefore return none. See [the full phrase list, API, privacy and limitations](docs/nl-search.md). Run `npm run dev`; validate with `npm test`, `npm run build` and `npm run check:secrets`.
+Set `USE_FIXTURES=true` for offline rules, saved Austin listings and sample route data with no paid calls. Sample listings do not move to the requested city; an SF commute constraint may therefore return none. See [the full phrase list, API, privacy and limitations](docs/nl-search.md). The 236-case offline corpus improved from 42.37% to 100%, including 40 exact-address regressions. Inspect a query with `npm run debug:parse -- "4 bed los angeles"`; measure with `npm run test:parse:corpus`. Run `npm run dev`; validate with `npm test`, `npm run build` and `npm run check:secrets`.
 
 ## Address and description search
 

@@ -4,7 +4,7 @@ import { EXAMPLES, interpretationFor } from "../../../server/search/nlParser";
 import { defaults } from "../../../server/search/criteria";
 import { usePreferences } from "../../lib/Preferences";
 import { useFavorites } from "../../lib/Favorites";
-import { handleUnrecognized } from '../../lib/search/describeState';
+import { handleUnrecognized } from "../../lib/search/describeState";
 
 export function localRead(key, fallback) {
   try {
@@ -48,7 +48,9 @@ export default function DescribeSearch({
   const input = useRef(),
     request = useRef(),
     sequence = useRef(0),
-    lastLocation = useRef(criteria.location || localRead('propertylens.lastLocation', ''));
+    lastLocation = useRef(
+      criteria.location || localRead("propertylens.lastLocation", ""),
+    );
   useEffect(() => {
     fetch("/api/search/config")
       .then((r) => r.json())
@@ -71,7 +73,7 @@ export default function DescribeSearch({
     setCriteria(p.criteria);
     if (p.criteria.location) {
       lastLocation.current = p.criteria.location;
-      localWrite('propertylens.lastLocation', p.criteria.location);
+      localWrite("propertylens.lastLocation", p.criteria.location);
     }
     setModules((old) => [...new Set([...old, ...p.extras.insights])]);
     if (p.extras.commute?.work) setWork(p.extras.commute.work);
@@ -152,8 +154,13 @@ export default function DescribeSearch({
       ? interpretationFor(criteria, parsed.extras)
       : [];
   async function resolveUnknown(item, action) {
-    try { await accept(handleUnrecognized({ ...parsed, criteria }, item.text, action)); }
-    catch (e) { setError(e.message); }
+    try {
+      await accept(
+        handleUnrecognized({ ...parsed, criteria }, item.text, action),
+      );
+    } catch (e) {
+      setError(e.message);
+    }
   }
   return (
     <section className="describe-search" aria-label="Search homes">
@@ -234,7 +241,8 @@ export default function DescribeSearch({
           </div>
           {configured && (
             <p className="small-note">
-              Built-in rules interpret your search first. Unusual wording may be sent to ChatGPT.
+              Built-in rules interpret your search first. Unusual wording may be
+              sent to ChatGPT.
             </p>
           )}
         </form>
@@ -322,9 +330,10 @@ export default function DescribeSearch({
               </button>
             </div>
             <p className="small-note">
-              {parsed.parserNote || (parsed.parser === 'rules+openai'
-                ? 'Interpreted by built-in rules with ChatGPT assistance.'
-                : 'Interpreted by built-in rules. An OpenAI key would help with unusual wording.')}
+              {parsed.parserNote ||
+                (parsed.parser === "rules+openai"
+                  ? "Interpreted by built-in rules with ChatGPT assistance."
+                  : "Interpreted by built-in rules. An OpenAI key would help with unusual wording.")}
             </p>
             <div className="chips">
               {chips.map((chip) => (
@@ -374,11 +383,26 @@ export default function DescribeSearch({
                 </ul>
               </details>
             )}
-            <button type="button" className="quiet-button" disabled={busy || parsing}
-              onClick={() => setParsed({ ...parsed, questions: [
-                { field: 'location', message: 'Not the right place? Where should I search?', options: [] },
-                ...parsed.questions.filter(q => q.field !== 'location'),
-              ] })}>Change location / not right?</button>
+            <button
+              type="button"
+              className="quiet-button"
+              disabled={busy || parsing}
+              onClick={() =>
+                setParsed({
+                  ...parsed,
+                  questions: [
+                    {
+                      field: "location",
+                      message: "Not the right place? Where should I search?",
+                      options: [],
+                    },
+                    ...parsed.questions.filter((q) => q.field !== "location"),
+                  ],
+                })
+              }
+            >
+              Change location / not right?
+            </button>
             {parsed.notApplied.length > 0 && (
               <details open className="small-note">
                 <summary>Couldn’t apply</summary>
@@ -403,9 +427,31 @@ export default function DescribeSearch({
               <div className="unrecognized-run" key={`${item.text}-${index}`}>
                 <p>I didn’t understand “{item.text}”.</p>
                 <div className="chips">
-                  {parsed.capabilities?.keywords && <button type="button" className="toggle-chip" disabled={busy || parsing} onClick={() => resolveUnknown(item, 'keyword')}>Search it as a keyword</button>}
-                  <button type="button" className="toggle-chip" disabled={busy || parsing} onClick={() => resolveUnknown(item, 'ignore')}>Ignore it</button>
-                  <button type="button" className="quiet-button" onClick={() => setMode('filters')}>Edit in filters</button>
+                  {parsed.capabilities?.keywords && (
+                    <button
+                      type="button"
+                      className="toggle-chip"
+                      disabled={busy || parsing}
+                      onClick={() => resolveUnknown(item, "keyword")}
+                    >
+                      Search it as a keyword
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="toggle-chip"
+                    disabled={busy || parsing}
+                    onClick={() => resolveUnknown(item, "ignore")}
+                  >
+                    Ignore it
+                  </button>
+                  <button
+                    type="button"
+                    className="quiet-button"
+                    onClick={() => setMode("filters")}
+                  >
+                    Edit in filters
+                  </button>
                 </div>
               </div>
             ))}
@@ -416,7 +462,7 @@ export default function DescribeSearch({
         {parsing
           ? "Understanding your search…"
           : parsed
-            ? `Interpreted your search. ${chips.map((c) => `${c.label}: ${c.value}`).join(". ")}. ${(parsed.assumptions || []).join(' ')} ${(parsed.unrecognized || []).map(u => `I didn't understand ${u.text}.`).join(' ')} ${(parsed.questions || []).map((q) => q.message).join(" ")}`
+            ? `Interpreted your search. ${chips.map((c) => `${c.label}: ${c.value}`).join(". ")}. ${(parsed.assumptions || []).join(" ")} ${(parsed.unrecognized || []).map((u) => `I didn't understand ${u.text}.`).join(" ")} ${(parsed.questions || []).map((q) => q.message).join(" ")}`
             : ""}
       </div>
       {error && (
@@ -430,7 +476,9 @@ export default function DescribeSearch({
 function Question({ question, onChoose, disabled }) {
   const [value, setValue] = useState("");
   const field = useRef();
-  useEffect(() => { field.current?.focus(); }, [question.message]);
+  useEffect(() => {
+    field.current?.focus();
+  }, [question.message]);
   return (
     <form
       className="clarification"
