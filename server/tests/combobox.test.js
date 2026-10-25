@@ -41,3 +41,15 @@ test("shared field disables browser/password-manager autofill and has no asynchr
   const home = await readFile(new URL("../../src/pages/Home.jsx", import.meta.url), "utf8");
   assert.doesNotMatch(home, /setText\(v.address/);
 });
+test("ZIP verification preserves keyboard highlight, row identity, order and typed ZIP", () => {
+  let state = reduce(initialCombobox(), { type: "type", value: "123 Main St, Austin, TX 99999" });
+  const items = [{ label: "123 Main St, Austin, TX", line1: "123 Main St", city: "Austin", state: "TX" }, { label: "123 Main St, Dallas, TX", line1: "123 Main St", city: "Dallas", state: "TX" }];
+  state = reduce(state, { type: "results", revision: state.revision, items });
+  state = reduce(state, { type: "arrow", direction: 1 });
+  state = reduce(state, { type: "verified", revision: state.revision, items: [{ originalLabel: items[0].label, verified: true, zip: "78701", standardized: "123 MAIN ST, AUSTIN, TX 78701" }] });
+  assert.equal(state.value, "123 Main St, Austin, TX 99999");
+  assert.equal(state.active, 0);
+  assert.equal(state.items.length, 2);
+  assert.equal(state.items[1], items[1]);
+  assert.equal(enterTarget(state).zip, "78701");
+});

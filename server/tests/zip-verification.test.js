@@ -4,7 +4,17 @@ import census from "../fixtures/census-live-match.json" with { type: "json" };
 import { createCensusVerifier } from "../providers/census.js";
 import { fastSuggestion, verifiedRows } from "../../src/lib/search/suggestions.js";
 import { normalizeProviderResults } from "../providers/autocomplete.js";
+import fixtures from "../fixtures/address-pipeline.json" with { type: "json" };
 const p = { line1: "1600 Pennsylvania Ave NW", city: "Washington", state: "DC", zip: "20001", lat: 38.9, lng: -77 };
+test("saved Geoapify and Census no-match fixtures stay ZIP-free", async () => {
+  const rows = normalizeProviderResults(fixtures.geoapify, "geoapify", "123 N Main Ln");
+  assert.equal(rows[0].providerZip, "78701");
+  assert.equal(rows[0].zip, "");
+  const verify = createCensusVerifier({ cache: async (_, fn) => fn(), fetchImpl: async () => ({ ok: true, status: 200, json: async () => fixtures.censusNoMatch }) });
+  const result = await verify(rows[0]);
+  assert.equal(result.verified, false);
+  assert.equal(result.zip, "");
+});
 test("Census corrects wrong provider ZIP and verifies candidates without a ZIP", async () => {
   const verify = createCensusVerifier({ cache: async (_, fn) => fn(), fetchImpl: async u => {
     assert.doesNotMatch(u.searchParams.get("address"), /20001/);

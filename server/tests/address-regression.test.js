@@ -3,16 +3,17 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { addressKey, exactAddress, parseAddressText, addressLabel } from "../../src/lib/search/address.js";
-import { shouldRetryAddress, shouldRetryDescription } from "../../src/lib/search/intent.js";
+import { addressKey, exactAddress, parseAddressText, addressLabel, sameHome } from "../../src/lib/search/address.js";
+import { shouldRetryAddress, shouldRetryDescription, addressRetryText } from "../../src/lib/search/intent.js";
 import { createAddressLookup } from "../search/address.js";
 import { createSearch } from "../search/index.js";
 import { createApp } from "../app.js";
 import { persistentMemo } from "../storage/memo.js";
 import { normalize } from "../search/listing.js";
+import fixtures from "../fixtures/address-pipeline.json" with { type: "json" };
 const direct = async (_, fn) => fn();
 const p = { line1: "123 N Main Ln", city: "Austin", state: "TX", zip: "78701", lat: 30, lng: -97 };
-const raw = (status = "Active") => ({ addressLine1: "123 North Main Lane", city: "Austin", state: "TX", zipCode: "78702", status, price: 500000 });
+const raw = (status = "Active") => ({ ...fixtures.rentcastSale[0], status });
 const options = { fixtureMode: false, enabled: false, cache: direct, claim: async () => true, recent: async () => [], provider: async () => [p], verify: async p => ({ ...p, verified: true, standardized: addressLabel(p) }), request: async () => [raw()] };
 const suffixes = [["St", "Street"], ["Ave", "Avenue"], ["Ln", "Lane"], ["Rd", "Road"], ["Dr", "Drive"], ["Blvd", "Boulevard"], ["Ct", "Court"], ["Cir", "Circle"], ["Pkwy", "Parkway"], ["Hwy", "Highway"], ["Trl", "Trail"], ["Way", "Way"], ["Pl", "Place"]];
 for (const [short, long] of suffixes) for (const [dir, full] of [["N", "North"], ["S", "South"], ["E", "East"], ["W", "West"], ["NW", "Northwest"]]) {
@@ -30,6 +31,9 @@ test("ordinals, locality, house numbers, unit scopes and distance", () => {
   assert.ok(exactAddress(p, { ...normalize(raw(), "RentCast", true), city: "Other", lat: 30.0001, lng: -97 }));
   assert.ok(!exactAddress(p, { ...normalize(raw(), "RentCast", true), city: "Other", lat: 31, lng: -97 }));
   assert.equal(parseAddressText("5101 Trail West Dr"), null);
+  assert.ok(sameHome({ ...p, id: "old", address: p.line1 }, { ...p, id: "new", address: "123 North Main Lane", zip: "99999" }));
+  assert.ok(!sameHome({ ...p, line1: p.line1 + " Apt 1" }, { ...p, line1: p.line1 + " Unit 2" }));
+  assert.ok(!exactAddress({ line1: "Main St", city: "Austin", state: "TX" }, { address: "Main St", city: "Austin", state: "TX" }));
 });
 test("complete typed text wins over stale selection; wrong ZIP matches listing and reports discrepancy", async () => {
   const calls = [];
@@ -77,6 +81,40 @@ test("request variants, radius fallback, one bounded Apify run and in-flight ded
   assert.equal(radius.params.longitude, "-97");
   assert.equal(radius.address, undefined);
 });
+test("Check again replaces a conclusive cached negative, expires after an hour, and is rate limited", async t => {
+  const dir = await mkdtemp(join(tmpdir(), "address-retry-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  let sale = false, calls = 0, time = Date.now();
+  const lookup = createAddressLookup({ ...options, now: () => time,
+    cache: persistentMemo(join(dir, "retry.json"), { now: () => time, cacheErrors: false }),
+    request: async () => { calls++; return sale ? [raw()] : []; },
+  });
+  assert.equal((await lookup({ selected: p })).result, "not_for_sale");
+  const negatives = calls;
+  sale = true;
+  assert.equal((await lookup({ selected: p })).result, "not_for_sale");
+  assert.equal(calls, negatives);
+  assert.equal((await lookup({ selected: p, bypassCache: true })).result, "for_sale");
+  assert.equal((await lookup({ selected: p })).result, "for_sale");
+  assert.equal(calls, negatives + 1);
+  time += 3600001;
+  assert.equal((await lookup({ selected: p })).result, "for_sale");
+  assert.equal(calls, negatives + 2);
+  await lookup({ selected: p, bypassCache: true });
+  await lookup({ selected: p, bypassCache: true });
+  await assert.rejects(lookup({ selected: p, bypassCache: true }), /Too many/);
+});
+test("production suppresses trace and dev trace contains safe reason codes", async t => {
+  const previous = process.env.NODE_ENV;
+  t.after(() => { if (previous === undefined) delete process.env.NODE_ENV; else process.env.NODE_ENV = previous; });
+  const lookup = createAddressLookup({ ...options });
+  process.env.NODE_ENV = "production";
+  assert.equal((await lookup({ selected: p, debug: true })).debug, undefined);
+  process.env.NODE_ENV = "development";
+  const v = await lookup({ selected: p, debug: true });
+  assert.ok(v.debug.some(e => e.step === "listing-decision" && e.reason === "accepted"));
+  assert.equal(v.debug.at(-1).reasonCode, "ACTIVE_EXACT_MATCH");
+});
 test("pending, sold, coming soon, rentals stay private; unknown sale-query status remains visible", async () => {
   for (const status of ["Pending", "Sold", "Coming Soon", "For Rent"]) {
     const v = await createAddressLookup({ ...options, request: async () => [raw(status)] })({ selected: p });
@@ -90,6 +128,8 @@ test("intent safety nets are bounded in both directions", () => {
   assert.equal(shouldRetryAddress("3 beds under 500k"), false);
   assert.equal(shouldRetryDescription("123 Main Street under 500k in Austin"), true);
   assert.equal(shouldRetryDescription("123 Main Street, Austin, TX 78701"), false);
+  assert.equal(shouldRetryDescription("123 Main Street in Austin"), true);
+  assert.equal(addressRetryText("find a home at 123 Main Street, Austin, TX under 500k"), "123 Main Street, Austin, TX");
 });
 test("every displayed fixture round-trips through HTTP in typed variants and ignores criteria filters", async t => {
   const found = await createSearch({ fixtureMode: true, cache: direct })({ location: "Austin, TX", limit: 50 });

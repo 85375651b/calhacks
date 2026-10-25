@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { addressKey, exactAddress } from "./search/address";
+import { sameHome } from "./search/address";
 const Context = createContext();
 export function FavoritesProvider({ children }) {
   const [favorites, setFavorites] = useState([]),
@@ -53,7 +53,7 @@ export function FavoritesProvider({ children }) {
   async function toggle(p) {
     if (pending.current) return;
     const old = favorites,
-      existing = old.find((x) => x.id === p.id || (addressKey(x) === addressKey(p) && exactAddress(x, p))),
+      existing = old.find((x) => sameHome(x, p)),
       exists = Boolean(existing);
     if (!exists && old.length >= 5) {
       setMessage("You can save up to 5 homes. Remove one to add another.");

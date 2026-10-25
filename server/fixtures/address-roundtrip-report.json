@@ -1,0 +1,264 @@
+[
+  {
+    "step": "criteria-search",
+    "location": "Austin, TX",
+    "count": 5,
+    "usingFixtures": false,
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "2702 S 2nd St #1 & 2, Austin, TX 78704",
+    "text": "2702 S 2nd St #1 & 2",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": false
+      },
+      {
+        "step": "recent-cache",
+        "count": 1
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "2702 S 2nd St #1 & 2, Austin, TX 78704",
+    "text": "2702 S 2nd St #1 & 2, Austin, TX",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": false
+      },
+      {
+        "step": "recent-cache",
+        "count": 2
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "2702 S 2nd St #1 & 2, Austin, TX 78704",
+    "text": "2702 S 2nd St #1 & 2, Austin, TX 78704",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "2702 S 2nd St #1 & 2, Austin, TX 78704",
+    "text": "2702 s 2nd st #1 & 2, austin, tx 78704",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "2702 S 2nd St #1 & 2, Austin, TX 78704",
+    "text": "2702 S 2nd St #1 & 2, Austin, TX 78704",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "7705 Mowinkle Cv, Austin, TX 78736",
+    "text": "7705 Mowinkle Cv",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": false
+      },
+      {
+        "step": "recent-cache",
+        "count": 1
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "7705 Mowinkle Cv, Austin, TX 78736",
+    "text": "7705 Mowinkle Cv, Austin, TX",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": false
+      },
+      {
+        "step": "recent-cache",
+        "count": 2
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "7705 Mowinkle Cv, Austin, TX 78736",
+    "text": "7705 Mowinkle Cv, Austin, TX 78736",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "7705 Mowinkle Cv, Austin, TX 78736",
+    "text": "7705 mowinkle cv, austin, tx 78736",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "7705 Mowinkle Cv, Austin, TX 78736",
+    "text": "7705 Mowinkle Cv, Austin, TX 78736",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "16305 Almaden Dr, Austin, TX 78717",
+    "text": "16305 Almaden Dr",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": false
+      },
+      {
+        "step": "recent-cache",
+        "count": 1
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "16305 Almaden Dr, Austin, TX 78717",
+    "text": "16305 Almaden Dr, Austin, TX",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": false
+      },
+      {
+        "step": "recent-cache",
+        "count": 2
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "16305 Almaden Dr, Austin, TX 78717",
+    "text": "16305 Almaden Dr, Austin, TX 78717",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "16305 Almaden Dr, Austin, TX 78717",
+    "text": "16305 almaden dr, austin, tx 78717",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "step": "roundtrip",
+    "displayed": "16305 Almaden Dr, Austin, TX 78717",
+    "text": "16305 Almaden Drive, Austin, TX 78717",
+    "result": "for_sale",
+    "reasonCode": "ACTIVE_EXACT_MATCH",
+    "caches": [
+      {
+        "step": "cache",
+        "namespace": "address-sale-v2.json",
+        "hit": true
+      }
+    ],
+    "sourceErrors": []
+  },
+  {
+    "summary": {
+      "passed": 15,
+      "total": 15
+    }
+  }
+]

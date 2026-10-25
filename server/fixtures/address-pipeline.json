@@ -1,0 +1,8 @@
+{
+  "fixtureKind": "Synthetic minimal edge cases; Census live and Photon live fixtures are separate files.",
+  "geoapify": { "results": [{ "country_code": "us", "housenumber": "123", "street": "North Main Lane", "city": "Austin", "state_code": "TX", "postcode": "78701", "lat": 30, "lon": -97, "result_type": "building", "rank": { "confidence": 0.9 } }] },
+  "censusNoMatch": { "result": { "addressMatches": [] } },
+  "rentcastSale": [{ "addressLine1": "123 North Main Lane", "city": "Austin", "state": "TX", "zipCode": "78702", "status": "Active", "price": 500000 }],
+  "rentcastEmpty": [],
+  "rentcastError": { "status": 429, "code": "RATE_LIMIT", "body": { "error": "Too many requests" } }
+}

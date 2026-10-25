@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "debug:address": "node server/scripts/debugAddress.js",
+    "test:address:live": "node server/scripts/roundtripAddress.js",
     "dev": "concurrently -k -n api,web \"node --watch server/index.js\" \"vite\"",
     "dev:server": "node --watch server/index.js",
     "dev:client": "vite",

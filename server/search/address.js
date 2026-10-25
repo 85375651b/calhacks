@@ -15,7 +15,7 @@ import { recentListings } from "./recent.js";
 import { addressFixtures, fixtureCandidates } from "./address-fixtures.js";
 import { trace, withAddressTrace } from "./address-trace.js";
 import { exactAddress, addressKey, addressLabel, normalizeAddress, validBias, splitAddress, parseAddressText, addressParts } from "../../src/lib/search/address.js";
-const memo = persistentMemo(join(serverDirectory, ".cache", "address-sale-v2.json"));
+const memo = persistentMemo(join(serverDirectory, ".cache", "address-sale-v2.json"), { cacheErrors: false });
 export function cleanSelected(p) {
   const result = {};
   for (const k of ["line1", "city", "state"]) {
@@ -155,7 +155,7 @@ export function createAddressLookup({
       const task = compute().finally(() => flight.delete(id));
       flight.set(id, task); return task;
     };
-    const result = body.bypassCache === true ? await run() : await cache(key, run, v => v.result === "check_failed" ? 0 : Math.max(0, 3600000 - (now() - Date.parse(v.checkedAt))));
+    const result = await cache(key, run, v => v.result === "check_failed" ? 0 : Math.max(0, 3600000 - (now() - Date.parse(v.checkedAt))), { bypass: body.bypassCache === true });
     const enteredZip = typed?.zip;
     return enteredZip && result.listings ? { ...result, listings: result.listings.map(p => ({ ...p, ...(p.zip && p.zip !== enteredZip ? { zipNote: `You entered ZIP ${enteredZip}. This home's ZIP is ${p.zip}.` } : {}) })) } : result;
   });

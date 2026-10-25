@@ -1,5 +1,5 @@
-import { shouldRetryAddress, shouldRetryDescription } from "../lib/search/intent";
-import { exactAddress, addressLabel } from "../lib/search/address";
+import { shouldRetryAddress, shouldRetryDescription, addressRetryText } from "../lib/search/intent";
+import { exactAddress, addressLabel, sameHome } from "../lib/search/address";
 import AddressResults from "../components/search/AddressResults";
 import { usePreferences } from "../lib/Preferences";
 import DescribeSearch, {
@@ -54,6 +54,7 @@ export default function Home({ addressOnly = false }) {
     restored?.addressResult || null,
   );
   const [understanding, setUnderstanding] = useState(false);
+  const [attemptNote, setAttemptNote] = useState("");
   const setMode = (value) => {
     updateMode(value);
     localWrite("propertylens.searchMode", value);
@@ -90,6 +91,7 @@ export default function Home({ addressOnly = false }) {
       requestAnimationFrame(() => window.scrollTo(0, restored.scroll || 0));
   }, []);
   async function search(c, extras = parsed?.extras, originalText = text, allowFallback = true) {
+    if (allowFallback) setAttemptNote("");
     setAddressResult(null);
     setSelected(null);
     if (extras?.sort) setSort(extras.sort);
@@ -115,7 +117,7 @@ export default function Home({ addressOnly = false }) {
       if (!r.ok) throw new Error(j.error?.message);
       if (controller.signal.aborted) return;
       if (!j.listings?.length && allowFallback && shouldRetryAddress(originalText)) {
-        await addressSearch({ text: originalText, safetyRetried: true });
+        await addressSearch({ text: addressRetryText(originalText), safetyRetried: true });
         return;
       }
       setData(j);
@@ -127,6 +129,7 @@ export default function Home({ addressOnly = false }) {
     }
   }
   async function addressSearch(value) {
+    setAttemptNote(value.safetyRetried ? "No homes matched the description. We also tried an exact address lookup." : "");
     lastAddress.current = value;
     request.current?.abort();
     const controller = new AbortController();
@@ -171,6 +174,7 @@ export default function Home({ addressOnly = false }) {
         if (!response.ok) throw Error(p.error?.message || "Search unavailable");
         setParsed(p);
         setCriteria(p.criteria);
+        setAttemptNote("We couldn't resolve an exact address. We also tried interpreting your text as a description.");
         if (!p.questions.length) await search(p.criteria, p.extras, value.text, false);
         return;
       }
@@ -383,6 +387,7 @@ export default function Home({ addressOnly = false }) {
               : ""}
       </p>
       <ModuleSelector />
+      {attemptNote && <p className="small-note" role="status">{attemptNote}</p>}
       <WorkAddress />
       {applied && !parsed && (
         <div className="chips active-filters" aria-label="Active filters">
@@ -547,7 +552,7 @@ export default function Home({ addressOnly = false }) {
         <DetailModal
           listing={selected}
           onClose={() => setSelected(null)}
-          saved={favorites.some((p) => p.id === selected.id)}
+          saved={favorites.some((p) => sameHome(p, selected))}
           onFavorite={toggle}
         ></DetailModal>
       )}

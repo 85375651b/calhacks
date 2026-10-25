@@ -158,7 +158,7 @@ export function normalizeProviderResults(
     const confidence =
       provider === "geoapify"
         ? Number(p.rank?.confidence || 0)
-        : number && street && zip?.length >= 5
+        : number && street
           ? 0.75
           : 0.5;
     if (
@@ -268,8 +268,9 @@ export function createAutocompleteProvider({
         validBias(bias) ? [bias.lat.toFixed(2), bias.lng.toFixed(2)] : null,
         places,
       ]);
-    if (cache.get(key)?.until > now()) return cache.get(key).value;
-    if (inFlight.has(key)) return inFlight.get(key);
+    if (cache.get(key)?.until > now()) { trace("autocomplete-cache", { hit: true }); return cache.get(key).value; }
+    if (inFlight.has(key)) { trace("autocomplete-cache", { coalesced: true }); return inFlight.get(key); }
+    trace("autocomplete-cache", { hit: false });
     const task = (async () => {
       let results = [];
       let answered = false;
@@ -318,11 +319,11 @@ export function createAutocompleteProvider({
       if (provider !== "photon" && apiKey && apiKey !== "your_key_here")
         try {
           if (await claim()) results = await call("geoapify");
-        } catch {}
+        } catch { trace("autocomplete-provider-error", { provider: "geoapify", reason: "unavailable or timeout" }); }
       if (!results.length)
         try {
           results = await call("photon");
-        } catch {}
+        } catch { trace("autocomplete-provider-error", { provider: "photon", reason: "unavailable or timeout" }); }
       trace("provider-candidates", { candidates: results });
       results = await Promise.all(
         results.map(async (p) => ({

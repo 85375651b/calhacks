@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { trace } from "../search/address-trace.js";
 export const hash = (v) =>
   createHash("sha256").update(JSON.stringify(v)).digest("hex");
-export function persistentMemo(file, { now = Date.now } = {}) {
+export function persistentMemo(file, { now = Date.now, cacheErrors = true } = {}) {
   let entries = {},
     queue = Promise.resolve();
   const flight = new Map();
@@ -33,9 +33,10 @@ export function persistentMemo(file, { now = Date.now } = {}) {
       });
     await queue;
   }
-  return async (key, fn, ttl = 86400000) => {
+  return async (key, fn, ttl = 86400000, { bypass = false } = {}) => {
     key = hash(key);
     await ready;
+    if (bypass) delete entries[key];
     if (entries[key]?.until > now()) {
       trace("cache", { namespace: file.split(/[\\/]/).pop(), hit: true });
       if (entries[key].error) throw new Error(entries[key].error);
@@ -55,8 +56,10 @@ export function persistentMemo(file, { now = Date.now } = {}) {
         await save();
         return value;
       } catch (e) {
-        entries[key] = { error: e.message, until: now() + 300000 };
-        await save();
+        if (cacheErrors) {
+          entries[key] = { error: e.message, until: now() + 300000 };
+          await save();
+        }
         throw e;
       } finally {
         flight.delete(key);

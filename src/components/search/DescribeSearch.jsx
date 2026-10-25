@@ -63,7 +63,7 @@ export default function DescribeSearch({
   async function accept(p, originalText = text) {
     setParsed(p);
     if (p.intent === "address") {
-      await onAddress({ text: p.address.text, notApplied: p.notApplied });
+      await onAddress({ text: originalText, notApplied: p.notApplied });
       return;
     }
     setCriteria(p.criteria);

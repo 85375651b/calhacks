@@ -73,8 +73,8 @@ export function exactAddress(candidate, listing) {
   const a = addressParts(candidate),
     b = addressParts(listing);
   return Boolean(
-    a.street &&
-    a.street === b.street &&
+    /^\d+[a-z]?(?:-\d+)?\b/i.test(a.street) &&
+    addressKey({ line1: a.street }) === addressKey({ line1: b.street }) &&
     ((candidate.city && candidate.state && listing.city && listing.state &&
       normalizeAddress(candidate.city) === normalizeAddress(listing.city) &&
       String(candidate.state).toUpperCase() === String(listing.state).toUpperCase()) ||
@@ -82,6 +82,7 @@ export function exactAddress(candidate, listing) {
     (!a.unit || a.unit === b.unit),
   );
 }
+export const sameHome = (a, b) => Boolean(a && b && ((a.id && a.id === b.id) || (addressKey(a) === addressKey(b) && exactAddress(a, b))));
 export const addressLabel = (p) =>
   [
     p.line1 || p.street,

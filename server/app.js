@@ -29,6 +29,7 @@ export function createApp(
     parse = parseSearch,
     resolve = resolvePlaces,
     addressLookup = lookupAddress,
+    addressVerifier = verifyAddress,
     searchProvider = search,
     describedProvider = describedSearch,
     moreProvider = commuteSearch.more,
@@ -78,7 +79,7 @@ export function createApp(
       const rows = batch ? req.body.suggestions : [req.body?.selected || {}];
       const result = await Promise.all(rows.map(async row => {
         const p = cleanSelected(row);
-        const v = config.useFixtures ? { ...p, zip: "", verified: false } : await verifyAddress(p);
+        const v = config.useFixtures ? { ...p, zip: "", verified: false } : await addressVerifier(p);
         return { ...v, originalLabel: row.label };
       }));
       res.json(batch ? result : result[0]);

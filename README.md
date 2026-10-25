@@ -180,6 +180,23 @@ Set `USE_FIXTURES=true` for offline rules, saved Austin listings and sample rout
 
 ## Address and description search
 
+The shared combobox changes text only when you type/paste/delete or explicitly select a suggestion. Nothing is highlighted initially; arrows only move the highlight, hover never selects, and Enter without an arrow-highlight submits your typed text. Escape, blur, Tab, network responses and saved-state restoration do not autocomplete or reopen a dismissed list. Browser address autofill and password-manager hints are disabled. Standardization appears in the interpretation chip; typed text and ZIP remain unchanged.
+
+Suggestions first appear without ZIPs. After 300 ms of stable results, the top three are checked with Census in parallel (three-second request timeout, global concurrency/politeness guard, seven-day cache). Verified ZIPs appear in reserved space with a check mark; rows never reorder. Unverified rows keep their city/state and a ZIP-unverified tooltip. Listing ZIPs take precedence in property details, with a note when the typed ZIP differs.
+
+Exact matches ignore ZIP differences and require matching house/street/unit plus locality or coordinates within 100 meters. Address results bypass criteria filters. Failed, timed-out or capped checks return `check_failed` with Retry and are never cached. Conclusive negatives last one hour and offer a rate-limited Check again. See [the investigation and measured results](docs/address-search-debugging.md).
+
+```sh
+npm run debug:address -- "16305 Almaden Dr, Austin, TX 99999"
+npm run probe:autocomplete -- --all
+npm run test:address:live -- "Austin, TX"
+npm test
+npm run build
+npm run check:secrets
+```
+
+The live round-trip command may run a bounded paid criteria search; the autocomplete probe only uses public geocoders. Dev-only `debug: true` on `/api/search/address` returns safe pipeline events. Production never returns a trace.
+
 The main box accepts both `4 bed house in Los Angeles under $1.5M` and `147 Midway Ln`. Confident rules avoid OpenAI. Addresses resolve to an active sale listing, a choice of cities/units, a not-for-sale message without property details, or spelling/location tips. `/lookup` and `/results?address=...` use the same flow. Bare number/street fragments that cannot resolve fall back to description clarification. The planner's Back to listing restores the search session without another lookup; sale snapshots older than one hour are discarded on restoration.
 
 Only active for-sale homes are displayed. Pending, contingent, coming-soon, sold, off-market and rental records are removed on the server. Favorites remain saved snapshots and are exempt. Search/address status caches last at most one hour, and the detail popup shows the status-check time. Unknown provider status is accepted only from an explicit sale-only request with no contradictory signal.
@@ -193,7 +210,7 @@ GEOAPIFY_MAX_REQUESTS_PER_DAY=2500
 RENTCAST_ADDRESS_MAX_REQUESTS_PER_DAY=100
 ```
 
-No key is required: missing keys, errors and the daily cap fall back to Photon. The server logs a setup hint once at startup. Keys never enter the browser. Suggestions use last-result/work coordinates as a bias, require complete US addresses when a house number is typed, and verify selections with the US Census Geocoder. Verification describes an address match, not sale status or unit existence.
+No key is required: missing keys, errors and the daily cap fall back to Photon. The server logs a setup hint once at startup. Keys never enter the browser. Suggestions use last-result/work coordinates as a bias and require a US house number, street and locality when a house number is typed. Census verifies the top rows without trusting provider ZIPs. Verification describes an address match, not sale status or unit existence.
 
 ```sh
 npm run probe:autocomplete -- "147 midway lane"

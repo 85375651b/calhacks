@@ -49,10 +49,11 @@ export default function Favorites() {
         <DetailModal
           listing={selected}
           onClose={() => setSelected(null)}
-          saved={favorites.some((p) => p.id === selected.id)}
+          saved={favorites.some((p) => sameHome(p, selected))}
           onFavorite={toggle}
         />
       )}
     </main>
   );
 }
+import { sameHome } from "../lib/search/address";

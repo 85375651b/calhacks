@@ -1,4 +1,5 @@
 import PlannerLink from '../PlannerLink';
+import { sameHome } from "../../lib/search/address";
 import React, { useState } from "react";
 export const money = (v) =>
   typeof v === "number" && Number.isFinite(v)
@@ -79,13 +80,13 @@ export default function ListingGrid({
           <button
             className="heart"
             aria-label={
-              (favorites.some((f) => f.id === p.id) ? "Unsave " : "Save ") +
+              (favorites.some((f) => sameHome(f, p)) ? "Unsave " : "Save ") +
               p.address
             }
-            aria-pressed={favorites.some((f) => f.id === p.id)}
+            aria-pressed={favorites.some((f) => sameHome(f, p))}
             onClick={() => onFavorite(p)}
           >
-            {favorites.some((f) => f.id === p.id) ? "♥" : "♡"}
+            {favorites.some((f) => sameHome(f, p)) ? "♥" : "♡"}
           </button>
         </article>
       ))}

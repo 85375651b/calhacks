@@ -1,0 +1,717 @@
+[
+  {
+    "query": "1600 Pennsylvania Ave NW, Washington, DC",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "1600 Pennsylvania Avenue Northwest, Washington, DC",
+            "providerZip": "20500",
+            "censusZip": "20500",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "350 5th Ave, New York, NY",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "350 5th Avenue, New York, NY",
+            "providerZip": "10118",
+            "censusZip": "10118",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "20 W 34th St, New York, NY",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "11 Wall St, New York, NY",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "11 Wall Street, New York, NY",
+            "providerZip": "10271",
+            "censusZip": "10005",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": true
+          },
+          {
+            "label": "11 Wall Street, Tonawanda, NY",
+            "providerZip": "14150",
+            "censusZip": "14150",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          },
+          {
+            "label": "11 Wall Street, Rhinebeck, NY",
+            "providerZip": "12572",
+            "censusZip": "12572",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "200 Central Park W, New York, NY",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "200 Central Park West, New York, NY",
+            "providerZip": "10024",
+            "censusZip": "10024",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "1000 5th Ave, New York, NY",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "1000 5th Avenue, New York, NY",
+            "providerZip": "10075",
+            "censusZip": "10028",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": true
+          },
+          {
+            "label": "1000 5th Avenue, Garden City, NY",
+            "providerZip": "11040",
+            "censusZip": "11040",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "5101 Trail West Dr, Austin, TX",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "5101 Trail West Drive, Austin, TX",
+            "providerZip": "78735",
+            "censusZip": "78735",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "1601 Faro Dr, Austin, TX",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "1601 Faro Drive, Austin, TX",
+            "providerZip": "78741",
+            "censusZip": "78741",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "1100 Congress Ave, Austin, TX",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "2313 Red River St, Austin, TX",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "2313 Red River Street, Austin, TX",
+            "providerZip": "78705",
+            "censusZip": "78705",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "2400 Trinity St, Austin, TX",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "2400 Trinity Street, Austin, TX",
+            "providerZip": "78705",
+            "censusZip": "78712",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "1800 Congress Ave, Austin, TX",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "1800 Congress Avenue, Austin, TX",
+            "providerZip": "78701",
+            "censusZip": "78701",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "111 S Grand Ave, Los Angeles, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "200 N Spring St, Los Angeles, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "200 North Spring Street, Los Angeles, CA",
+            "providerZip": "90012",
+            "censusZip": null,
+            "verified": false,
+            "unavailable": false,
+            "mismatch": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "221 S Grand Ave, Los Angeles, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 503
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "800 W Olympic Blvd, Los Angeles, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "800 West Olympic Boulevard, Los Angeles, CA",
+            "providerZip": "90015",
+            "censusZip": "90015",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "1200 Getty Center Dr, Los Angeles, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "1200 Getty Center Drive, Los Angeles, CA",
+            "providerZip": "90049",
+            "censusZip": "90049",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "700 Exposition Park Dr, Los Angeles, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "700 Exposition Park Drive, Los Angeles, CA",
+            "providerZip": "90037",
+            "censusZip": null,
+            "verified": false,
+            "unavailable": false,
+            "mismatch": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "400 Broad St, Seattle, WA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "400 Broad Street, Seattle, WA",
+            "providerZip": "98109",
+            "censusZip": "98109",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "325 5th Ave N, Seattle, WA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 503
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "1300 1st Ave, Seattle, WA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "1300 1st Avenue, Seattle, WA",
+            "providerZip": "98101",
+            "censusZip": "98101",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "1000 4th Ave, Seattle, WA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "1000 4th Avenue, Seattle, WA",
+            "providerZip": "98104",
+            "censusZip": "98104",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          },
+          {
+            "label": "1000 4th Avenue South, Seattle, WA",
+            "providerZip": "98134",
+            "censusZip": "98134",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "800 Occidental Ave S, Seattle, WA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 503
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "200 University St, Seattle, WA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 200
+          }
+        ],
+        "suggestions": [
+          {
+            "label": "200 University Street, Seattle, WA",
+            "providerZip": "98101",
+            "censusZip": "98101",
+            "verified": true,
+            "unavailable": false,
+            "mismatch": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "query": "1 Dr Carlton B Goodlett Pl, San Francisco, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 503
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "151 3rd St, San Francisco, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "status": 503
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "1 Ferry Building, San Francisco, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "error": "Connection failed or timed out"
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "600 Montgomery St, San Francisco, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "error": "Connection failed or timed out"
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "100 Larkin St, San Francisco, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "error": "Connection failed or timed out"
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "query": "50 Hagiwara Tea Garden Dr, San Francisco, CA",
+    "providers": {
+      "geoapify": {
+        "unavailable": "GEOAPIFY_API_KEY not configured"
+      },
+      "photon": {
+        "events": [
+          {
+            "host": "photon.komoot.io",
+            "error": "Connection failed or timed out"
+          }
+        ],
+        "suggestions": []
+      }
+    }
+  },
+  {
+    "summary": {
+      "queries": 30,
+      "suggestions": 22,
+      "verified": 20,
+      "compared": 20,
+      "mismatches": 3,
+      "unavailable": 0
+    },
+    "mismatchRate": 0.15
+  }
+]
