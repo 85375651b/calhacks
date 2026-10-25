@@ -66,6 +66,7 @@ export default function DetailModal({
           Close ×
         </button>
       </div>
+      {p.usingFixtures && <p className="sample-badge">Sample property data</p>}
       <Photo key={p.photoUrl} url={p.photoUrl} address={p.address} />
       <div className="modal-content">
         <div className="detail-heading">
@@ -75,8 +76,12 @@ export default function DetailModal({
               {p.city}, {p.state} {p.zip}
             </p>
             <strong className="detail-price">{money(p.price)}</strong>
-            {p.checkedAt&&<p className="small-note">Status checked {new Date(p.checkedAt).toLocaleString()}</p>}
-            <PlannerLink listing={{...p,snapshots}} />
+            {p.checkedAt && (
+              <p className="small-note">
+                Status checked {new Date(p.checkedAt).toLocaleString()}
+              </p>
+            )}
+            <PlannerLink listing={{ ...p, snapshots }} />
           </div>
           <button
             aria-pressed={saved}
@@ -146,7 +151,7 @@ export default function DetailModal({
         )}
       </div>
       <div className="planner-mobile-action">
-        <PlannerLink listing={{...p,snapshots}} />
+        <PlannerLink listing={{ ...p, snapshots }} />
       </div>
     </dialog>
   );

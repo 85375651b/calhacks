@@ -177,7 +177,7 @@ test("both failures use labeled fallback; valid empty results do not", async () 
     },
     fallbackProvider: async () => {
       fallback++;
-      return [normalize({...raw,status:"Active"}, "RentCast")];
+      return [normalize({ ...raw, status: "Active" }, "RentCast")];
     },
     geocode: () => [],
   });

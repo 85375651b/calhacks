@@ -1,6 +1,6 @@
 # PropertyLens · Cal Hacks
 
-A responsive home-search app built with Vite, React (JavaScript), React Router, plain CSS and Express. Search criteria combine Zillow and Redfin listings, deduplicate shared homes, and open an accessible detail dialog with independently loaded insights. Save up to five homes per anonymous browser ID. The original address lookup remains at `/lookup` and `/results?address=...`.
+A responsive home-search app built with Vite, React (JavaScript), React Router, plain CSS and Express. Search criteria combine Zillow and Redfin listings, deduplicate shared homes, and open an accessible detail dialog with independently loaded insights. Save up to five homes per anonymous browser ID. The shared address lookup is available at `/lookup` and `/results?address=...`.
 
 ## Run locally
 
@@ -22,7 +22,7 @@ APIFY_MAX_RUNS_PER_HOUR=60
 PORT=3001
 ```
 
-- `USE_FIXTURES=true`: every endpoint uses saved/demo data; neither key is required and the server makes no external calls. Autocomplete uses saved suggestions too. Images may still be fetched by the browser; unavailable photos have placeholders.
+- `USE_FIXTURES=true`: sale lookups and property/insight endpoints use saved/demo data without paid calls. Autocomplete uses saved examples, then live geocoding for other queries. Images may still be fetched by the browser; unavailable photos have placeholders.
 - `USE_FIXTURES=false`: live providers with persistent caches. Both keys stay in `server/.env`, read through `process.env`. Missing provider credentials produce unavailable/fallback behavior.
 - `ENABLE_APIFY=false`: no live Apify launches. Search can fall back to RentCast; public FEMA remains available (groceries now use Google Maps via Apify). New-module fixtures still work. The legacy enrichment section remains disabled by this switch.
 - `APIFY_MAX_RUNS_PER_HOUR`: rolling one-hour actor-launch cap across search, insights and legacy enrichment; default 60. Reservations persist across restarts. One enabled search source counts as one run. Commute uses three runs on a cold request (two peak directions and a batched off-peak comparison).
@@ -62,7 +62,7 @@ Actor IDs/settings live in `server/config/apify.js`. `server/search/criteria.js`
 | Redfin — `brilliant_gum/redfin-scraper` | Location/search URL, sale/sold, price, minimum beds/baths, supported home types, sqft, minimum year, positive HOA cap, new construction, days on market                                                                                                                                                    | Exact beds, numeric bounds, no HOA, max year, lot size, stories and any other supported post-filter field |
 | RentCast fallback                       | City/state or ZIP, active/inactive, property type, beds/baths, price, sqft, lot size, years, days on market                                                                                                                                                                                                | Same numeric/home-type checks; unavailable features are reported                                          |
 
-Post-filtering **retains listings with missing data**. Results report `notApplied` by source for filters that cannot be enforced, including fireplace, 55+ restrictions, basement, foreclosure/pre-foreclosure/auction restrictions, and unsupported Redfin features. Walk Score is hidden because the selected actors do not supply it. Zillow's listing-category selector cannot combine new construction with pending/coming-soon, so that combination reports construction as not applied.
+Post-filtering **retains listings with missing data**. Results report `notApplied` by source for filters that cannot be enforced, including fireplace, 55+ restrictions, basement, foreclosure/pre-foreclosure/auction restrictions, and unsupported Redfin features. Walk Score is hidden because the selected actors do not supply it. Only active sale status is selectable; pending/coming-soon requests are reported as not applied.
 
 Only HTTPS Zillow/Redfin hosts and their subdomains are accepted for advanced URLs; credentials, custom ports and other hosts are rejected. A pasted URL controls its matching source and bypasses that source's form/post-filters. Other enabled sources need a location. Sort runs in the browser over the returned merged subset, not the site's entire inventory.
 
@@ -72,13 +72,13 @@ Search defaults to 12 items **per source**, capped at 50. Each source has a 90-s
 
 Only selected modules fetch, only after a listing opens. Preferences and the chosen work address/coordinates are kept in localStorage. Each card has its own loading, error/retry and source display.
 
-| Module          | Provider                                  | Behavior / limitations                                                                                                                                                                                                                                           |
-| --------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Safety / crime | `QMw7eHkWvgqxhnd0C` (build `0.7.1`, version `0.7`) | Full-address lookup; SpotCrime city-level safety score (0–10), violent crimes per 100,000 residents, national/state grades, and data year. Uncovered cities show unavailable. |
-| Natural hazards | `malonestar/fema-nri-county-risk-profile` | Requests census tracts; falls back to the keyless FEMA ArcGIS tract point query. County-only actor results trigger the tract fallback. Area loss is not a property insurance quote.                                                                              |
-| Schools         | `TopApi/zillow-scraper`, property details | Public GreatSchools entries from Zillow. Uses listing URL or address. Can backfill year built and four photos. No insurance premium is invented when the provider does not supply one.                                                                           |
-| Commute         | `rastriq/google-maps-directions-traffic`  | Verified different next-Tuesday 8 AM/3 AM predictions. Home-to-work at 8 AM, work-to-home at 5:30 PM, both compared to 3 AM in the same direction. `tz-lookup` derives the home's calendar; actor times are local to each origin. Predictions, not live traffic. |
-| Groceries       | Google Maps via Apify (`compass/crawler-google-places`) | One run per cold request: "grocery store" search within 5 km of the point, grocery-category filter, nearest five by haversine straight-line miles. Labeled illustrative fixtures are included. |
+| Module          | Provider                                                | Behavior / limitations                                                                                                                                                                                                                                           |
+| --------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Safety / crime  | `QMw7eHkWvgqxhnd0C` (build `0.7.1`, version `0.7`)      | Full-address lookup; SpotCrime city-level safety score (0–10), violent crimes per 100,000 residents, national/state grades, and data year. Uncovered cities show unavailable.                                                                                    |
+| Natural hazards | `malonestar/fema-nri-county-risk-profile`               | Requests census tracts; falls back to the keyless FEMA ArcGIS tract point query. County-only actor results trigger the tract fallback. Area loss is not a property insurance quote.                                                                              |
+| Schools         | `TopApi/zillow-scraper`, property details               | Public GreatSchools entries from Zillow. Uses listing URL or address. Can backfill year built and four photos. No insurance premium is invented when the provider does not supply one.                                                                           |
+| Commute         | `rastriq/google-maps-directions-traffic`                | Verified different next-Tuesday 8 AM/3 AM predictions. Home-to-work at 8 AM, work-to-home at 5:30 PM, both compared to 3 AM in the same direction. `tz-lookup` derives the home's calendar; actor times are local to each origin. Predictions, not live traffic. |
+| Groceries       | Google Maps via Apify (`compass/crawler-google-places`) | One run per cold request: "grocery store" search within 5 km of the point, grocery-category filter, nearest five by haversine straight-line miles. Labeled illustrative fixtures are included.                                                                   |
 
 Crime, hazard, school and commute successes cache for 24 hours; grocery successes cache for seven days at coordinates rounded to three decimals. Failures cache only five minutes. Retry does not bypass that protection. Search caches one hour (partial failures five minutes). Identical in-flight requests share work. All caches are ignored JSON files under `server/.cache/`, for **one Express process**, not a multi-replica deployment.
 
@@ -93,8 +93,8 @@ Fixture numeric and home-type filters operate on the saved rows. Native-only pro
 | Endpoint                                                | Purpose                                                                                            |
 | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `POST /api/search`                                      | Canonical criteria plus optional `limit`; merged listings, source counts/errors, not-applied notes |
-| `GET /api/autocomplete?q=`                              | US house suggestions; ten-minute cache, 20/IP/minute                                               |
-| `GET /api/insights/crime?address=&city=&state=&zip=`             | Crime area data                                                                                    |
+| `GET /api/autocomplete?q=`                              | US street/address suggestions; ten-minute cache, 30/client/minute                                  |
+| `GET /api/insights/crime?address=&city=&state=&zip=`    | Crime area data                                                                                    |
 | `GET /api/insights/hazards?lat=&lng=`                   | FEMA tract hazards                                                                                 |
 | `GET /api/insights/schools?listingId=&url=&address=`    | Public schools and detail backfill                                                                 |
 | `GET /api/insights/commute?lat=&lng=&workLat=&workLng=` | Peak/off-peak driving predictions                                                                  |
@@ -177,3 +177,29 @@ Prices, bed/bath ranges, exact beds, types, area/lot sizes, years, HOA, features
 Commute filtering requests at most 30 candidates per source (configurable up to 50), prunes by straight-line distance, and checks eight routes in a single Apify run (configurable up to 12). Seven-day route caching, the shared hourly actor cap, and one in-flight batch per browser bound costs. **Check more** uses another bounded batch and Apify credits. Unchecked and over-limit homes are clearly separated.
 
 Set `USE_FIXTURES=true` for offline rules, saved Austin listings and sample route data with no paid calls. Sample listings do not move to the requested city; an SF commute constraint may therefore return none. See [the full phrase list, API, privacy and limitations](docs/nl-search.md). Run `npm run dev`; validate with `npm test`, `npm run build` and `npm run check:secrets`.
+
+## Address and description search
+
+The main box accepts both `4 bed house in Los Angeles under $1.5M` and `147 Midway Ln`. Confident rules avoid OpenAI. Addresses resolve to an active sale listing, a choice of cities/units, a not-for-sale message without property details, or spelling/location tips. `/lookup` and `/results?address=...` use the same flow. Bare number/street fragments that cannot resolve fall back to description clarification. The planner's Back to listing restores the search session without another lookup; sale snapshots older than one hour are discarded on restoration.
+
+Only active for-sale homes are displayed. Pending, contingent, coming-soon, sold, off-market and rental records are removed on the server. Favorites remain saved snapshots and are exempt. Search/address status caches last at most one hour, and the detail popup shows the status-check time. Unknown provider status is accepted only from an explicit sale-only request with no contradictory signal.
+
+For better US address suggestions, get an optional free key from [Geoapify MyProjects](https://myprojects.geoapify.com/), create a project, and copy its API key into the existing `server/.env`:
+
+```dotenv
+GEOAPIFY_API_KEY=your_key_here
+AUTOCOMPLETE_PROVIDER=auto
+GEOAPIFY_MAX_REQUESTS_PER_DAY=2500
+RENTCAST_ADDRESS_MAX_REQUESTS_PER_DAY=100
+```
+
+No key is required: missing keys, errors and the daily cap fall back to Photon. The server logs a setup hint once at startup. Keys never enter the browser. Suggestions use last-result/work coordinates as a bias, require complete US addresses when a house number is typed, and verify selections with the US Census Geocoder. Verification describes an address match, not sale status or unit existence.
+
+```sh
+npm run probe:autocomplete -- "147 midway lane"
+npm run probe:autocomplete -- --all
+```
+
+The probe prints safe provider results and Census verification; it does not run RentCast or Apify. See [provider findings](docs/providers.md#address-search-and-autocomplete) for measured limitations and thresholds.
+
+Fixture demos: `5101 Trail West Dr` → active sample; `100 Pending St` / `200 Sold St` → no property details; `147 Midway Ln` → two sample cities; `999 Unknown Street` → not found. Sample candidate addresses and property values are illustrative, not current market claims. Address lookups remain offline in fixture mode. Autocomplete uses saved examples and falls back to live public geocoding for other queries, as requested; unmatched queries may therefore need network access.

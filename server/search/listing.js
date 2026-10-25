@@ -1,4 +1,4 @@
-import {saleStatus,isDisplayable} from './status.js';
+import { saleStatus, isDisplayable } from "./status.js";
 import { createHash } from "node:crypto";
 import { siteUrl } from "./criteria.js";
 export const number = (v) =>
@@ -79,7 +79,9 @@ export function normalize(item, source, forSaleQuery = false) {
     text(item.address?.streetAddress) ||
     text(item.address) ||
     text(item.streetLine) ||
-    (text(item.addressLine1) ? [item.addressLine1,item.addressLine2].filter(Boolean).join(' ') : text(item.formattedAddress));
+    (text(item.addressLine1)
+      ? [item.addressLine1, item.addressLine2].filter(Boolean).join(" ")
+      : text(item.formattedAddress));
   const p = {
     address,
     city: text(item.city) || text(item.address?.city),
@@ -99,7 +101,12 @@ export function normalize(item, source, forSaleQuery = false) {
       item.hoaFee ?? item.hoa?.fee ?? item.hoa ?? item.monthlyHoaFee,
     ),
     daysOnMarket: number(item.daysOnMarket ?? item.daysOnZillow),
-    status: saleStatus(item.listingStatus || item.mlsStatus || item.status || item.homeStatus, source, item, forSaleQuery),
+    status: saleStatus(
+      item.listingStatus || item.mlsStatus || item.status || item.homeStatus,
+      source,
+      item,
+      forSaleQuery,
+    ),
     checkedAt: new Date().toISOString(),
     garageSpaces: number(item.garageSpaces),
     photoUrl:
@@ -107,11 +114,13 @@ export function normalize(item, source, forSaleQuery = false) {
         ? null
         : photo(item.mainImage || item.coverPhotoUrl || item.photos?.[0]),
     lat:
-      typeof (item.latitude ?? item.lat) === "number" && Math.abs(item.latitude ?? item.lat) <= 90
+      typeof (item.latitude ?? item.lat) === "number" &&
+      Math.abs(item.latitude ?? item.lat) <= 90
         ? (item.latitude ?? item.lat)
         : null,
     lng:
-      typeof (item.longitude ?? item.lng) === "number" && Math.abs(item.longitude ?? item.lng) <= 180
+      typeof (item.longitude ?? item.lng) === "number" &&
+      Math.abs(item.longitude ?? item.lng) <= 180
         ? (item.longitude ?? item.lng)
         : null,
     zillowUrl: z ? siteUrl(item.propertyUrl || item.url, "zillow") : null,
@@ -127,13 +136,16 @@ export function mergeListings(rows) {
     if (!p.address) continue;
     const key = identity(p);
     if (!map.has(key)) {
-      map.set(key, { ...p, id:createHash("sha256").update(key).digest("hex").slice(0,24) });
+      map.set(key, {
+        ...p,
+        id: createHash("sha256").update(key).digest("hex").slice(0, 24),
+      });
       continue;
     }
     const old = map.get(key);
     for (const [k, v] of Object.entries(p))
       if (old[k] == null && v != null) old[k] = v;
-    if(!isDisplayable(p))old.status=p.status;
+    if (!isDisplayable(p)) old.status = p.status;
     old.sources = [...new Set([...old.sources, ...p.sources])];
   }
   return [...map.values()];

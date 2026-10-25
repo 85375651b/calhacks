@@ -273,10 +273,13 @@ test("lookup responds independently while enrichment is still pending; API error
   const pending = new Promise((resolve) => {
     release = resolve;
   });
-  const app = createApp(async () => ({ address: "123 Main", listing:{status:"Active"} }), {
-    enrich: () => pending,
-    autocomplete: async () => [],
-  });
+  const app = createApp(
+    async () => ({ address: "123 Main", listing: { status: "Active" } }),
+    {
+      enrich: () => pending,
+      autocomplete: async () => [],
+    },
+  );
   const server = app.listen(0, "127.0.0.1");
   await new Promise((resolve) => server.once("listening", resolve));
   t.after(
@@ -288,10 +291,16 @@ test("lookup responds independently while enrichment is still pending; API error
       }),
   );
   const base = `http://127.0.0.1:${server.address().port}`;
-  const enrichment = fetch(`${base}/api/enrich?address=123`);
+  const enrichment = fetch(
+    `${base}/api/enrich?address=5500%20Grand%20Lake%20Dr,%20San%20Antonio,%20TX%2078244`,
+  );
   const lookup = await fetch(`${base}/api/lookup?address=123`);
   assert.equal(lookup.status, 200);
   assert.equal((await lookup.json()).address, "123 Main");
-  release({...normalizeEnrichment(fixtures.items),listingStatus:"FOR_SALE"});
+  release({
+    ...normalizeEnrichment(fixtures.items),
+    listingStatus: "FOR_SALE",
+    status: "for_sale",
+  });
   assert.equal((await enrichment).status, 200);
 });

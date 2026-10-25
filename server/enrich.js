@@ -1,3 +1,4 @@
+import { normalizeListingStatus } from "./search/status.js";
 import { readFile } from "node:fs/promises";
 import { normalizeAddress, CACHE_TTL } from "./cache.js";
 import { LookupError } from "./errors.js";
@@ -64,7 +65,12 @@ export function normalizeEnrichment(
     .slice(0, 5);
   const description = cleanText(row.description);
   return {
+    address: cleanText(row.street) || cleanText(row.address),
+    city: cleanText(row.city),
+    state: cleanText(row.state),
+    zip: cleanText(row.zip),
     zestimate: number(row.zestimate),
+    status: normalizeListingStatus(row.status, "Zillow", row),
     listingStatus: cleanText(row.status),
     zillowUrl: safeUrl(row.url),
     // The actor documents a primary image only. Never invent gallery URLs from photoCount.
@@ -143,7 +149,7 @@ export function createEnrichment({
     const pending = (async () => {
       try {
         const data = normalizeEnrichment(await request(address));
-        await cache.set(key, { address, sampleData: false, data }, CACHE_TTL);
+        await cache.set(key, { address, sampleData: false, data }, 3600000);
         return data;
       } catch (error) {
         const safe =

@@ -1,10 +1,59 @@
-.address-combobox {position:relative;min-width:0;flex:1;}
-.address-combobox input,.address-combobox textarea {width:100%;box-sizing:border-box;padding:1rem;border:1px solid var(--border,#cbd5d1);border-radius:12px;font:inherit;min-width:0;}
-.address-combobox .autocomplete-dropdown {z-index:30;max-height:360px;overflow:auto;box-shadow:0 12px 32px #0002;}
-.address-combobox .autocomplete-dropdown small {display:block;opacity:.75;margin-top:4px;}
-.address-combobox .autocomplete-dropdown li {min-height:48px;cursor:pointer;overflow-wrap:anywhere;}
-.address-combobox mark {background:#dcece0;color:inherit;}
-.address-results {padding:1.25rem 0;min-height:180px;}
-.address-results .chips {gap:12px;flex-wrap:wrap;margin:16px 0;}
-.address-results .toggle-chip {white-space:normal;overflow-wrap:anywhere;max-width:100%;}
-@media(max-width:480px){.address-combobox .autocomplete-dropdown{left:0;right:0;width:auto;}.address-results .chips button{width:100%;}}
+.address-combobox {
+  position: relative;
+  min-width: 0;
+  flex: 1;
+}
+.address-combobox input,
+.address-combobox textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+  border: 1px solid var(--border, #cbd5d1);
+  border-radius: 12px;
+  font: inherit;
+  min-width: 0;
+}
+.address-combobox .autocomplete-dropdown {
+  z-index: 30;
+  max-height: 360px;
+  overflow: auto;
+  box-shadow: 0 12px 32px #0002;
+}
+.address-combobox .autocomplete-dropdown small {
+  display: block;
+  opacity: 0.75;
+  margin-top: 4px;
+}
+.address-combobox .autocomplete-dropdown li {
+  min-height: 48px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.address-combobox mark {
+  background: #dcece0;
+  color: inherit;
+}
+.address-results {
+  padding: 1.25rem 0;
+  min-height: 180px;
+}
+.address-results .chips {
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.address-results .toggle-chip {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+@media (max-width: 480px) {
+  .address-combobox .autocomplete-dropdown {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+  .address-results .chips button {
+    width: 100%;
+  }
+}

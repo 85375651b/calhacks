@@ -1,13 +1,31 @@
-import {readFile} from 'node:fs/promises';
-import {join} from 'node:path';
-import {serverDirectory} from '../config.js';
-import {exactAddress} from '../../src/lib/search/address.js';
-import {visibleListings} from './status.js';
-// Read the existing persisted search cache; no duplicate database or stale index.
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import { serverDirectory } from "../config.js";
+import { exactAddress } from "../../src/lib/search/address.js";
+import { visibleListings } from "./status.js";
+// Read persisted search and address caches; never extend their status lifetime.
 export async function recentListings(candidate) {
-  try {
-    const entries=JSON.parse(await readFile(join(serverDirectory,'.cache','search-sale-v1.json'),'utf8'));
-    return visibleListings(Object.values(entries).filter(e=>e.until>Date.now()&&!e.value?.usingFixtures).flatMap(e=>e.value?.listings||[]))
-      .filter(p=>Date.parse(p.checkedAt)>Date.now()-3600000&&exactAddress(candidate,p));
-  } catch {return [];}
+  const groups = await Promise.all(
+    ["search-sale-v1.json", "address-sale-v1.json"].map(async (file) => {
+      try {
+        return Object.values(
+          JSON.parse(
+            await readFile(join(serverDirectory, ".cache", file), "utf8"),
+          ),
+        );
+      } catch {
+        return [];
+      }
+    }),
+  );
+  return visibleListings(
+    groups
+      .flat()
+      .filter((e) => e.until > Date.now() && !e.value?.usingFixtures)
+      .flatMap((e) => e.value?.listings || []),
+  ).filter(
+    (p) =>
+      Date.parse(p.checkedAt) > Date.now() - 3600000 &&
+      exactAddress(candidate, p),
+  );
 }

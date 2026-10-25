@@ -12,7 +12,7 @@ export const supportedFilters = [
   "newConstruction",
 ];
 export function buildInput(c) {
-  const base = { maxListings: c.limit, searchMode:"SALE" };
+  const base = { maxListings: c.limit, searchMode: "SALE" };
   if (siteUrl(c.searchUrl, "redfin"))
     return { ...base, locations: [c.searchUrl] };
   const v = {

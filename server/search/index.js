@@ -1,4 +1,4 @@
-import {visibleListings,SHOW_HIDDEN_COUNT} from './status.js';
+import { visibleListings, SHOW_HIDDEN_COUNT } from "./status.js";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { config, serverDirectory } from "../config.js";
@@ -6,7 +6,13 @@ import { ACTORS } from "../config/apify.js";
 import { runActor } from "../providers/actor.js";
 import { persistentMemo } from "../storage/memo.js";
 import { validateCriteria, siteUrl } from "./criteria.js";
-import { mergeListings, postFilter, unapplied, normalize, identity } from "./listing.js";
+import {
+  mergeListings,
+  postFilter,
+  unapplied,
+  normalize,
+  identity,
+} from "./listing.js";
 import * as zillow from "./adapters/zillow.js";
 import * as redfin from "./adapters/redfin.js";
 import { createAutocompleteProvider } from "../providers/autocomplete.js";
@@ -98,7 +104,8 @@ export function createSearch({
             const a = adapters[source],
               override = siteUrl(c.searchUrl, source.toLowerCase());
             try {
-              if(!enabled&&!fixtureMode)throw new Error("Listing source disabled.");
+              if (!enabled && !fixtureMode)
+                throw new Error("Listing source disabled.");
               if (!c.location && !override)
                 throw new Error("Enter a location for this source.");
               let rows = fixtureMode
@@ -115,7 +122,7 @@ export function createSearch({
                 : await runner(ACTORS[source], a.buildInput(c), {
                     limit: c.limit,
                   });
-              let listings = rows.map(i=>normalize(i,source,!override));
+              let listings = rows.map((i) => normalize(i, source, !override));
               if (!override)
                 listings = listings.filter((p) => postFilter(p, c));
               else
@@ -160,8 +167,8 @@ export function createSearch({
           );
           notApplied.RentCast = unapplied(c, ["minBeds", "minBaths"]);
         }
-        const hiddenCount=listings.length-visibleListings(listings).length;
-        listings=visibleListings(listings);
+        const hiddenCount = listings.length - visibleListings(listings).length;
+        listings = visibleListings(listings);
         if (!fixtureMode) {
           await Promise.all(
             listings.map(async (p) => {
@@ -172,8 +179,11 @@ export function createSearch({
                 );
                 const h = hits.find(
                   (h) =>
-                    identity({address:h.street,city:h.city,state:h.state}) ===
-                      identity({...p,zip:null}) &&
+                    identity({
+                      address: h.street,
+                      city: h.city,
+                      state: h.state,
+                    }) === identity({ ...p, zip: null }) &&
                     (!p.zip || p.zip === h.zip),
                 );
                 if (h) {
@@ -186,14 +196,18 @@ export function createSearch({
           );
           listings = mergeListings(listings);
         }
+        for (const source of Object.keys(sourceCounts))
+          sourceCounts[source] = listings.filter((p) =>
+            p.sources.includes(source),
+          ).length;
         if (fixtureMode)
           notes.push(
             "Offline demo: numeric and home-type filters are applied to saved results. Native-only provider filters and pasted URL contents are not simulated.",
           );
         return {
-          listings:visibleListings(listings),
-          checkedAt:new Date().toISOString(),
-          ...(SHOW_HIDDEN_COUNT?{hiddenCount}:{}),
+          listings: visibleListings(listings),
+          checkedAt: new Date().toISOString(),
+          ...(SHOW_HIDDEN_COUNT ? { hiddenCount } : {}),
           sourceErrors,
           sourceCounts,
           notApplied,

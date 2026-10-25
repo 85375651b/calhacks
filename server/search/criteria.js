@@ -125,7 +125,7 @@ export function validateCriteria(input = {}) {
       c[key] = [...new Set(input[key])].sort();
     }
   }
-  c.status="sale";
+  c.status = "sale";
   c.sources.sort();
   if (!c.sources.length) throw new Error("Choose at least one source.");
   if (input.searchUrl) {

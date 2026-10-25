@@ -29,7 +29,12 @@ export const supportedFilters = [
   "keywords",
 ];
 export function buildInput(c) {
-  const base = { maxResults: c.limit, includeDetails: false, compact: true, listingStatus:"forSale" };
+  const base = {
+    maxResults: c.limit,
+    includeDetails: false,
+    compact: true,
+    listingStatus: "forSale",
+  };
   if (siteUrl(c.searchUrl, "zillow"))
     return { ...base, searchUrls: [{ url: c.searchUrl }] };
   const v = {

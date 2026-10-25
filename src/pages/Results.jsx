@@ -1,1 +1,1 @@
-export {default} from './Lookup';
+export { default } from "./Lookup";
