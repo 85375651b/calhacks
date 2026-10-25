@@ -68,7 +68,215 @@
         "Insights like schools and safety are shown when you open a home, not used to filter results. Explicit commute and radius limits are checked separately."
       ],
       "notApplied": [],
-      "questions": []
+      "questions": [],
+      "understood": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "house",
+          "kind": "home-type",
+          "confidence": 1
+        },
+        {
+          "start": 6,
+          "end": 8,
+          "text": "in",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 23,
+          "end": 29,
+          "text": "2 beds",
+          "kind": "beds-baths",
+          "confidence": 1
+        },
+        {
+          "start": 30,
+          "end": 40,
+          "text": "under 600k",
+          "kind": "price",
+          "confidence": 1
+        },
+        {
+          "start": 41,
+          "end": 45,
+          "text": "with",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 46,
+          "end": 47,
+          "text": "a",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 48,
+          "end": 104,
+          "text": "<30 minute commute to work at 1 Market St, San Francisco",
+          "kind": "commute",
+          "confidence": 1
+        }
+      ],
+      "leftover": [
+        {
+          "text": "san francisco",
+          "start": 9,
+          "end": 22,
+          "relation": "in"
+        }
+      ],
+      "unrecognized": [
+        {
+          "text": "san francisco",
+          "suggestions": [
+            "Choose a place",
+            "Edit in filters"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "text": "house",
+          "start": 0,
+          "end": 5,
+          "kind": "home-type"
+        },
+        {
+          "text": "in",
+          "start": 6,
+          "end": 8,
+          "kind": "filler"
+        },
+        {
+          "text": "san",
+          "start": 9,
+          "end": 12,
+          "kind": "leftover"
+        },
+        {
+          "text": "francisco",
+          "start": 13,
+          "end": 22,
+          "kind": "leftover"
+        },
+        {
+          "text": "2",
+          "start": 23,
+          "end": 24,
+          "kind": "beds-baths"
+        },
+        {
+          "text": "beds",
+          "start": 25,
+          "end": 29,
+          "kind": "beds-baths"
+        },
+        {
+          "text": "under",
+          "start": 30,
+          "end": 35,
+          "kind": "price"
+        },
+        {
+          "text": "600k",
+          "start": 36,
+          "end": 40,
+          "kind": "price"
+        },
+        {
+          "text": "with",
+          "start": 41,
+          "end": 45,
+          "kind": "filler"
+        },
+        {
+          "text": "a",
+          "start": 46,
+          "end": 47,
+          "kind": "filler"
+        },
+        {
+          "text": "<",
+          "start": 48,
+          "end": 49,
+          "kind": "commute"
+        },
+        {
+          "text": "30",
+          "start": 49,
+          "end": 51,
+          "kind": "commute"
+        },
+        {
+          "text": "minute",
+          "start": 52,
+          "end": 58,
+          "kind": "commute"
+        },
+        {
+          "text": "commute",
+          "start": 59,
+          "end": 66,
+          "kind": "commute"
+        },
+        {
+          "text": "to",
+          "start": 67,
+          "end": 69,
+          "kind": "commute"
+        },
+        {
+          "text": "work",
+          "start": 70,
+          "end": 74,
+          "kind": "commute"
+        },
+        {
+          "text": "at",
+          "start": 75,
+          "end": 77,
+          "kind": "commute"
+        },
+        {
+          "text": "1",
+          "start": 78,
+          "end": 79,
+          "kind": "commute"
+        },
+        {
+          "text": "Market",
+          "start": 80,
+          "end": 86,
+          "kind": "commute"
+        },
+        {
+          "text": "St",
+          "start": 87,
+          "end": 89,
+          "kind": "commute"
+        },
+        {
+          "text": ",",
+          "start": 89,
+          "end": 90,
+          "kind": "commute"
+        },
+        {
+          "text": "San",
+          "start": 91,
+          "end": 94,
+          "kind": "commute"
+        },
+        {
+          "text": "Francisco",
+          "start": 95,
+          "end": 104,
+          "kind": "commute"
+        }
+      ]
     }
   },
   {
@@ -128,7 +336,143 @@
         "3 beds treated as 3 or more; say 'exactly 3 beds' for an exact match."
       ],
       "notApplied": [],
-      "questions": []
+      "questions": [],
+      "understood": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "3 bed",
+          "kind": "beds-baths",
+          "confidence": 1
+        },
+        {
+          "start": 6,
+          "end": 11,
+          "text": "house",
+          "kind": "home-type",
+          "confidence": 1
+        },
+        {
+          "start": 12,
+          "end": 14,
+          "text": "in",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 22,
+          "end": 33,
+          "text": "under $700k",
+          "kind": "price",
+          "confidence": 1
+        },
+        {
+          "start": 34,
+          "end": 38,
+          "text": "with",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 39,
+          "end": 40,
+          "text": "a",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 41,
+          "end": 45,
+          "text": "pool",
+          "kind": "feature",
+          "confidence": 1
+        }
+      ],
+      "leftover": [
+        {
+          "text": "Austin",
+          "start": 15,
+          "end": 21,
+          "relation": "in"
+        }
+      ],
+      "unrecognized": [
+        {
+          "text": "Austin",
+          "suggestions": [
+            "Choose a place",
+            "Edit in filters"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "text": "3",
+          "start": 0,
+          "end": 1,
+          "kind": "beds-baths"
+        },
+        {
+          "text": "bed",
+          "start": 2,
+          "end": 5,
+          "kind": "beds-baths"
+        },
+        {
+          "text": "house",
+          "start": 6,
+          "end": 11,
+          "kind": "home-type"
+        },
+        {
+          "text": "in",
+          "start": 12,
+          "end": 14,
+          "kind": "filler"
+        },
+        {
+          "text": "Austin",
+          "start": 15,
+          "end": 21,
+          "kind": "leftover"
+        },
+        {
+          "text": "under",
+          "start": 22,
+          "end": 27,
+          "kind": "price"
+        },
+        {
+          "text": "$",
+          "start": 28,
+          "end": 29,
+          "kind": "price"
+        },
+        {
+          "text": "700k",
+          "start": 29,
+          "end": 33,
+          "kind": "price"
+        },
+        {
+          "text": "with",
+          "start": 34,
+          "end": 38,
+          "kind": "filler"
+        },
+        {
+          "text": "a",
+          "start": 39,
+          "end": 40,
+          "kind": "filler"
+        },
+        {
+          "text": "pool",
+          "start": 41,
+          "end": 45,
+          "kind": "feature"
+        }
+      ]
     }
   },
   {
@@ -182,7 +526,104 @@
         "New listings means listed in the last 7 days."
       ],
       "notApplied": [],
-      "questions": []
+      "questions": [],
+      "understood": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "condo",
+          "kind": "home-type",
+          "confidence": 1
+        },
+        {
+          "start": 6,
+          "end": 8,
+          "text": "in",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 17,
+          "end": 27,
+          "text": "under 500k",
+          "kind": "price",
+          "confidence": 1
+        },
+        {
+          "start": 29,
+          "end": 41,
+          "text": "new listings",
+          "kind": "freshness",
+          "confidence": 1
+        }
+      ],
+      "leftover": [
+        {
+          "text": "Seattle",
+          "start": 9,
+          "end": 16,
+          "relation": "in"
+        }
+      ],
+      "unrecognized": [
+        {
+          "text": "Seattle",
+          "suggestions": [
+            "Choose a place",
+            "Edit in filters"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "text": "condo",
+          "start": 0,
+          "end": 5,
+          "kind": "home-type"
+        },
+        {
+          "text": "in",
+          "start": 6,
+          "end": 8,
+          "kind": "filler"
+        },
+        {
+          "text": "Seattle",
+          "start": 9,
+          "end": 16,
+          "kind": "leftover"
+        },
+        {
+          "text": "under",
+          "start": 17,
+          "end": 22,
+          "kind": "price"
+        },
+        {
+          "text": "500k",
+          "start": 23,
+          "end": 27,
+          "kind": "price"
+        },
+        {
+          "text": ",",
+          "start": 27,
+          "end": 28,
+          "kind": "leftover"
+        },
+        {
+          "text": "new",
+          "start": 29,
+          "end": 32,
+          "kind": "freshness"
+        },
+        {
+          "text": "listings",
+          "start": 33,
+          "end": 41,
+          "kind": "freshness"
+        }
+      ]
     }
   },
   {
@@ -230,7 +671,136 @@
         "Insights like schools and safety are shown when you open a home, not used to filter results. Explicit commute and radius limits are checked separately."
       ],
       "notApplied": [],
-      "questions": []
+      "questions": [],
+      "understood": [
+        {
+          "start": 0,
+          "end": 6,
+          "text": "family",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 7,
+          "end": 11,
+          "text": "home",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 12,
+          "end": 14,
+          "text": "in",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 24,
+          "end": 28,
+          "text": "near",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 29,
+          "end": 41,
+          "text": "good schools",
+          "kind": "insight",
+          "confidence": 1
+        },
+        {
+          "start": 43,
+          "end": 49,
+          "text": "no HOA",
+          "kind": "hoa",
+          "confidence": 1
+        }
+      ],
+      "leftover": [
+        {
+          "text": "San Jose",
+          "start": 15,
+          "end": 23,
+          "relation": "in"
+        }
+      ],
+      "unrecognized": [
+        {
+          "text": "San Jose",
+          "suggestions": [
+            "Choose a place",
+            "Edit in filters"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "text": "family",
+          "start": 0,
+          "end": 6,
+          "kind": "filler"
+        },
+        {
+          "text": "home",
+          "start": 7,
+          "end": 11,
+          "kind": "filler"
+        },
+        {
+          "text": "in",
+          "start": 12,
+          "end": 14,
+          "kind": "filler"
+        },
+        {
+          "text": "San",
+          "start": 15,
+          "end": 18,
+          "kind": "leftover"
+        },
+        {
+          "text": "Jose",
+          "start": 19,
+          "end": 23,
+          "kind": "leftover"
+        },
+        {
+          "text": "near",
+          "start": 24,
+          "end": 28,
+          "kind": "filler"
+        },
+        {
+          "text": "good",
+          "start": 29,
+          "end": 33,
+          "kind": "insight"
+        },
+        {
+          "text": "schools",
+          "start": 34,
+          "end": 41,
+          "kind": "insight"
+        },
+        {
+          "text": ",",
+          "start": 41,
+          "end": 42,
+          "kind": "leftover"
+        },
+        {
+          "text": "no",
+          "start": 43,
+          "end": 45,
+          "kind": "hoa"
+        },
+        {
+          "text": "HOA",
+          "start": 46,
+          "end": 49,
+          "kind": "hoa"
+        }
+      ]
     }
   },
   {
@@ -300,6 +870,145 @@
           "field": "work",
           "message": "What is your work address?",
           "options": []
+        }
+      ],
+      "understood": [
+        {
+          "start": 0,
+          "end": 5,
+          "text": "2 bed",
+          "kind": "beds-baths",
+          "confidence": 1
+        },
+        {
+          "start": 6,
+          "end": 16,
+          "text": "under 600k",
+          "kind": "price",
+          "confidence": 1
+        },
+        {
+          "start": 17,
+          "end": 19,
+          "text": "in",
+          "kind": "filler",
+          "confidence": 1
+        },
+        {
+          "start": 35,
+          "end": 66,
+          "text": "under 30 min commute to my work",
+          "kind": "commute",
+          "confidence": 1
+        }
+      ],
+      "leftover": [
+        {
+          "text": "San Francisco",
+          "start": 20,
+          "end": 33,
+          "relation": "in"
+        }
+      ],
+      "unrecognized": [
+        {
+          "text": "San Francisco",
+          "suggestions": [
+            "Choose a place",
+            "Edit in filters"
+          ]
+        }
+      ],
+      "tokens": [
+        {
+          "text": "2",
+          "start": 0,
+          "end": 1,
+          "kind": "beds-baths"
+        },
+        {
+          "text": "bed",
+          "start": 2,
+          "end": 5,
+          "kind": "beds-baths"
+        },
+        {
+          "text": "under",
+          "start": 6,
+          "end": 11,
+          "kind": "price"
+        },
+        {
+          "text": "600k",
+          "start": 12,
+          "end": 16,
+          "kind": "price"
+        },
+        {
+          "text": "in",
+          "start": 17,
+          "end": 19,
+          "kind": "filler"
+        },
+        {
+          "text": "San",
+          "start": 20,
+          "end": 23,
+          "kind": "leftover"
+        },
+        {
+          "text": "Francisco",
+          "start": 24,
+          "end": 33,
+          "kind": "leftover"
+        },
+        {
+          "text": ",",
+          "start": 33,
+          "end": 34,
+          "kind": "leftover"
+        },
+        {
+          "text": "under",
+          "start": 35,
+          "end": 40,
+          "kind": "commute"
+        },
+        {
+          "text": "30",
+          "start": 41,
+          "end": 43,
+          "kind": "commute"
+        },
+        {
+          "text": "min",
+          "start": 44,
+          "end": 47,
+          "kind": "commute"
+        },
+        {
+          "text": "commute",
+          "start": 48,
+          "end": 55,
+          "kind": "commute"
+        },
+        {
+          "text": "to",
+          "start": 56,
+          "end": 58,
+          "kind": "commute"
+        },
+        {
+          "text": "my",
+          "start": 59,
+          "end": 61,
+          "kind": "commute"
+        },
+        {
+          "text": "work",
+          "start": 62,
+          "end": 66,
+          "kind": "commute"
         }
       ]
     }

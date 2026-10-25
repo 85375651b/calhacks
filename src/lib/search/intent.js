@@ -18,7 +18,7 @@ export function classifyIntent(value) {
           .replace(/\s+/g, " ")
           .replace(/[.!?;]+$/, "")
       : "";
-  if (/^\$?\d+(?:\.\d+)?[km]\b/i.test(text))
+  if (/^\$?\d+(?:\.\d+)?[km]\b/i.test(text) || /^\d+(?:\s*(?:-|to)\s*\d[\d,.]*\s*[km]\b|\s*(?:br|bd|ba|bdrms?|bedro?oms?|bedroms)\b)/i.test(text))
     return { intent: "description", confidence: 0.99 };
   const start = text.match(/^\d+[a-z]?(?:-\d+)?\s+(.+)$/i);
   if (start) {

@@ -102,7 +102,7 @@ test("examples and commute forms keep numerical scope and defaults", () => {
     ).extras.insights,
     ["crime", "schools", "groceries", "hazards", "commute"],
   );
-  assert.ok(parseRules("a purple rocket").notApplied.length);
+  assert.ok(parseRules("a purple rocket").unrecognized.length);
 });
 test("exact maxima post-filter; old minimum semantics retained", () => {
   assert.equal(postFilter({ beds: 3 }, { minBeds: 2, maxBeds: 2 }), false);
@@ -122,7 +122,7 @@ function modelFrom(rules) {
               : null),
     ]),
   );
-  return { ...rules, intent: "description", criteria: c, parser: undefined };
+  return Object.fromEntries(Object.keys(parseSchema.properties).map(k=>[k,k==='intent'?'description':k==='criteria'?c:rules[k]]));
 }
 test("uncertain input uses schema intent, and unresolved bare addresses can fall back to descriptions", async (t) => {
   const old = process.env.OPENAI_API_KEY;
