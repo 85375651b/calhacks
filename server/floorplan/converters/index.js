@@ -1,5 +1,6 @@
 import { generateHouse } from "../../../src/lib/planner/houseGenerator.js";
 import { validateHouseModel } from "../../../src/lib/planner/validateHouseModel.js";
+import { createCubicasaConverter } from "./cubicasa.js";
 export class NotImplementedError extends Error {
   constructor() {
     super("Floor plan conversion is coming soon.");
@@ -40,6 +41,9 @@ export function createConverterRegistry(extra = {}) {
       },
     ],
     [
+      "cubicasa", createCubicasaConverter(),
+    ],
+    [
       "estimated-layout",
       {
         label: "Estimated layout",
@@ -68,6 +72,7 @@ export function createConverterRegistry(extra = {}) {
         label: c.label || id,
         stub: c.stub === true,
         imageBased: c.imageBased === true,
+        automaticScale: c.automaticScale === true,
       })),
     async convert(name, input) {
       const entry = entries.get(name);
@@ -78,6 +83,7 @@ export function createConverterRegistry(extra = {}) {
         throw Error("Converter returned the wrong coordinate source.");
       return {
         houseModel,
+        ...(r.calibration ? { calibration: r.calibration } : {}),
         confidence: Number.isFinite(r.confidence)
           ? Math.max(0, Math.min(1, r.confidence))
           : 0,

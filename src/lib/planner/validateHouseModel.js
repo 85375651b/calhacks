@@ -70,6 +70,7 @@ export function validateHouseModel(value) {
         z: Math.max(0, Math.min(depthIn, num(o.z, -0.01, depthIn + 0.01))),
         widthIn: num(o.widthIn, 1, 1200),
         axis: ["x", "z"].includes(o.axis) ? o.axis : fail(),
+        ...(o.rotationDeg != null ? { rotationDeg: num(o.rotationDeg, -360, 360) } : {}),
       });
       const doors = unique(
         list(f.doors, 120).map((d) => {
@@ -92,6 +93,19 @@ export function validateHouseModel(value) {
       );
       if (f.openPlan && (doors.length || windows.length || rooms.length !== 1))
         fail();
+      const walls = f.walls == null ? undefined : unique(list(f.walls, 1000).map(w => {
+        const wall = { id: id(w.id), x1: num(w.x1, 0, widthIn), z1: num(w.z1, 0, depthIn),
+          x2: num(w.x2, 0, widthIn), z2: num(w.z2, 0, depthIn), thicknessIn: num(w.thicknessIn, 0.01, 120) };
+        const length = Math.hypot(wall.x2-wall.x1,wall.z2-wall.z1);
+        if (length < 0.1 || f.openPlan) fail();
+        wall.openings = list(w.openings || [], 240).map(o => ({
+          type: ["door","window"].includes(o.type) ? o.type : fail(),
+          positionIn: num(o.positionIn,0,length), widthIn: num(o.widthIn,0.1,1200),
+          heightIn: num(o.heightIn,1,240), sillIn: num(o.sillIn,0,240),
+        }));
+        return wall;
+      }), "id");
+      if (walls && !walls.length) fail();
       return {
         level,
         rooms,
@@ -99,6 +113,7 @@ export function validateHouseModel(value) {
         windows,
         widthIn,
         depthIn,
+        ...(walls ? { walls } : {}),
         ...(f.openPlan === true ? { openPlan: true } : {}),
       };
     }),

@@ -26,6 +26,12 @@ Arrow keys move one inch (Shift: six), brackets rotate 15 degrees (Shift: 90), D
 
 ## Furniture and resolution
 
+IKEA description search now connects to the user's IKEA furniture finder actor,
+then reads available product dimensions and offers **Save and place in house**.
+Missing measurements must be entered, and the actor's ranking score is never
+displayed as a confidence percentage. See [IKEA integration](ikea-furniture.md)
+for configuration, recorded sample behavior and the prepared actor revision.
+
 Choose among 30 catalog items or add a name, product URL, manually measured item, or up to ten lines in bulk. Every resolved item opens an editable native confirmation dialog before being saved to the library. Catalog sizes and AI guesses are estimated. Product dimensions come from the page you link and must be verified on the retailer's site; text extraction can mistake axis order or packaging dimensions.
 
 Fixture URLs:

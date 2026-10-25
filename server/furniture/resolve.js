@@ -14,6 +14,7 @@ import {
   validateUrl,
 } from "./resolveUrl.js";
 import { aiDimensions, validateDimensions } from "./dimensions.js";
+import { resolveIkea } from "./ikea.js";
 const memo = persistentMemo(
   join(serverDirectory, ".cache", "furniture-resolve.json"),
 );
@@ -71,6 +72,10 @@ export async function resolveFurniture(body) {
       new Error("Enter a name (up to 500 characters) or one HTTPS URL."),
       { code: "invalid_url" },
     );
+  if (body.provider === "ikea") {
+    if (url || !query) throw Object.assign(Error("Enter an IKEA furniture description."),{code:"invalid_ikea"});
+    return resolveIkea({query,country:body.country || "us",language:body.language || "en"});
+  }
   if (config.useFixtures) {
     if (url) {
       const u = safeUrl(url);

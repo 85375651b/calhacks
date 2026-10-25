@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { floorPlanApi, useAssetImage } from "../../lib/planner/floorPlanApi";
 import { parseLength, planSize } from "../../lib/planner/calibration";
 import PlanViewer from "./PlanViewer";
+import { importFloorPlan } from "../../lib/planner/importFloorPlan";
+import sampleFloorPlan from "../../lib/planner/sampleFloorPlan.json";
 export function FloorPlanStatus({ state }) {
   const j = state.job;
   if (!j) return null;
@@ -77,21 +79,31 @@ export default function FloorPlanPanel({
     };
   }, [clientId]);
   const available = converters.find((c) => c.imageBased && !c.stub);
+  async function importJson(file) {
+    if (!file) return;
+    try {
+      if (file.size > 200000) throw Error("Choose a JSON file under 200 KB.");
+      const houseModel = importFloorPlan(JSON.parse(await file.text()));
+      onConverted({ houseModel, warnings: [] }, "notebook-json");
+      setError("");
+    } catch (e) { setError(e.message); }
+  }
   async function convertPlan(p, saved) {
-    if (!available || !saved?.calibration) return;
+    if (!available || (!saved?.calibration && !available.automaticScale)) return;
     setConverting(true);
     try {
       const result = await floorPlanApi(clientId, `/${p.assetId}/convert`, {
         method: "POST",
         body: JSON.stringify({
           converter: available.id,
-          calibration: saved.calibration,
-          rotationDeg: saved.rotationDeg,
+          calibration: saved?.calibration,
+          rotationDeg: saved?.rotationDeg || 0,
+          levelIndex: saved?.levelIndex ?? 0,
           ceilingHeightIn: floorPlan.ceilingHeightIn,
           listingFacts: state.job?.result?.listingFacts,
         }),
       });
-      onConverted(result, available.id);
+      onConverted(result, available.id, p, saved);
       setError(result.warnings.join(" "));
     } catch (e) {
       setError(e.message);
@@ -168,6 +180,12 @@ export default function FloorPlanPanel({
         <button>Set ceiling height</button>
       </form>
       {state.job?.message && <p>{state.job.message}</p>}
+      <label>
+        Import an existing 3D floor plan (plan1_clean.json, feet or inches)
+        <input type="file" accept=".json,application/json" onChange={e => { importJson(e.target.files[0]); e.target.value = ""; }} />
+      </label>
+      {!available && <p className="small-note">Image conversion needs the local CubiCasa model configured on the server. You can import your notebook JSON now.</p>}
+      {homeId === "demo" && <button onClick={() => onConverted({ houseModel: importFloorPlan(sampleFloorPlan), warnings: [] }, "sample-json")}>Try sample 3D floor plan</button>}
       <label>
         Upload your own floor plan (PNG, JPG, WebP or PDF, up to 10 MB)
         <input
@@ -316,10 +334,10 @@ export default function FloorPlanPanel({
               </p>
             )}
             <button
-              disabled={!available || !saved?.calibration || converting}
-              aria-disabled={!available || !saved?.calibration || converting}
+              disabled={!available || (!saved?.calibration && !available.automaticScale) || converting}
+              aria-disabled={!available || (!saved?.calibration && !available.automaticScale) || converting}
               onClick={() => convertPlan(p, saved)}
-              title="Detect walls, rooms, doors and windows from your calibrated floor plan. Automatic conversion is coming soon."
+              title="Detect walls, doors and windows. Printed dimensions can set the scale automatically; you can also calibrate it yourself."
             >
               {converting
                 ? "Converting…"

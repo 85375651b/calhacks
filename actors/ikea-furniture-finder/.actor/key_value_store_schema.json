@@ -1,0 +1,123 @@
+{
+  "actorKeyValueStoreSchemaVersion": 1,
+  "title": "IKEA search files",
+  "collections": {
+    "result": {
+      "title": "Matched product",
+      "key": "result",
+      "contentTypes": [
+        "application/json"
+      ],
+      "jsonSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "matchScore": {
+            "type": "number"
+          },
+          "searchUrl": {
+            "type": "string"
+          },
+          "widthIn": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "depthIn": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "heightIn": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "dimensionUnit": {
+            "enum": [
+              "in"
+            ]
+          },
+          "dimensionSource": {
+            "enum": [
+              "product",
+              "missing"
+            ]
+          }
+        },
+        "required": [
+          "query",
+          "name",
+          "price",
+          "url",
+          "imageUrl",
+          "matchScore",
+          "searchUrl",
+          "widthIn",
+          "depthIn",
+          "heightIn",
+          "dimensionUnit",
+          "dimensionSource"
+        ]
+      }
+    },
+    "image": {
+      "title": "Product image",
+      "key": "furniture-image",
+      "contentTypes": [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/avif"
+      ]
+    },
+    "debug": {
+      "title": "Search diagnostic",
+      "key": "debug-search-page.html",
+      "contentTypes": [
+        "text/html"
+      ]
+    },
+    "state": {
+      "title": "Aborted run state",
+      "key": "state",
+      "contentTypes": [
+        "application/json"
+      ],
+      "jsonSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "aborted"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "units": "feet",
+  "ceiling_height": 8,
+  "walls": [
+    { "id": 0, "x1": 0.25, "y1": 0.25, "x2": 20.25, "y2": 0.25, "thickness": 0.5 },
+    { "id": 1, "x1": 20.25, "y1": 0.25, "x2": 20.25, "y2": 15.25, "thickness": 0.5 },
+    { "id": 2, "x1": 20.25, "y1": 15.25, "x2": 0.25, "y2": 15.25, "thickness": 0.5 },
+    { "id": 3, "x1": 0.25, "y1": 15.25, "x2": 0.25, "y2": 0.25, "thickness": 0.5 },
+    { "id": 4, "x1": 10.25, "y1": 0.25, "x2": 10.25, "y2": 15.25, "thickness": 0.4 }
+  ],
+  "openings": [
+    { "wall": 0, "type": "window", "position": 5, "width": 4 },
+    { "wall": 0, "type": "window", "position": 15, "width": 4 },
+    { "wall": 2, "type": "door", "position": 5, "width": 3 },
+    { "wall": 4, "type": "door", "position": 8, "width": 3 }
+  ]
+}

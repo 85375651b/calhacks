@@ -341,3 +341,12 @@
     z-index: 50;
   }
 }
+.furniture-thumbnail {
+  display: block;
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  background: white;
+  border-radius: 6px;
+  margin: 6px 0;
+}

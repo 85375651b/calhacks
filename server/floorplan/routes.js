@@ -7,6 +7,7 @@ import {
   samplePlans,
 } from "./assets.js";
 import { converters, NotImplementedError } from "./converters/index.js";
+import { ConversionError } from "./converters/cubicasa.js";
 import { calibrate, rotation } from "../../src/lib/planner/calibration.js";
 import { adaptResult } from "./actorAdapter.js";
 const defaultManager = createJobManager({
@@ -109,7 +110,8 @@ export function createFloorPlanRouter({
       const asset = await assets.get(req.params.assetId, req.clientId),
         body = req.body || {};
       const c = body.calibration;
-      const calibration = calibrate(
+      const automaticScale = registry.list().find(entry => entry.id === body.converter)?.automaticScale;
+      const calibration = !c && automaticScale ? null : calibrate(
         c?.p1,
         c?.p2,
         c?.realLengthIn,
@@ -130,16 +132,19 @@ export function createFloorPlanRouter({
         typeof body.converter === "string" ? body.converter : "auto",
         {
           asset,
-          calibration: {
+          calibration: calibration ? {
             pixelsPerInch: calibration.pixelsPerInch,
             rotationDeg: rotation(body.rotationDeg),
-          },
+          } : null,
+          levelIndex: Number.isInteger(body.levelIndex) && body.levelIndex >= 0 && body.levelIndex <= 3 ? body.levelIndex : 0,
+          rotationDeg: rotation(body.rotationDeg),
           ceilingHeightIn: height,
           listingFacts,
         },
       );
       res.json(result);
     } catch (e) {
+      if (e instanceof ConversionError) return res.status(422).json({ error: { message: e.message } });
       if (e instanceof NotImplementedError)
         res
           .status(501)

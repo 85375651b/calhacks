@@ -89,6 +89,8 @@ plannerRouter.post("/furniture/resolve", async (req, res) => {
       "invalid_url",
       "timeout",
       "rate_limited",
+      "invalid_ikea",
+      "ikea_unavailable",
     ].includes(e.code)
       ? e.code
       : "blocked";
@@ -96,7 +98,7 @@ plannerRouter.post("/furniture/resolve", async (req, res) => {
       error: {
         code,
         message:
-          code === "timeout"
+          code === "invalid_ikea" || code === "ikea_unavailable" ? e.message : code === "timeout"
             ? "Product page timed out. Try manual dimensions."
             : code === "invalid_url"
               ? "Enter a public HTTPS product URL or furniture name."

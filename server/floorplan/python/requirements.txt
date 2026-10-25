@@ -1,0 +1,19 @@
+# Install in a dedicated Python 3.11 environment. CPU PyTorch can be installed
+# separately from https://download.pytorch.org/whl/cpu to reduce download size.
+torch>=2.6
+torchvision
+numpy
+scipy
+opencv-python
+matplotlib
+shapely
+scikit-image
+svgpathtools
+tensorboardX
+lmdb
+pandas
+tqdm
+pytesseract
+# Optional binary OCR runtime; language data still required. It avoids a
+# system-wide Tesseract executable on platforms with prebuilt wheels.
+tesserocr

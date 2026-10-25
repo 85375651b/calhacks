@@ -1,0 +1,138 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "query": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "price": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      },
+      "imageUrl": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "matchScore": {
+        "type": "number"
+      },
+      "searchUrl": {
+        "type": "string"
+      },
+      "widthIn": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "depthIn": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "heightIn": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "dimensionUnit": {
+        "enum": [
+          "in"
+        ]
+      },
+      "dimensionSource": {
+        "enum": [
+          "product",
+          "missing"
+        ]
+      }
+    },
+    "required": [
+      "query",
+      "name",
+      "price",
+      "url",
+      "imageUrl",
+      "matchScore",
+      "searchUrl",
+      "widthIn",
+      "depthIn",
+      "heightIn",
+      "dimensionUnit",
+      "dimensionSource"
+    ]
+  },
+  "views": {
+    "overview": {
+      "title": "Best match",
+      "transformation": {
+        "fields": [
+          "query",
+          "name",
+          "price",
+          "url",
+          "imageUrl",
+          "matchScore",
+          "searchUrl",
+          "widthIn",
+          "depthIn",
+          "heightIn",
+          "dimensionUnit",
+          "dimensionSource"
+        ]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "query": {
+            "label": "Query",
+            "format": "text"
+          },
+          "name": {
+            "label": "Product",
+            "format": "text"
+          },
+          "price": {
+            "label": "Price",
+            "format": "text"
+          },
+          "url": {
+            "label": "Product page",
+            "format": "link"
+          },
+          "imageUrl": {
+            "label": "Image",
+            "format": "image"
+          },
+          "matchScore": {
+            "label": "Match score",
+            "format": "number"
+          },
+          "widthIn": {
+            "label": "width (inches)",
+            "format": "number"
+          },
+          "depthIn": {
+            "label": "depth (inches)",
+            "format": "number"
+          },
+          "heightIn": {
+            "label": "height (inches)",
+            "format": "number"
+          }
+        }
+      }
+    }
+  }
+}

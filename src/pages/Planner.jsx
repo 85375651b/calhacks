@@ -657,7 +657,7 @@ function PlannerHome() {
           <p>
             {money(snapshot.price)} ·{" "}
             {inPlanMode
-              ? "Calibrated floor plan"
+              ? floorPlan.houseModelSource === "sample-json" ? "Sample 3D floor plan" : "Calibrated floor plan"
               : "Estimated layout, not the real floor plan"}
           </p>
         </div>
@@ -726,14 +726,28 @@ function PlannerHome() {
             }))
           }
           onChange={updatePlan}
-          onConverted={(result, converter) =>
+          onConverted={(result, converter, asset, saved) => {
             setFloorPlan((p) => ({
               ...p,
               mode: "plan",
-              convertedHouseModel: result.houseModel,
+              ceilingHeightIn: result.houseModel.ceilingHeightIn,
+              ceilingSource: "user",
+              convertedHouseModel: asset ? { ...result.houseModel, floors: [
+                ...(p.convertedHouseModel?.floors || []).filter(f => f.level !== result.houseModel.floors[0].level),
+                ...result.houseModel.floors,
+              ].sort((a,b) => a.level-b.level) } : result.houseModel,
               houseModelSource: converter,
-            }))
-          }
+              plans: asset && result.calibration ? [
+                ...p.plans.filter(plan => plan.assetId !== asset.assetId && plan.levelIndex !== result.houseModel.floors[0].level),
+                { assetId: asset.assetId, levelIndex: result.houseModel.floors[0].level, rotationDeg: saved?.rotationDeg || 0,
+                  calibration: result.calibration, calibratedAt: new Date().toISOString() },
+              ] : asset ? p.plans : [],
+            }));
+            setHistory(h => ({ ...h, past: [], future: [] }));
+            setLevel(result.houseModel.floors[0].level);
+            setFullWalls(true);
+            setView("3D");
+          }}
           onKeepEstimated={() => {
             setFloorPlan((p) => ({ ...p, mode: "estimated" }));
             setMobilePanel("");
@@ -771,7 +785,7 @@ function PlannerHome() {
         )}
       </div>
       <div className="planner-toolbar">
-        {imageHouse && (
+        {(imageHouse || floorPlan.convertedHouseModel) && (
           <label>
             Layout source
             <select
@@ -858,7 +872,15 @@ function PlannerHome() {
           <aside className="planner-panel room-panel">
             <h2>{activeAsset?.sample ? "Sample floor plan" : "Floor plan"}</h2>
             {converted ? (
-              <p>Generated from floor plan. Verify against the original.</p>
+              <>
+              <p>{floorPlan.houseModelSource === "sample-json" ? "Synthetic sample: two rooms with a 20 × 15 ft wall footprint." : "Generated from floor plan. Verify against the original."}</p>
+                <p>{floor.walls?.length ?? ""} walls · {floor.doors.length} doors · {floor.windows.length} windows</p>
+                <p>Canvas: {(floor.widthIn/12).toFixed(1)} × {(floor.depthIn/12).toFixed(1)} ft. Ceiling: {(house.ceilingHeightIn/12).toFixed(1)} ft.</p>
+                {floor.walls && <details><summary>Check wall lengths</summary>
+                  <p>Compare these centerline lengths with the plan. Room interior dimensions exclude wall thickness.</p>
+                  <ul>{floor.walls.map(w => <li key={w.id}>{w.id}: {(Math.hypot(w.x2-w.x1,w.z2-w.z1)/12).toFixed(2)} ft</li>)}</ul>
+                </details>}
+              </>
             ) : (
               <>
                 <p>
@@ -939,7 +961,7 @@ function PlannerHome() {
           </Scene>
           <p className="canvas-estimate">
             {converted
-              ? "Generated from floor plan. Verify against the original."
+              ? floorPlan.houseModelSource === "sample-json" ? "Synthetic sample floor plan" : "Generated from floor plan. Verify against the original."
               : inPlanMode
                 ? `${activeAsset?.sample ? "Sample floor plan · " : ""}Floor plan from ${activeAsset?.sourceName || "listing source"}, personal use`
                 : "Estimated layout, not the real floor plan"}
@@ -972,6 +994,7 @@ function PlannerHome() {
           <AddFurniture
             clientId={clientId}
             onSave={saveFurniture}
+            onPlace={def => add(def, floor.rooms.find(r=>r.id === roomId) || floor.rooms[0])}
             edit={editing}
             onEditDone={() => setEditing(null)}
           />

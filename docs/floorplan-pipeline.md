@@ -1,6 +1,11 @@
 # Floor plans in PropertyLens
 
-The planner opens with its existing estimated house and searches in the background only for a real listing the user opens. No address sweep runs. Users explicitly calibrate a found image before it becomes their floor. The synthetic sample and uploaded plans also work without Apify.
+The CPU CubiCasa converter and notebook JSON importer are now implemented. See
+[CubiCasa setup and verification](cubicasa.md) for the current conversion flow.
+The original `auto` extension stub remains for compatibility; the registered
+`cubicasa` converter enables when its local source and official weights exist.
+
+The planner opens with its existing estimated house and searches in the background only for a real listing the user opens. No address sweep runs. Users calibrate a found image, or the CubiCasa converter calibrates it from consistent printed room dimensions. The synthetic sample and uploaded plans also work without Apify.
 
 ## Actor inspection
 
@@ -66,7 +71,17 @@ convert({
 
 An image converter returns source `floorplan`, geometry in the rotated plan's inch space, and `estimated:false` only when confidence warrants it. `validateHouseModel` is shared by generation, converter results and layout loading. It rejects invalid bounds, references, nonfinite geometry and duplicate IDs, stripping unknown fields. The test fake converter returns a hand-written one-room model for the synthetic plan, round-trips it through layout storage and exercises planner selection, wall and door collisions.
 
-`auto` deliberately throws `NotImplementedError` → HTTP 501 `{status:'not_implemented',converters:[...]}`. Its long TODO explains future wall detection, segmentation, openings, OCR assignment and area checks. `estimated-layout` wraps the existing generator and clearly labels its result estimated; it does not qualify as image conversion. The panel's Coming soon button enables only for a registered, non-stub, image-based converter and a calibrated plan. Actual image-to-3D recognition remains out of scope.
+`auto` still throws `NotImplementedError` → HTTP 501 for backward compatibility.
+`cubicasa` runs the local CPU worker, detects wall centerlines and openings,
+and uses explicit calibration or conservative OCR calibration. Its API result
+also includes calibration metadata so the source image stays aligned. It supports
+floor assignment and rotation. `estimated-layout` remains an estimated generator.
+The panel enables **Convert to 3D** when CubiCasa source and weights are configured;
+a failed automatic scale asks for two-point calibration. Imported notebook JSON
+also works without an image asset. Converted floors can store explicit angled
+wall segments, thickness and opening height/sill data, preserved by validation
+and persistence. Rendering and collision use those segments instead of generating
+walls from room rectangles. See `docs/cubicasa.md` for current limitations.
 
 ## Running and checking
 

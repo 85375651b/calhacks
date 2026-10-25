@@ -2,7 +2,7 @@ export async function plannerApi(id, path, options = {}) {
   const r = await fetch("/api" + path, {
     ...options,
     headers: { "Content-Type": "application/json", "X-Client-Id": id },
-    signal: AbortSignal.timeout(path.endsWith("/resolve") ? 45000 : 5000),
+    signal: AbortSignal.timeout(path.endsWith("/resolve") ? 110000 : 5000),
   });
   const d = await r.json();
   if (!r.ok)

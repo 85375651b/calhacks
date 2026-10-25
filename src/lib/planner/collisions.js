@@ -1,3 +1,4 @@
+import { detectedWallBoxes } from "./detectedWalls.js";
 export function corners(item) {
   const a = ((item.rotationDeg || 0) * Math.PI) / 180,
     c = Math.cos(a),
@@ -31,6 +32,7 @@ export function overlaps(a, b) {
   return true;
 }
 export function doorBox(d) {
+  if (d.rotationDeg != null) return { xIn: d.x, zIn: d.z, widthIn: d.widthIn, depthIn: 72, rotationDeg: d.rotationDeg };
   return {
     xIn: d.x,
     zIn: d.z,
@@ -40,6 +42,7 @@ export function doorBox(d) {
   };
 }
 export function wallSegments(floor) {
+  if (floor.walls) return detectedWallBoxes(floor);
   if(floor.openPlan)return [];
   const walls = [];
   for (const r of floor.rooms)
@@ -166,7 +169,7 @@ export function clampPlacement(p, item, floor, snap = 0, flush = false) {
     z = snap ? Math.round(p.zIn / snap) * snap : p.zIn;
   x = Math.max(hx, Math.min(floor.widthIn - hx, x));
   z = Math.max(hz, Math.min(floor.depthIn - hz, z));
-  if (flush && !floor.openPlan) {
+  if (flush && !floor.openPlan && !floor.walls) {
     for (const r of floor.rooms) {
       for (const edge of [r.x + hx, r.x + r.widthIn - hx])
         if (Math.abs(x - edge) < 2) x = edge;

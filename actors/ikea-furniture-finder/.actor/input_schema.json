@@ -1,0 +1,34 @@
+{
+  "$schema": "https://apify.com/schemas/v1/input.ide.json",
+  "title": "IKEA furniture finder",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "description": {
+      "title": "Furniture description",
+      "type": "string",
+      "description": "Describe the furniture you want, e.g. 'small grey 2-seat sofa with armrests'.",
+      "editor": "textfield",
+      "prefill": "small grey two seat sofa"
+    },
+    "country": {
+      "title": "IKEA country code",
+      "type": "string",
+      "description": "Two-letter IKEA store country code, e.g. us, de, gb.",
+      "default": "us",
+      "editor": "textfield",
+      "prefill": "us"
+    },
+    "language": {
+      "title": "Language code",
+      "type": "string",
+      "description": "Language code for the store, e.g. en, de.",
+      "default": "en",
+      "editor": "textfield",
+      "prefill": "en"
+    }
+  },
+  "required": [
+    "description"
+  ]
+}

@@ -54,8 +54,8 @@ export default function FurniturePanel({
       <label>
         <input
           type="checkbox"
-          disabled={floor.openPlan}
-          checked={flush}
+          disabled={floor.openPlan || !!floor.walls}
+          checked={flush && !floor.openPlan && !floor.walls}
           onChange={(e) => setFlush(e.target.checked)}
         />{" "}
         Snap flush to walls
@@ -83,10 +83,12 @@ export default function FurniturePanel({
               >
                 <div>
                   <strong>{c.name}</strong>
+                  {c.imageUrl && <img className="furniture-thumbnail" src={c.imageUrl} alt={c.name} loading="lazy" referrerPolicy="no-referrer" />}
                   <small>
                     {c.widthIn} × {c.depthIn} × {c.heightIn} in ·{" "}
                     {c.estimated ? "Estimated" : c.source}
                   </small>
+                  {c.source === "ikea" && <small>{c.fixture ? "Sample · " : ""}{c.price || "IKEA"} · Sized placeholder</small>}
                 </div>
                 <button onClick={() => add(c, room)}>Add to room</button>
                 {onLibraryEdit && !c.id.startsWith("catalog-") && (
@@ -120,11 +122,11 @@ export default function FurniturePanel({
         <fieldset>
           <legend>{item.name}</legend>
           <p>{fitMessage(item, room)}</p>
-          <p>
+          {!floor.walls && <p>
             {floor.openPlan?'Nearest plan edges':'Nearest room walls'}: {wallClearances(item, floor).x} in horizontally,{" "}
             {wallClearances(item, floor).z} in vertically (negative means
             {floor.openPlan?'outside the plan).':'crossing a wall).'}
-          </p>
+          </p>}
           {[
             ["xIn", "Position X (in)"],
             ["zIn", "Position Z (in)"],

@@ -162,7 +162,7 @@ export function validateFloorPlan(value) {
         }
       : {}),
     mode:
-      v.mode === "plan" && plans.some((p) => p.calibration)
+      v.mode === "plan" && (plans.some((p) => p.calibration) || convertedHouseModel?.source === "floorplan")
         ? "plan"
         : "estimated",
     ceilingHeightIn: num(v.ceilingHeightIn, 72, 240, 96),

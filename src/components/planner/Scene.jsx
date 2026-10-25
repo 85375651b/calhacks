@@ -1,4 +1,5 @@
 import PlanFloor from "./PlanFloor";
+import DetectedWalls from "./DetectedWalls";
 import React, { useEffect, useRef } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import {
@@ -220,7 +221,7 @@ function Content({
             onClick={onEmpty}
             receiveShadow
           />
-          {!floor.openPlan && ["north", "south", "east", "west"].map((edge) => (
+          {!floor.openPlan && !floor.walls && ["north", "south", "east", "west"].map((edge) => (
             <Wall
               key={edge}
               room={room}
@@ -229,7 +230,7 @@ function Content({
               height={view === "2D" ? 0.15 : fullWalls ? ceilingHeightIn/12 : 1.2}
             />
           ))}
-          {!floor.openPlan&&<Html
+          {!floor.openPlan&&!floor.walls&&<Html
             position={[
               (room.x + room.widthIn / 2) / 12,
               0.05,
@@ -242,6 +243,7 @@ function Content({
           </Html>}
         </group>
       ))}
+      {floor.walls && <DetectedWalls walls={floor.walls} heightIn={view === "2D" ? 1.8 : fullWalls ? ceilingHeightIn : 14.4} />}
       {planUrl&&<PlanFloor url={planUrl} floor={floor} rotationDeg={planRotation} opacity={planOpacity}/> }
       {children}
     </>

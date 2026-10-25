@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { categories, resolveName } from "../../lib/planner/catalog";
 import { plannerApi } from "../../lib/planner/persistence";
-export function ConfirmFurniture({ value, onConfirm, onCancel }) {
+export function ConfirmFurniture({ value, onConfirm, onCancel, canPlace = false }) {
   const [draft, setDraft] = useState(value),
     ref = useRef();
+  const [saving,setSaving] = useState(false), [error,setError] = useState("");
   useEffect(() => {
     const old = document.activeElement;
     ref.current.showModal();
@@ -20,17 +21,25 @@ export function ConfirmFurniture({ value, onConfirm, onCancel }) {
       }}
     >
       <form
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          onConfirm(draft);
+          if (saving) return;
+          const place = e.nativeEvent.submitter?.value === "place";
+          const edited = ["widthIn","depthIn","heightIn"].some(k=>draft[k] !== value[k]);
+          const confirmed = draft.source === "ikea" ? {...draft,estimated:false,
+            dimensionSource: edited || value.dimensionSource !== "product" ? "manual" : "product",modelStatus:"placeholder"} : draft;
+          setSaving(true);
+          try { await onConfirm(confirmed,place); } catch { setError("Could not save this item. Please try again."); }
+          finally { setSaving(false); }
         }}
       >
         <h2 id="confirm-furniture-title">Confirm your furniture</h2>
-        {draft.estimated && <span className="sample-badge">Estimated</span>}
+        {draft.fixture && <span className="sample-badge">Sample search result</span>}
+        {draft.estimated && <span className="sample-badge">{draft.source === "ikea" ? "Measurements needed" : "Estimated"}</span>}
         <p>
-          Source: {draft.source} · Confidence:{" "}
-          {Math.round((draft.confidence || 0.5) * 100)}%
+          Source: {draft.source === "ikea" ? "IKEA product search" : draft.source}
         </p>
+        {draft.price ? <p>{draft.price}</p> : draft.source === "ikea" && <p>Price unavailable</p>}
         {draft.imageUrl && /^https:\/\//.test(draft.imageUrl) && (
           <img
             src={draft.imageUrl}
@@ -69,12 +78,13 @@ export function ConfirmFurniture({ value, onConfirm, onCancel }) {
             <input
               type="number"
               required
-              min="0.1"
+              min={k === "heightIn" ? "0.1" : "1"}
               max={k === "heightIn" ? 240 : 600}
-              step="0.1"
-              value={draft[k]}
+              step="any"
+              value={draft[k] ?? ""}
+              placeholder="Enter product measurement"
               onChange={(e) =>
-                setDraft({ ...draft, [k]: Number(e.target.value) })
+                setDraft({ ...draft, [k]: e.target.value === "" ? null : Number(e.target.value) })
               }
             />
           </label>
@@ -88,6 +98,7 @@ export function ConfirmFurniture({ value, onConfirm, onCancel }) {
           />
         </label>
         <p>{draft.notes}</p>
+        {draft.source === "ikea" && <p>Confirm this is the product you want. A sized placeholder will represent it in your house.</p>}
         <p>Verify dimensions on the retailer's site.</p>
         {draft.sourceUrl && /^https:\/\//.test(draft.sourceUrl) && (
           <a href={draft.sourceUrl} target="_blank" rel="noopener noreferrer">
@@ -95,17 +106,19 @@ export function ConfirmFurniture({ value, onConfirm, onCancel }) {
           </a>
         )}
         <div className="panel-actions">
-          <button type="button" onClick={onCancel}>
+          <button type="button" disabled={saving} onClick={onCancel}>
             Cancel
           </button>
-          <button>Save to library</button>
+          <button disabled={saving} value="save">{saving ? "Saving…" : "Save to library"}</button>
+          {canPlace && <button disabled={saving} value="place">Save and place in house</button>}
         </div>
+        {error && <p role="alert">{error}</p>}
       </form>
     </dialog>
   );
 }
-export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
-  const [tab, setTab] = useState("Name"),
+export default function AddFurniture({ clientId, onSave, onPlace, edit, onEditDone }) {
+  const [tab, setTab] = useState("IKEA"),
     [input, setInput] = useState(""),
     [pending, setPending] = useState(null),
     [busy, setBusy] = useState(false),
@@ -122,7 +135,7 @@ export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
     }
     setBusy(true);
     setStatus(
-      `Resolving ${line.slice(0, 50)} (${queue.current.length} remaining)`,
+      tab === "IKEA" ? "Searching IKEA for your furniture… This may take up to 90 seconds." : `Resolving ${line.slice(0, 50)} (${queue.current.length} remaining)`,
     );
     try {
       const isUrl = /^https?:\/\//i.test(line);
@@ -130,16 +143,17 @@ export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
       try {
         result = await plannerApi(clientId, "/furniture/resolve", {
           method: "POST",
-          body: JSON.stringify(isUrl ? { url: line } : { query: line }),
+          body: JSON.stringify(tab === "IKEA" ? { query:line,provider:"ikea" } : isUrl ? { url: line } : { query: line }),
         });
       } catch (e) {
-        if (isUrl) throw e;
+        if (isUrl || tab === "IKEA") throw e;
         result = {
           ...resolveName(line),
           notes: "Server unavailable. Resolved locally using typical sizes.",
         };
       }
       setPending({ ...result, id: crypto.randomUUID() });
+      if (tab === "IKEA") setStatus("Match found. Confirm the product and its measurements.");
     } catch (e) {
       setStatus(e.message);
       setBusy(false);
@@ -173,9 +187,10 @@ export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
     queue.current = lines;
     next();
   }
-  async function confirm(draft) {
+  async function confirm(draft, place = false) {
     const ok = await onSave(draft);
     if (ok === false) return;
+    if (place) onPlace?.(draft);
     setPending(null);
     onEditDone?.();
     setStatus("Added to your furniture library.");
@@ -190,7 +205,7 @@ export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
         role="group"
         aria-label="Add furniture method"
       >
-        {["Name", "Link", "Manual", "Bulk"].map((t) => (
+        {["IKEA", "Name", "Link", "Manual", "Bulk"].map((t) => (
           <button
             key={t}
             aria-pressed={tab === t}
@@ -207,7 +222,7 @@ export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
             ? "One name or URL per line (max 10)"
             : tab === "Link"
               ? "HTTPS product URL"
-              : "Furniture name"}
+              : tab === "IKEA" ? "Describe the IKEA furniture you want" : "Furniture name"}
           {tab === "Bulk" ? (
             <textarea
               required
@@ -222,17 +237,17 @@ export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={
-                tab === "Link" ? "https://…" : "queen bed, desk 60x30…"
+                tab === "Link" ? "https://…" : tab === "IKEA" ? "small grey two-seat sofa" : "queen bed, desk 60x30…"
               }
             />
           )}
         </label>
         <button disabled={busy}>
           {busy
-            ? "Resolving…"
+            ? pending ? "Confirm the match…" : "Resolving…"
             : tab === "Manual"
               ? "Enter dimensions"
-              : "Resolve furniture"}
+              : tab === "IKEA" ? "Find IKEA furniture" : "Resolve furniture"}
         </button>
       </form>
       <p role="status">{status}</p>
@@ -241,6 +256,7 @@ export default function AddFurniture({ clientId, onSave, edit, onEditDone }) {
           key={pending.id}
           value={pending}
           onConfirm={confirm}
+          canPlace={!!onPlace && !edit}
           onCancel={() => {
             setPending(null);
             queue.current = [];

@@ -31,6 +31,8 @@ const url = (v) => {
 export function furniture(v) {
   if (!v || typeof v !== "object" || !text(v.name).trim())
     throw new Error("Furniture needs a name.");
+  if (v.source === "ikea" && ["widthIn","depthIn","heightIn"].some(k => typeof v[k] !== "number" || !Number.isFinite(v[k]) || v[k] < (k === "heightIn" ? 0.1 : 1) || v[k] > (k === "heightIn" ? 240 : 600)))
+    throw new Error("Enter valid width, depth and height before saving IKEA furniture.");
   return {
     id: validId(v.id),
     name: text(v.name),
@@ -41,12 +43,19 @@ export function furniture(v) {
     color: /^#[\da-f]{6}$/i.test(v.color) ? v.color : "#b48b65",
     imageUrl: url(v.imageUrl),
     sourceUrl: url(v.sourceUrl),
-    source: ["catalog", "manual", "json-ld", "openai", "heuristic"].includes(
+    source: ["catalog", "manual", "json-ld", "openai", "heuristic", "ikea"].includes(
       v.source,
     )
       ? v.source
       : "manual",
     estimated: v.estimated !== false,
+    ...(v.source === "ikea" ? {
+      productId: /^\d{8}$/.test(v.productId) ? v.productId : null,
+      price: text(v.price,100) || null,
+      dimensionSource: v.dimensionSource === "product" ? "product" : "manual",
+      modelStatus: "placeholder",
+      fixture: v.fixture === true,
+    } : {}),
     createdAt:
       typeof v.createdAt === "string" &&
       Number.isFinite(Date.parse(v.createdAt))
