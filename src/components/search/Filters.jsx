@@ -154,12 +154,6 @@ export default function Filters({
             maxLength={150}
           />
         </label>
-        {select("status", [
-          ["sale", "For sale"],
-          ["coming-soon", "Coming soon"],
-          ["pending", "Pending / under contract"],
-          ["sold", "Recently sold"],
-        ])}
         {number("minPrice")}
         {number("maxPrice")}
         {select("minBeds", [

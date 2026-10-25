@@ -273,7 +273,7 @@ test("lookup responds independently while enrichment is still pending; API error
   const pending = new Promise((resolve) => {
     release = resolve;
   });
-  const app = createApp(async () => ({ address: "123 Main" }), {
+  const app = createApp(async () => ({ address: "123 Main", listing:{status:"Active"} }), {
     enrich: () => pending,
     autocomplete: async () => [],
   });
@@ -292,6 +292,6 @@ test("lookup responds independently while enrichment is still pending; API error
   const lookup = await fetch(`${base}/api/lookup?address=123`);
   assert.equal(lookup.status, 200);
   assert.equal((await lookup.json()).address, "123 Main");
-  release(normalizeEnrichment(fixtures.items));
+  release({...normalizeEnrichment(fixtures.items),listingStatus:"FOR_SALE"});
   assert.equal((await enrichment).status, 200);
 });

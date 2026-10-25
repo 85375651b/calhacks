@@ -1,3 +1,4 @@
+import {saleStatus,isDisplayable} from './status.js';
 import { createHash } from "node:crypto";
 import { siteUrl } from "./criteria.js";
 export const number = (v) =>
@@ -72,7 +73,7 @@ export function identity(p) {
     .trim();
   return a + "|" + (p.zip || [p.city, p.state].join("|").toLowerCase());
 }
-export function normalize(item, source) {
+export function normalize(item, source, forSaleQuery = false) {
   const z = source === "Zillow";
   const address =
     text(item.address?.streetAddress) ||
@@ -98,9 +99,8 @@ export function normalize(item, source) {
       item.hoaFee ?? item.hoa?.fee ?? item.hoa ?? item.monthlyHoaFee,
     ),
     daysOnMarket: number(item.daysOnMarket ?? item.daysOnZillow),
-    status: text(
-      item.listingStatus || item.mlsStatus || item.status || item.homeStatus,
-    ),
+    status: saleStatus(item.listingStatus || item.mlsStatus || item.status || item.homeStatus, source, item, forSaleQuery),
+    checkedAt: new Date().toISOString(),
     garageSpaces: number(item.garageSpaces),
     photoUrl:
       source === "RentCast"
@@ -133,6 +133,7 @@ export function mergeListings(rows) {
     const old = map.get(key);
     for (const [k, v] of Object.entries(p))
       if (old[k] == null && v != null) old[k] = v;
+    if(!isDisplayable(p))old.status=p.status;
     old.sources = [...new Set([...old.sources, ...p.sources])];
   }
   return [...map.values()];

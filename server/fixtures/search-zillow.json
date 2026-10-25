@@ -143,5 +143,38 @@
     "mainImage": "https://photos.zillowstatic.com/fp/867de96e8622cfae2f523d8f28fae166-uncropped_scaled_within_1536_1152.jpg",
     "yearBuilt": 1983,
     "monthlyHoaFee": 252
+  },
+  {
+    "address": "900 Sample Status Lane, Austin, TX 78701",
+    "city": "Austin",
+    "state": "TX",
+    "zipCode": "78701",
+    "listingStatus": "pending",
+    "price": 300000,
+    "bedrooms": 3,
+    "homeType": "SINGLE_FAMILY",
+    "sample": true
+  },
+  {
+    "address": "901 Sample Status Lane, Austin, TX 78701",
+    "city": "Austin",
+    "state": "TX",
+    "zipCode": "78701",
+    "listingStatus": "sold",
+    "price": 300000,
+    "bedrooms": 3,
+    "homeType": "SINGLE_FAMILY",
+    "sample": true
+  },
+  {
+    "address": "902 Sample Status Lane, Austin, TX 78701",
+    "city": "Austin",
+    "state": "TX",
+    "zipCode": "78701",
+    "listingStatus": "forRent",
+    "price": 300000,
+    "bedrooms": 3,
+    "homeType": "SINGLE_FAMILY",
+    "sample": true
   }
 ]

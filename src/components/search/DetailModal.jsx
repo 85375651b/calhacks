@@ -75,6 +75,7 @@ export default function DetailModal({
               {p.city}, {p.state} {p.zip}
             </p>
             <strong className="detail-price">{money(p.price)}</strong>
+            {p.checkedAt&&<p className="small-note">Status checked {new Date(p.checkedAt).toLocaleString()}</p>}
             <PlannerLink listing={{...p,snapshots}} />
           </div>
           <button

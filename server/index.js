@@ -13,7 +13,7 @@ import { createEnrichment, loadApifyFixtures } from "./enrich.js";
 const fixtures = config.useFixtures ? await loadFixtures() : undefined;
 const lookup = createLookup({
   request: createRentCastClient({ apiKey: config.apiKey }),
-  cache: createCache(join(serverDirectory, ".cache", "lookups.json")),
+  cache: createCache(join(serverDirectory, ".cache", "lookups-sale-v1.json"), {ttl:3600000}),
   useFixtures: config.useFixtures,
   fixtures,
 });

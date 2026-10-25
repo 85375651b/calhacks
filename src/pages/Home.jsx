@@ -74,7 +74,7 @@ export default function Home() {
       if (!controller.signal.aborted) setLoading(false);
     }
   }
-  const rows = [...(data?.listings || [])];
+  const rows = (data?.listings || []).filter(p=>p.status==='for_sale');
   if (sort !== "relevance") {
     const key =
       {
@@ -203,6 +203,7 @@ export default function Home() {
         </div>
       ) : data ? (
         <>
+          {data.hiddenCount>0&&<p className="small-note">{data.hiddenCount} homes hidden because they aren’t currently for sale</p>}
           <div className="results-toolbar">
             <h2>{rows.length} homes to explore</h2>
             <label>

@@ -1,3 +1,4 @@
+import {visibleListings,SHOW_HIDDEN_COUNT} from './status.js';
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { config, serverDirectory } from "../config.js";
@@ -10,12 +11,12 @@ import * as zillow from "./adapters/zillow.js";
 import * as redfin from "./adapters/redfin.js";
 import { createAutocompleteProvider } from "../providers/autocomplete.js";
 const adapters = { Zillow: zillow, Redfin: redfin },
-  memo = persistentMemo(join(serverDirectory, ".cache", "search-v4b.json")),
+  memo = persistentMemo(join(serverDirectory, ".cache", "search-sale-v1.json")),
   geo = createAutocompleteProvider();
 export function rentcastParams(c) {
   const params = {
     limit: String(c.limit),
-    status: c.status === "sold" ? "Inactive" : "Active",
+    status: "Active",
   };
   if (/^\d{5}$/.test(c.location)) params.zipCode = c.location;
   else {
@@ -65,7 +66,7 @@ async function fallback(c) {
   if (!r.ok) throw new Error("Property search is unavailable");
   const data = await r.json();
   return data
-    .map((i) => normalize(i, "RentCast"))
+    .map((i) => normalize(i, "RentCast", true))
     .filter((p) => postFilter(p, c));
 }
 export function createSearch({
@@ -97,6 +98,7 @@ export function createSearch({
             const a = adapters[source],
               override = siteUrl(c.searchUrl, source.toLowerCase());
             try {
+              if(!enabled&&!fixtureMode)throw new Error("Listing source disabled.");
               if (!c.location && !override)
                 throw new Error("Enter a location for this source.");
               let rows = fixtureMode
@@ -113,7 +115,7 @@ export function createSearch({
                 : await runner(ACTORS[source], a.buildInput(c), {
                     limit: c.limit,
                   });
-              let listings = rows.map(a.normalize);
+              let listings = rows.map(i=>normalize(i,source,!override));
               if (!override)
                 listings = listings.filter((p) => postFilter(p, c));
               else
@@ -154,10 +156,12 @@ export function createSearch({
           listings = await fallbackProvider(c);
           sourceCounts.RentCast = listings.length;
           notes.push(
-            "Apify sources unavailable. Showing RentCast listings; inactive listings do not confirm a completed sale.",
+            "Apify sources unavailable. Showing active RentCast sale listings.",
           );
           notApplied.RentCast = unapplied(c, ["minBeds", "minBaths"]);
         }
+        const hiddenCount=listings.length-visibleListings(listings).length;
+        listings=visibleListings(listings);
         if (!fixtureMode) {
           await Promise.all(
             listings.map(async (p) => {
@@ -187,7 +191,9 @@ export function createSearch({
             "Offline demo: numeric and home-type filters are applied to saved results. Native-only provider filters and pasted URL contents are not simulated.",
           );
         return {
-          listings,
+          listings:visibleListings(listings),
+          checkedAt:new Date().toISOString(),
+          ...(SHOW_HIDDEN_COUNT?{hiddenCount}:{}),
           sourceErrors,
           sourceCounts,
           notApplied,

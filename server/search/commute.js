@@ -1,3 +1,4 @@
+import {visibleListings} from './status.js';
 import { randomUUID } from 'node:crypto';
 import { commuteBatch } from '../providers/commute.js';
 import { haversineMiles, hasCoordinates } from './spatial.js';
@@ -16,7 +17,7 @@ export function createCommuteSearch({ batch = commuteBatch, now = Date.now, limi
   const sessions = new Map(), active = new Set();
   function snapshot(s) {
     const groups = groupCommutes(s.rows, s.constraint.maxMinutes), checked = groups.verified.length + groups.over.length;
-    return { listings: s.rows, commute: { token: s.token, maxMinutes: s.constraint.maxMinutes, departAt: s.constraint.departAt, totalWithin: s.totalWithin, checked, under: groups.verified.length, over: groups.over.length, unchecked: groups.unchecked.length, remaining: s.rows.filter(p => hasCoordinates(p) && !p.commute?.attempted).length, batchSize: limit(), excluded: s.excluded, missing: s.missing, error: s.error, usingFixtures: s.usingFixtures } };
+    return { listings: visibleListings(s.rows), commute: { token: s.token, maxMinutes: s.constraint.maxMinutes, departAt: s.constraint.departAt, totalWithin: s.totalWithin, checked, under: groups.verified.length, over: groups.over.length, unchecked: groups.unchecked.length, remaining: s.rows.filter(p => hasCoordinates(p) && !p.commute?.attempted).length, batchSize: limit(), excluded: s.excluded, missing: s.missing, error: s.error, usingFixtures: s.usingFixtures } };
   }
   async function verify(s) {
     const selected = s.rows.filter(p => hasCoordinates(p) && !p.commute?.attempted).slice(0, bounded(limit(),8,12));

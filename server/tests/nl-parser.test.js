@@ -12,7 +12,7 @@ const cases = [
  ['at least 1500 sqft','minSqft',1500], ['under 2000 square feet','maxSqft',2000], ['quarter acre','minLotSize',10890], ['1/2 acre lot','minLotSize',21780], ['100 sqm','minSqft',1076],
  ['built after 2000','minYearBuilt',2000], ['older than 1980','maxYearBuilt',1980], ['new construction','newConstruction',true], ['no HOA','noHoa',true], ['HOA under $300','maxHoa',300], ['2 car garage','minParking',2],
  ['pool','pool',true], ['waterfront','waterfront',true], ['basement','basement','has'], ['central air','ac',true], ['single story','stories','single'], ['fireplace','fireplace',true], ['mountain view','views',['mountain']], ['water view','views',['water']], ['open house','openHouse',true],
- ['new listings','daysOnMarket',7], ['listed in the last 7 days','daysOnMarket',7], ['pending','status','pending'], ['recently sold','status','sold'], ['coming soon','status','coming-soon'], ['updated kitchen','keywords','updated kitchen'],
+ ['new listings','daysOnMarket',7], ['listed in the last 7 days','daysOnMarket',7], ['pending','status','sale'], ['recently sold','status','sale'], ['coming soon','status','sale'], ['updated kitchen','keywords','updated kitchen'],
 ];
 for (const [phrase,key,value] of cases) test(`rules: ${phrase}`, () => assert.deepEqual(parseRules(phrase + ' in Austin').criteria[key], value));
 test('examples and commute forms keep numerical scope and defaults', () => {

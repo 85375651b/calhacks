@@ -99,6 +99,7 @@ test("adapters send only documented fields and URL overrides omit form filters",
       maxResults: 12,
       includeDetails: false,
       compact: true,
+      listingStatus: "forSale",
       searchUrls: [{ url: "https://www.zillow.com/austin-tx/" }],
     },
   );
@@ -176,7 +177,7 @@ test("both failures use labeled fallback; valid empty results do not", async () 
     },
     fallbackProvider: async () => {
       fallback++;
-      return [normalize(raw, "RentCast")];
+      return [normalize({...raw,status:"Active"}, "RentCast")];
     },
     geocode: () => [],
   });
@@ -340,7 +341,7 @@ test("all five insight fixtures and search work with fetch disabled and no keys"
       maxPrice: 900000,
       minBeds: 2,
     });
-    assert(r.listings.some((p) => p.sources.length === 2));
+    assert(r.listings.every((p) => p.status === "for_sale"));
     for (const [k, handler] of Object.entries(insightHandlers)) {
       const d = await handler({
         zip: "78735",

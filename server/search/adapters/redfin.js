@@ -12,13 +12,13 @@ export const supportedFilters = [
   "newConstruction",
 ];
 export function buildInput(c) {
-  const base = { maxListings: c.limit };
+  const base = { maxListings: c.limit, searchMode:"SALE" };
   if (siteUrl(c.searchUrl, "redfin"))
     return { ...base, locations: [c.searchUrl] };
   const v = {
     ...base,
     locations: [c.location],
-    searchMode: c.status === "sold" ? "SOLD" : "SALE",
+    searchMode: "SALE",
   };
   for (const k of [
     "minPrice",

@@ -29,13 +29,13 @@ export const supportedFilters = [
   "keywords",
 ];
 export function buildInput(c) {
-  const base = { maxResults: c.limit, includeDetails: false, compact: true };
+  const base = { maxResults: c.limit, includeDetails: false, compact: true, listingStatus:"forSale" };
   if (siteUrl(c.searchUrl, "zillow"))
     return { ...base, searchUrls: [{ url: c.searchUrl }] };
   const v = {
     ...base,
     searchLocation: [c.location],
-    listingStatus: c.status === "sold" ? "sold" : "forSale",
+    listingStatus: "forSale",
   };
   for (const k of [
     "minPrice",
@@ -77,9 +77,7 @@ export function buildInput(c) {
   if (c.views?.length) v.views = c.views;
   if (["1", "7", "14", "30", "90"].includes(String(c.daysOnMarket)))
     v.daysOnZillow = String(c.daysOnMarket);
-  if (c.status === "coming-soon") v.listingTypes = ["comingSoon"];
-  else if (c.status === "pending") v.listingTypes = ["pendingUnderContract"];
-  else if (c.newConstruction) v.listingTypes = ["newConstruction"];
+  if (c.newConstruction) v.listingTypes = ["newConstruction"];
   return v;
 }
 export const normalize = (i) => norm(i, "Zillow");

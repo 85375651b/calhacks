@@ -1,3 +1,4 @@
+import {isDisplayable,normalizeListingStatus,visibleListings} from './search/status.js';
 import { plannerRouter } from './storage/planner-routes.js';
 import express from "express";
 import { favoritesRouter } from "./storage/favorites-routes.js";
@@ -58,7 +59,7 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
   });
   app.post("/api/search", async (req, res) => {
     try {
-      res.json(await search(req.body));
+      const result=await search(req.body);res.json({...result,listings:visibleListings(result.listings)});
     } catch (e) {
       res
         .status(
@@ -89,7 +90,9 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
           "APIFY_UNAVAILABLE",
           "Zillow data unavailable right now",
         );
-      res.json(await enrich(req.query.address));
+      const result=await enrich(req.query.address);
+      if(normalizeListingStatus(result?.listingStatus,'Zillow')!=='for_sale')return res.status(404).json({error:{code:'NOT_FOR_SALE',message:'No active for-sale enrichment is available.'}});
+      res.json({...result,status:'for_sale'});
     } catch (error) {
       res.status(error instanceof LookupError ? error.status : 502).json({
         error: {
@@ -102,7 +105,9 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
   app.get("/api/lookup", async (req, res) => {
     res.set("Cache-Control", "no-store");
     try {
-      res.json(await lookup(req.query.address));
+      const result=await lookup(req.query.address);
+      if(normalizeListingStatus(result?.listing?.status,'RentCast',result?.listing||{})!=='for_sale')return res.status(404).json({error:{code:'NOT_FOR_SALE',message:"This home isn't currently for sale, so we're not showing it. Try another address."}});
+      res.json({...result,status:'for_sale',checkedAt:new Date().toISOString()});
     } catch (error) {
       const known = error instanceof LookupError;
       if (known && error.status === 429) res.set("Retry-After", "30");
