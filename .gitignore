@@ -13,3 +13,5 @@ server/.cache/
 server/data/
 server/research/
 .venv/
+*.pkl
+.ipynb_checkpoints/
