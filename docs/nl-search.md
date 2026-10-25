@@ -59,3 +59,7 @@ Set `USE_FIXTURES=true`: no OpenAI, Photon or Apify requests are made by text se
 Rules do not offer arbitrary language understanding or typo correction beyond common bedroom misspellings. Vague unknown phrases stay visible; richer language depends on the optional model. Native-only filters are not simulated by fixtures; live source capabilities and missing listing fields still limit filtering. Straight-line commute pruning is a generous heuristic, not a proof of road travel time. Changing the filter fields does not rewrite the original prose; chips show the current canonical values. Existing three-dimensional planner behavior remains unchanged apart from its shared language provider.
 
 Run `npm test`, `npm run build`, `npm run check:secrets`. Develop with `npm run dev` after configuring `server/.env` from the example. No real API calls are made in the new tests.
+
+## Rewrite baseline (2026-10-25)
+
+Before changing the parser: **100/236 (42.37%)** on the labeled corpus, including 40 exact addresses. The runner uses fixture mode, a mocked external place provider and no model or network. Full offline parse-and-resolution P95: 0.380 ms. Run `npm run test:parse:corpus`. Corpus labels cover required constraints and question fields; unknown wording and trace behavior are tested separately.

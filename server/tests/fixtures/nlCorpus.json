@@ -1,0 +1,2593 @@
+[
+  {
+    "text": "4 bed austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 4 bed",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4 beds austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 4 beds",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4 bedrooms austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 4 bedrooms",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4br austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 4br",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4bd austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 4bd",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4 bdrm austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 4 bdrm",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4-bed austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 4-bed",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "four bedroom austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin four bedroom",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "3+ beds austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 3+ beds",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "3 or more bedrooms austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 3 or more bedrooms",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "at least 3 beds austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin at least 3 beds",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "min 3 bed austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin min 3 bed",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "3 bedroms austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin 3 bedroms",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "three bedroms austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin three bedroms",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "2/1 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 2,
+        "minBaths": 1
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 2/1",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 2,
+        "minBaths": 1
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "3/2 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3,
+        "minBaths": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 3/2",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3,
+        "minBaths": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "3bd/2ba in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3,
+        "minBaths": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 3bd/2ba",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3,
+        "minBaths": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4br 3ba in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4,
+        "minBaths": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 4br 3ba",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 4,
+        "minBaths": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "2-3 beds in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 2,
+        "maxBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 2-3 beds",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 2,
+        "maxBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "exactly 2 beds in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 2,
+        "maxBeds": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin exactly 2 beds",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 2,
+        "maxBeds": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "studio in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 0,
+        "maxBeds": 0
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin studio",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 0,
+        "maxBeds": 0
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "2.5 baths in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBaths": 2.5
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 2.5 baths",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBaths": 2.5
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "under 1.5m in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed under 1.5m",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "<600k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 600000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed <600k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 600000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "below $1.2M in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1200000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed below $1.2M",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1200000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "max 750,000 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 750000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed max 750,000",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 750000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "up to 900k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 900000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed up to 900k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 900000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "no more than 700k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 700000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed no more than 700k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 700000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "budget 800k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 800000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed budget 800k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 800000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "over 300k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 300000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed over 300k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 300000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": ">= 400k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 400000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed >= 400k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 400000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "between 400k and 700k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 400000,
+        "maxPrice": 700000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed between 400k and 700k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 400000,
+        "maxPrice": 700000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "750-900k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 750000,
+        "maxPrice": 900000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed 750-900k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 750000,
+        "maxPrice": 900000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "700 to 900k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 700000,
+        "maxPrice": 900000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed 700 to 900k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 700000,
+        "maxPrice": 900000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "around 500k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 450000,
+        "maxPrice": 550000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed around 500k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minPrice": 450000,
+        "maxPrice": 550000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "under 1.5 mil in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed under 1.5 mil",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "under 1.5 million in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed under 1.5 million",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "under 1500k in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed under 1500k",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "$1,500,000 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed $1,500,000",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1500000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "under 600 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 600000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed under 600",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 600000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "<1 million dollars in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1000000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed <1 million dollars",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxPrice": 1000000,
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "1800 sqft in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 1800
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 1800 sqft",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 1800
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "1,800 sq ft in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 1800
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 1,800 sq ft",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 1800
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "1.8k sf in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 1800
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 1.8k sf",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 1800
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "2000+ sqft in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 2000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 2000+ sqft",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 2000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "at least 2000 square feet in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 2000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin at least 2000 square feet",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minSqft": 2000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "0.25 acre in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minLotSize": 10890
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 0.25 acre",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minLotSize": 10890
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "quarter acre in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minLotSize": 10890
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin quarter acre",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minLotSize": 10890
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "8000 sqft lot in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minLotSize": 8000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin 8000 sqft lot",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minLotSize": 8000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "built after 2000 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minYearBuilt": 2000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin built after 2000",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minYearBuilt": 2000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "newer than 1990 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minYearBuilt": 1990
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin newer than 1990",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minYearBuilt": 1990
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "new construction in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "newConstruction": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin new construction",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "newConstruction": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "older than 1980 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxYearBuilt": 1980
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin older than 1980",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxYearBuilt": 1980
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "no HOA in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "noHoa": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin no HOA",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "noHoa": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "HOA under 300 in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxHoa": 300
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Austin HOA under 300",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "maxHoa": 300
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find house in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find single family in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find SFH in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find SFR in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find condo in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find condominium in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find co-op in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find townhouse in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "townhome"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find townhome in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "townhome"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find duplex in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "multi-family"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find triplex in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "multi-family"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find fourplex in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "multi-family"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find multi-family in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "multi-family"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find multifamily in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "multi-family"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find apartment in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "apartment"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find manufactured in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "manufactured"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find mobile home in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "manufactured"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find land in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "land"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find lot in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": [
+          "land"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find home in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": []
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find place in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": []
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find property in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": []
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "find listing in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "homeTypes": []
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "pool in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "pool": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "garage in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "garage": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "2 car garage in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "garage": true,
+        "minParking": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "waterfront in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "waterfront": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "ocean view in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "views": [
+          "water"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "basement in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "basement": "has"
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "central air in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "ac": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "A/C in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "ac": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "single story in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "stories": "single"
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "fireplace in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "fireplace": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "ADU in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "keywords": "adu"
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "backyard in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "keywords": "backyard"
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "open house in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "openHouse": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "new listings in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "daysOnMarket": 7
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "just listed in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "daysOnMarket": 7
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "price drops in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "priceReduced": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "reduced in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "priceReduced": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "cheapest first in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "sort": "price-asc"
+      }
+    }
+  },
+  {
+    "text": "newest in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "sort": "newest"
+      }
+    }
+  },
+  {
+    "text": "biggest in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "sort": "sqft"
+      }
+    }
+  },
+  {
+    "text": "good schools in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "insights": [
+          "schools"
+        ]
+      }
+    }
+  },
+  {
+    "text": "safe in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "insights": [
+          "crime"
+        ]
+      }
+    }
+  },
+  {
+    "text": "quiet in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "insights": [
+          "crime"
+        ]
+      }
+    }
+  },
+  {
+    "text": "low flood risk in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "insights": [
+          "hazards"
+        ]
+      }
+    }
+  },
+  {
+    "text": "walkable in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "insights": [
+          "groceries"
+        ]
+      }
+    }
+  },
+  {
+    "text": "near grocery in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "insights": [
+          "groceries"
+        ]
+      }
+    }
+  },
+  {
+    "text": "modern in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "keywords": "modern"
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "fixer upper in Austin",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "keywords": "fixer upper"
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "4 bed los angeles",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "los angeles 4 bed",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "los angeles",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "LA 3br 2ba under 1.5m",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {
+        "minBeds": 3,
+        "minBaths": 2,
+        "maxPrice": 1500000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "sf condo",
+    "expected": {
+      "intent": "description",
+      "locationContains": "San Francisco",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin tx 3 bed",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "90210 2 bed",
+    "expected": {
+      "intent": "description",
+      "locationContains": "90210",
+      "criteria": {
+        "minBeds": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "downtown LA condo",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "houses near UCLA",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {
+        "radius": {
+          "miles": 5
+        }
+      }
+    }
+  },
+  {
+    "text": "condo by Golden Gate Park",
+    "expected": {
+      "intent": "description",
+      "locationContains": "San Francisco",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {
+        "radius": {
+          "miles": 5
+        }
+      }
+    }
+  },
+  {
+    "text": "house close to Stanford",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Palo Alto",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {
+        "radius": {
+          "miles": 5
+        }
+      }
+    }
+  },
+  {
+    "text": "san fran under 1m",
+    "expected": {
+      "intent": "description",
+      "locationContains": "San Francisco",
+      "criteria": {
+        "maxPrice": 1000000
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "NYC condo",
+    "expected": {
+      "intent": "description",
+      "locationContains": "New York",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "DC house",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Washington",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Philly 2br",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Philadelphia",
+      "criteria": {
+        "minBeds": 2
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Vegas pool",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Las Vegas",
+      "criteria": {
+        "pool": true
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "ATX 3bd",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "PDX condo",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Portland",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "OC house",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Orange County",
+      "criteria": {
+        "homeTypes": [
+          "house"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "los angelas 4 bed",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {
+        "minBeds": 4
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "san fransisco 3br",
+    "expected": {
+      "intent": "description",
+      "locationContains": "San Francisco",
+      "criteria": {
+        "minBeds": 3
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "seatle condo",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Seattle",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "Silver Lake condo",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Los Angeles",
+      "criteria": {
+        "homeTypes": [
+          "condo"
+        ]
+      },
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin texas",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "austin, tx",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "4 bed house under 1.5m",
+    "expected": {
+      "intent": "description",
+      "criteria": {
+        "minBeds": 4,
+        "maxPrice": 1500000
+      },
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "california",
+    "expected": {
+      "intent": "description",
+      "criteria": {},
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "the bay area",
+    "expected": {
+      "intent": "description",
+      "criteria": {},
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "silicon valley",
+    "expected": {
+      "intent": "description",
+      "criteria": {},
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "Austin or Seattle",
+    "expected": {
+      "intent": "description",
+      "criteria": {},
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "Springfield",
+    "expected": {
+      "intent": "description",
+      "criteria": {},
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "Portland",
+    "expected": {
+      "intent": "description",
+      "criteria": {},
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "Columbus",
+    "expected": {
+      "intent": "description",
+      "criteria": {},
+      "extras": {},
+      "questionField": "location"
+    }
+  },
+  {
+    "text": "Austin within 5 miles of Googleplex",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "radius": {
+          "miles": 5
+        }
+      }
+    }
+  },
+  {
+    "text": "Austin under 30 min commute to my work",
+    "expected": {
+      "intent": "description",
+      "locationContains": "Austin",
+      "criteria": {},
+      "extras": {
+        "commute": {
+          "maxMinutes": 30
+        }
+      }
+    }
+  },
+  {
+    "text": "147 midway lane",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "147 Midway Ln, Springfield, IL 62704",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "1600 Pennsylvania Ave NW",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "350 5th Ave apt 12",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "147 Midway",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "100 n main",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "100 S Main St",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123 E Oak Rd",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "12 W Pine Drive",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123 North Main Street",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "42 South Elm Avenue",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "7 East Lake Boulevard",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "8 West Lake Court",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "9 Cedar Way",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "10 Ash Place",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "11 Lake Terrace",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "12 Oak Circle",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "13 State Highway",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "14 Lake Parkway",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "15 Cedar Trail",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123 main st 3 beds",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": " 147 MIDWAY LANE ",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123 Main St.",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "350 5TH AVE #12",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "12 Oak St Unit 3",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "12 Oak St Ste 3",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "1600 pennsylvania avenue nw washington dc 20500",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "1 First St, Seattle, WA",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "101 1st Ave",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "22 2nd Street",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "33 3rd Road",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "44 4th Ln",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "55 5th Ave",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123B Main Street",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "100-102 Main Street",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123 Home Rd",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123 Pool Lane",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "123 House Ave",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "42 NE 10th Street Apt 2",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  },
+  {
+    "text": "500 SW Market Blvd, Portland, OR",
+    "expected": {
+      "intent": "address",
+      "criteria": {},
+      "extras": {}
+    }
+  }
+]

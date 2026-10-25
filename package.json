@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "debug:parse": "node server/scripts/debugParse.js",
+    "test:parse:corpus": "node server/scripts/measureParse.js",
     "debug:address": "node server/scripts/debugAddress.js",
     "test:address:live": "node server/scripts/roundtripAddress.js",
     "dev": "concurrently -k -n api,web \"node --watch server/index.js\" \"vite\"",

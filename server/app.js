@@ -14,6 +14,7 @@ import { insightHandlers } from "./insights/index.js";
 import { search } from "./search/index.js";
 import { LookupError } from "./errors.js";
 import { parseSearch } from "./search/parse.js";
+import { parseTrace } from './search/parse-trace.js';
 import { config } from "./config.js";
 import { resolvePlaces } from "./search/places.js";
 import { describedSearch } from "./search/described.js";
@@ -120,7 +121,9 @@ export function createApp(
         req.body,
         String(req.get("X-Client-Id") || req.ip).slice(0, 100),
       );
-      res.json(parsed.intent === "address" ? parsed : await resolve(parsed));
+      const result = parsed.intent === "address" ? parsed : await resolve(parsed);
+      if (req.body.debug === true && process.env.NODE_ENV !== 'production') result.debug = parseTrace(req.body.text, result);
+      res.json(result);
     } catch (e) {
       if (e.status === 429) res.set("Retry-After", "60");
       res.status(e.status || 400).json({ error: { message: e.message } });
