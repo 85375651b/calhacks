@@ -1,0 +1,7 @@
+[
+  {"status":"listing_found_no_floor_plan","floorPlans":[]},
+  {"status":"no_listing_found","floorPlans":[]},
+  {"status":"blocked","floorPlans":[]},
+  {"status":"invalid_address","floorPlans":[]},
+  {"status":"error","floorPlans":[]}
+]

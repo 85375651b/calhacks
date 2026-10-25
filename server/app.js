@@ -10,11 +10,13 @@ import { resolvePlaces } from './search/places.js';
 import { describedSearch } from './search/described.js';
 import { partialCriteria } from './search/nlParser.js';
 import { commuteSearch } from './search/commute.js';
+import { createFloorPlanRouter } from './floorplan/routes.js';
 
 export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, resolve = resolvePlaces } = {}) {
   const app = express();
   app.disable("x-powered-by");
   app.use(express.json({ limit: "200kb" }));
+  app.use('/api/planner/floorplan', createFloorPlanRouter());
   app.use("/api/favorites", favoritesRouter);
   app.use("/api", plannerRouter);
   app.get('/api/search/config', (_req, res) => res.json({ openaiConfigured: !config.useFixtures && Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_key_here') }));

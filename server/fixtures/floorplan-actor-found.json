@@ -1,0 +1,11 @@
+[
+  {
+    "inputAddress": "134 Athens St, San Francisco, CA 94112",
+    "normalizedAddress": "134 Athens St, San Francisco, CA 94112",
+    "status": "found",
+    "listingUrls": ["https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/"],
+    "floorPlans": [{"key":"sample-floorplan.png","url":null,"sourceUrl":null,"source":"Sample","contentType":"image/png","sha256":null,"confidence":1,"signals":{"keyword":1,"explicit":true,"ocrRoomWords":0,"ocrDimensions":false},"ocrRoomWords":0}],
+    "attempts": [{"source":"webSearch","step":"extract","ok":true,"detail":"1 candidate(s)"}],
+    "facts": {"source":"Sample"}
+  }
+]
