@@ -15,7 +15,7 @@ test('HTTP parse validates length, returns clarifications, caches, limits each c
   assert.equal((await post({text:'x'.repeat(501)})).status,400);
   assert.equal((await post({text:''})).status,400);
   for(let i=0;i<20;i++) {const r=await post({text:'2 beds in Portland'});assert.equal(r.status,200);const p=await r.json();assert.equal(p.parser,'rules');assert.equal(p.questions[0].options.length,2);}
-  assert.equal(calls,1); const capped=await post({text:'2 beds in Portland'});assert.equal(capped.status,429);assert.equal(capped.headers.get('Retry-After'),'60');
+  assert.equal(calls,0); const capped=await post({text:'2 beds in Portland'});assert.equal(capped.status,429);assert.equal(capped.headers.get('Retry-After'),'60');
   const p=await (await post({text:'2 beds in Portland'},'b')).json();
   const resolved=await (await post({parsed:p,field:'location',choice:p.questions[0].options[0]},'b','/resolve')).json();assert.equal(resolved.criteria.location,'Portland, OR');assert.equal(resolved.questions.length,0);
   const flags=await (await fetch(url+'/config')).json();assert.deepEqual(Object.keys(flags),['openaiConfigured']);

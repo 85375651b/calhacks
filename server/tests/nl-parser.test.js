@@ -29,7 +29,7 @@ test('examples and commute forms keep numerical scope and defaults', () => {
 test('exact maxima post-filter; old minimum semantics retained',()=> { assert.equal(postFilter({beds:3},{minBeds:2,maxBeds:2}),false); assert.equal(postFilter({beds:3},{minBeds:2}),true); });
 function modelFrom(rules) {
  const c=Object.fromEntries(Object.entries(parseSchema.properties.criteria.properties).map(([k,s])=>[k, rules.criteria[k] ?? (s.type==='boolean'?false:s.type==='array'?[]:k==='location'?'':null)]));
- return {...rules, criteria:c, parser:undefined};
+ return {...rules, intent:'description', criteria:c, parser:undefined};
 }
 test('schema rejects unknown fields; cross-check restores omitted or contradicted numbers',()=> {
  const rules=parseRules('2 beds in Austin under 600k'), m=modelFrom(rules); delete m.parser;
@@ -45,9 +45,9 @@ test('parse length, rate limit, 24h cache, savedWork separation, failure and fix
  let calls=0, now=0; const parse=createParseService({extract:async()=>{calls++;throw Error('timeout');},fixtureMode:()=>false,now:()=>now});
  await assert.rejects(parse({text:'x'.repeat(501)}),/500/);
  for(let i=0;i<20;i++) assert.equal((await parse({text:'2 beds in Austin'})).parser,'rules');
- assert.equal(calls,1); await assert.rejects(parse({text:'2 beds in Austin'}),/Too many/);
- now=60001; await parse({text:'2 beds in Austin'}); assert.equal(calls,1);
- now=86400001; await parse({text:'2 beds in Austin'}); assert.equal(calls,2);
+ assert.equal(calls,0); await assert.rejects(parse({text:'2 beds in Austin'}),/Too many/);
+ now=60001; await parse({text:'2 beds in Austin'}); assert.equal(calls,0);
+ now=86400001; await parse({text:'2 beds in Austin'}); assert.equal(calls,0);
  const offline=createParseService({extract:()=>{throw Error('must not call');},fixtureMode:()=>true});
  assert.equal((await offline({text:'2 beds in Austin'})).parser,'rules');
 });

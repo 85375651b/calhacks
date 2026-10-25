@@ -35,7 +35,7 @@ export function interpretationFor(criteria, extras) {
 }
 // All matching is deterministic. Matched spans are consumed so unknown requests stay visible.
 export function parseRules(text, savedWork) {
-  let rest = normalizeText(text).replace(/bedroms?|bedroooms?|bedr?ooms?/g, 'bedrooms');
+  let rest = normalizeText(text).replace(/(\d)\s*(million|mil)\b/g, '$1m').replace(/bedroms?|bedroooms?|bedr?ooms?/g, 'bedrooms');
   const criteria = { ...defaults, homeTypes: [], views: [] }, extras = { commute: null, radius: null, insights: [], sort: null }, assumptions = [], notApplied = [], questions = [];
   const take = (re, fn) => { rest = rest.replace(re, (...args) => { fn(...args); return ' '; }); };
   // Instruction-like clauses are never interpreted as housing preferences.
@@ -95,6 +95,7 @@ export function parseRules(text, savedWork) {
   if (rest) notApplied.push({ text: rest, reason: 'Not recognized as a supported filter. Try a specific field or edit the filters.' });
   extras.insights = [...new Set(extras.insights)]; criteria.homeTypes = [...new Set(criteria.homeTypes)];
   if (extras.insights.length) assumptions.push('Insights like schools and safety are shown when you open a home, not used to filter results. Explicit commute and radius limits are checked separately.');
+  if (/^los\s+angeles(?:,?\s+ca)?$/i.test(criteria.location))criteria.location='Los Angeles, CA';
   if (!criteria.location) questions.push({ field: 'location', message: 'Which city, state or ZIP should we search?', options: [] });
   // Contradictory ranges need clarification instead of silently reversing intent.
   for (const key of Object.keys(NUMBERS).filter(k => k.startsWith('min'))) {

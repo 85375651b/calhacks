@@ -23,7 +23,7 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
   app.get('/api/search/config', (_req, res) => res.json({ openaiConfigured: !config.useFixtures && Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_key_here') }));
   app.post('/api/search/parse', async (req, res) => {
     res.set('Cache-Control', 'no-store');
-    try { res.json(await resolve(await parse(req.body, String(req.get('X-Client-Id') || req.ip).slice(0, 100)))); }
+    try { const parsed=await parse(req.body, String(req.get('X-Client-Id') || req.ip).slice(0,100));res.json(parsed.intent==='address'?parsed:await resolve(parsed)); }
     catch (e) { if (e.status === 429) res.set('Retry-After', '60'); res.status(e.status || 400).json({ error: { message: e.message } }); }
   });
   app.post('/api/search/resolve', async (req, res) => {

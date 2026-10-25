@@ -4,6 +4,7 @@ import { interpretationFor, validPlace, partialCriteria, normalizeText } from '.
 const geocode = createAutocompleteProvider({ places: true });
 // Explicit offline gazetteer. No fabricated geocoding for unknown places.
 export const samplePlaces = [
+  {label:'Los Angeles, CA',city:'Los Angeles',state:'CA',lat:34.0522,lng:-118.2437},
   { label: 'Austin, TX', city: 'Austin', state: 'TX', lat: 30.2672, lng: -97.7431 },
   { label: 'San Francisco, CA', city: 'San Francisco', state: 'CA', lat: 37.7749, lng: -122.4194 },
   { label: 'San Jose, CA', city: 'San Jose', state: 'CA', lat: 37.3382, lng: -121.8863 },
