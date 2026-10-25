@@ -3,6 +3,8 @@ import {
   splitAddress,
   addressLabel,
   validBias,
+  parseAddressQuery,
+  matchesAddressQuery,
 } from "../../src/lib/search/address.js";
 import { claimGeoapify } from "./daily-budget.js";
 import { recentListings } from "../search/recent.js";
@@ -124,7 +126,8 @@ export function normalizeProviderResults(
   bias,
   places = false,
 ) {
-  const { base, unit } = splitAddress(query),
+  const partial = parseAddressQuery(query);
+  const { base, unit } = splitAddress(partial?.line1 || query),
     q = normalizeAddress(base),
     house = q.match(/^\d+[a-z]?(?:-\d+)?\b/)?.[0],
     streetQuery = normalizeAddress(base.split(",")[0]).replace(
@@ -213,6 +216,7 @@ export function normalizeProviderResults(
       resultType: house ? "address" : street ? "street" : "city",
       verified: false,
     };
+    if (partial && !matchesAddressQuery(partial, v)) continue;
     v.label = addressLabel(v);
     v.prefix = normalizeAddress(street).startsWith(streetQuery);
     v.houseMatch = number.toLowerCase() === house;

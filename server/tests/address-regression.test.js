@@ -14,7 +14,7 @@ import fixtures from "../fixtures/address-pipeline.json" with { type: "json" };
 const direct = async (_, fn) => fn();
 const p = { line1: "123 N Main Ln", city: "Austin", state: "TX", zip: "78701", lat: 30, lng: -97 };
 const raw = (status = "Active") => ({ ...fixtures.rentcastSale[0], status });
-const options = { fixtureMode: false, enabled: false, cache: direct, claim: async () => true, recent: async () => [], provider: async () => [p], verify: async p => ({ ...p, verified: true, standardized: addressLabel(p) }), request: async () => [raw()] };
+const options = { fixtureMode: false, enabled: false, cache: direct, claim: async () => true, recent: async () => [], resolve: async () => [], provider: async () => [p], verify: async p => ({ ...p, verified: true, standardized: addressLabel(p) }), request: async () => [raw()] };
 const suffixes = [["St", "Street"], ["Ave", "Avenue"], ["Ln", "Lane"], ["Rd", "Road"], ["Dr", "Drive"], ["Blvd", "Boulevard"], ["Ct", "Court"], ["Cir", "Circle"], ["Pkwy", "Parkway"], ["Hwy", "Highway"], ["Trl", "Trail"], ["Way", "Way"], ["Pl", "Place"]];
 for (const [short, long] of suffixes) for (const [dir, full] of [["N", "North"], ["S", "South"], ["E", "East"], ["W", "West"], ["NW", "Northwest"]]) {
   test(`addressKey: ${dir} Main ${short} canonicalizes punctuation, case, suffix, direction and unit`, () => {

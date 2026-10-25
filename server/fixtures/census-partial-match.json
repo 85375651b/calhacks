@@ -1,0 +1,42 @@
+{
+  "result": {
+    "input": {
+      "address": {
+        "address": "16305 Almaden Dr, Austin"
+      },
+      "benchmark": {
+        "isDefault": true,
+        "benchmarkDescription": "Public Address Ranges - Current Benchmark",
+        "id": "4",
+        "benchmarkName": "Public_AR_Current"
+      }
+    },
+    "addressMatches": [
+      {
+        "tigerLine": {
+          "side": "L",
+          "tigerLineId": "624512985"
+        },
+        "coordinates": {
+          "x": -97.751464640785,
+          "y": 30.507567770485
+        },
+        "addressComponents": {
+          "zip": "78717",
+          "streetName": "ALMADEN",
+          "preType": "",
+          "city": "AUSTIN",
+          "preDirection": "",
+          "suffixDirection": "",
+          "fromAddress": "16399",
+          "state": "TX",
+          "suffixType": "DR",
+          "toAddress": "16201",
+          "suffixQualifier": "",
+          "preQualifier": ""
+        },
+        "matchedAddress": "16305 ALMADEN DR, AUSTIN, TX, 78717"
+      }
+    ]
+  }
+}

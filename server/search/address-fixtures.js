@@ -2,7 +2,8 @@ import {
   normalizeAddress,
   addressLabel,
   addressParts,
-  parseAddressText,
+  parseAddressQuery,
+  matchesAddressQuery,
 } from "../../src/lib/search/address.js";
 import zillow from "../fixtures/search-zillow.json" with { type: "json" };
 import redfin from "../fixtures/search-redfin.json" with { type: "json" };
@@ -39,10 +40,8 @@ for (const p of visibleListings([
 }
 export function fixtureCandidates(text) {
   const q = normalizeAddress(text);
-  const typed = parseAddressText(text);
+  const typed = parseAddressQuery(text);
   return addressFixtures
-    .filter((p) => normalizeAddress(p.label).includes(q) || (addressParts(p).street === addressParts(typed || text).street &&
-      (!typed || (normalizeAddress(typed.city) === normalizeAddress(p.city) && typed.state === p.state)) &&
-      (!addressParts(typed || text).unit || addressParts(typed || text).unit === addressParts(p).unit)))
+    .filter((p) => typed ? matchesAddressQuery(typed, p) : normalizeAddress(p.label).includes(q))
     .map(({ status, ...p }) => ({ ...p }));
 }

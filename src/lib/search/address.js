@@ -12,6 +12,7 @@ const expansions = {
   trl: "trail",
   pl: "place",
   ter: "terrace",
+  cv: "cove",
   n: "north",
   s: "south",
   e: "east",
@@ -59,9 +60,38 @@ export function addressKey(address) {
 }
 export function parseAddressText(text = "") {
   const match = text.trim().match(/^(.+?),\s*([^,]+),\s*([a-z]{2})(?:\s*,?\s*(\d{5})(?:-\d{4})?)?\s*$/i)
-    || text.trim().match(/^(.+?\b(?:st(?:reet)?|ave(?:nue)?|ln|lane|rd|road|dr|drive|blvd|boulevard|ct|court|cir(?:cle)?|pkwy|parkway|hwy|highway|trl|trail|way|pl|place)\.?\s*(?:(?:apt|unit|ste|#)\s*[a-z0-9-]+)?)[,\s]+(.+?)\s+([a-z]{2})(?:\s+(\d{5})(?:-\d{4})?)?$/i);
+    || text.trim().match(/^(\d+[a-z]?(?:-\d+)?\s+(?:[a-z0-9.'-]+\s+)+?(?:st(?:reet)?|ave(?:nue)?|ln|lane|rd|road|dr|drive|blvd|boulevard|ct|court|cir(?:cle)?|pkwy|parkway|hwy|highway|trl|trail|way|pl|place|ter(?:race)?|cv|cove)\.?(?:\s+(?:n|s|e|w|ne|nw|se|sw))?\s*(?:(?:apt|unit|ste|#)\s*[a-z0-9-]+)?)[,\s]+(.+?)\s+([a-z]{2})(?:\s+(\d{5})(?:-\d{4})?)?$/i);
   const states = "AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY PR GU VI AS MP".split(" ");
   return match && states.includes(match[3].toUpperCase()) ? { line1: match[1], street: match[1], city: match[2].trim(), state: match[3].toUpperCase(), zip: match[4] || "", label: text } : null;
+}
+// Parse what was supplied without inventing a state or ZIP. Missing components
+// are resolved from matching listings or geocoders, never written into the input.
+export function parseAddressQuery(text = "") {
+  const full = parseAddressText(text);
+  if (full) return full;
+  const { base, unit } = splitAddress(text);
+  if (!/^\d+[a-z]?(?:-\d+)?\s+\S/i.test(base)) return null;
+  let line1 = base, city = "";
+  if (base.includes(",")) {
+    [line1, city] = base.split(",").map(s => s.trim());
+  } else {
+    const match = base.match(/^(\d+[a-z]?(?:-\d+)?\s+(?:[a-z0-9.'-]+\s+)+?(?:st(?:reet)?|ave(?:nue)?|ln|lane|rd|road|dr|drive|blvd|boulevard|ct|court|cir(?:cle)?|pkwy|parkway|hwy|highway|trl|trail|way|pl|place|ter(?:race)?|cv|cove)\.?(?:\s+(?:n|s|e|w|ne|nw|se|sw)\b)?)(?:\s+(.+))?$/i);
+    if (match) { line1 = match[1]; city = match[2] || ""; }
+  }
+  line1 = line1.trim() + (unit ? " Apt " + unit : "");
+  return { line1, street: line1, city, state: "", zip: "", label: text };
+}
+export function matchesAddressQuery(query, candidate) {
+  const a = addressParts(query), b = addressParts(candidate);
+  const house = a.street.match(/^\d+[a-z]?(?:-\d+)?\b/)?.[0];
+  if (!house || house !== b.street.match(/^\d+[a-z]?(?:-\d+)?\b/)?.[0]) return false;
+  // A street prefix may expand, but an explicitly supplied suffix must match.
+  const completeStreet = /\b(?:street|avenue|lane|road|drive|boulevard|court|circle|parkway|highway|trail|way|place|terrace|cove)(?:\s+(?:north|south|east|west|northeast|northwest|southeast|southwest))?$/.test(a.street);
+  if (completeStreet ? a.street !== b.street : !b.street.startsWith(a.street)) return false;
+  if (a.unit && a.unit !== b.unit) return false;
+  if (query.city && normalizeAddress(query.city) !== normalizeAddress(candidate.city)) return false;
+  if (query.state && query.state.toUpperCase() !== String(candidate.state).toUpperCase()) return false;
+  return true;
 }
 export function distanceMeters(a, b) {
   if (!validBias(a) || !validBias(b)) return Infinity;

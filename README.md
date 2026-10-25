@@ -180,6 +180,8 @@ Set `USE_FIXTURES=true` for offline rules, saved Austin listings and sample rout
 
 ## Address and description search
 
+You can search a house number and street plus city without a state or ZIP, for example `16305 Almaden Dr, Austin` or `16305 Almaden Dr Austin`. Matching recent listings or the existing Census geocoder fill in missing components before the normal sale check. The city you typed narrows candidates; genuinely ambiguous addresses still offer a choice. Your input text stays unchanged.
+
 The shared combobox changes text only when you type/paste/delete or explicitly select a suggestion. Nothing is highlighted initially; arrows only move the highlight, hover never selects, and Enter without an arrow-highlight submits your typed text. Escape, blur, Tab, network responses and saved-state restoration do not autocomplete or reopen a dismissed list. Browser address autofill and password-manager hints are disabled. Standardization appears in the interpretation chip; typed text and ZIP remain unchanged.
 
 Suggestions first appear without ZIPs. After 300 ms of stable results, the top three are checked with Census in parallel (three-second request timeout, global concurrency/politeness guard, seven-day cache). Verified ZIPs appear in reserved space with a check mark; rows never reorder. Unverified rows keep their city/state and a ZIP-unverified tooltip. Listing ZIPs take precedence in property details, with a note when the typed ZIP differs.

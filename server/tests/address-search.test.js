@@ -32,6 +32,7 @@ const raw = (address = "123 North Main Street", status = "Active") => ({
 });
 const direct = async (k, fn) => fn();
 const options = {
+  resolve: async () => [],
   claim: async () => true,
   fixtureMode: false,
   enabled: false,

@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { config, serverDirectory } from "../config.js";
 import { createRentCastClient } from "../rentcast.js";
 import { createAutocompleteProvider } from "../providers/autocomplete.js";
-import { verifyAddress } from "../providers/census.js";
+import { verifyAddress, resolveAddress } from "../providers/census.js";
 import { persistentMemo } from "../storage/memo.js";
 import { runActor } from "../providers/actor.js";
 import { ACTORS } from "../config/apify.js";
@@ -14,8 +14,8 @@ import { visibleListings } from "./status.js";
 import { recentListings } from "./recent.js";
 import { addressFixtures, fixtureCandidates } from "./address-fixtures.js";
 import { trace, withAddressTrace } from "./address-trace.js";
-import { exactAddress, addressKey, addressLabel, normalizeAddress, validBias, splitAddress, parseAddressText, addressParts } from "../../src/lib/search/address.js";
-const memo = persistentMemo(join(serverDirectory, ".cache", "address-sale-v2.json"), { cacheErrors: false });
+import { exactAddress, addressKey, addressLabel, normalizeAddress, validBias, splitAddress, parseAddressText, addressParts, parseAddressQuery, matchesAddressQuery } from "../../src/lib/search/address.js";
+const memo = persistentMemo(join(serverDirectory, ".cache", "address-sale-v3.json"), { cacheErrors: false });
 export function cleanSelected(p) {
   const result = {};
   for (const k of ["line1", "city", "state"]) {
@@ -35,7 +35,7 @@ export function addressVariants(text, original, verified) {
   return strings.filter(v => { const key = v.toLowerCase().replace(/[,\s]+/g, " ").trim(); if (seen.has(key)) return false; seen.add(key); return true; });
 }
 export function createAddressLookup({
-  provider = createAutocompleteProvider(), verify = verifyAddress, recent = recentListings,
+  provider = createAutocompleteProvider(), verify = verifyAddress, resolve = resolveAddress, recent = recentListings,
   request = createRentCastClient({ apiKey: config.apiKey }), runner = runActor, cache = memo,
   fixtureMode = config.useFixtures, enabled = config.enableApify, now = Date.now, claim = claimAddressRentCast,
 } = {}) {
@@ -51,8 +51,9 @@ export function createAddressLookup({
     const selected = body.selected ? cleanSelected(body.selected) : null;
     const text = body.text?.trim() || "";
     const typed = parseAddressText(text);
+    const partial = parseAddressQuery(text);
     // A complete typed address takes precedence over any stale suggestion object.
-    const seed = typed || selected;
+    const seed = typed || (text ? null : selected);
     const bias = validBias(body.bias) ? body.bias : validBias(body.savedWork) ? body.savedWork : undefined;
     const key = [fixtureMode, enabled, addressKey(seed || text), seed ? [normalizeAddress(seed.city), seed.state] : normalizeAddress(text), !seed && bias && [bias.lat.toFixed(2), bias.lng.toFixed(2)]];
     const compute = async () => addressSlot(async () => {
@@ -62,20 +63,32 @@ export function createAddressLookup({
       let candidates, providerFailed = false;
       let known = [];
       if (!fixtureMode) {
-        try { known = visibleListings(await recent(seed || { line1: text })).filter(p => seed ? exactAddress(seed, p) : addressParts(p).street === addressParts(text).street && (!addressParts(text).unit || addressParts(p).unit === addressParts(text).unit)); }
+        try { known = visibleListings(await recent(seed || partial || { line1: text })).filter(p => seed ? exactAddress(seed, p) : matchesAddressQuery(partial || { line1: text }, p)); }
         catch { trace("recent-cache", { error: "unavailable" }); }
       }
       trace("recent-cache", { count: known.length });
       if (seed) candidates = [seed];
       else if (fixtureMode) candidates = fixtureCandidates(text);
-      else if (known.length) candidates = known.map(p => ({ ...p, line1: splitAddress(text).unit ? p.address : splitAddress(p.address).base.split(",")[0], label: addressLabel({ ...p, line1: p.address }) }));
+      else if (known.length) candidates = known.map(p => {
+        const { base, unit } = splitAddress(p.address);
+        const line1 = base.split(",")[0] + (partial && splitAddress(partial.line1).unit && unit ? " Apt " + unit : "");
+        const candidate = { line1, city: p.city, state: p.state, zip: p.zip, lat: p.lat, lng: p.lng };
+        return { ...candidate, label: addressLabel(candidate) };
+      });
       else {
-        try { candidates = await provider(text, bias); providerFailed = Boolean(candidates.unavailable); }
+        // Census can fill missing city/state/ZIP even when autocomplete has no
+        // building coverage. Try it first for partial input, then the providers.
+        if (partial) {
+          try { candidates = await resolve(text); providerFailed = Boolean(candidates.unavailable); }
+          catch { candidates = []; providerFailed = true; }
+        }
+        if (!candidates?.length) try { candidates = await provider(text, bias); providerFailed ||= Boolean(candidates.unavailable); }
         catch { candidates = []; providerFailed = true; }
       }
       const seen = new Set();
       candidates = candidates.slice(0, 6).map(p => ({ ...p, line1: p.line1 || p.street })).filter(p => {
         if (!p.line1 || !p.city || !p.state) return false;
+        if (!seed && partial && !matchesAddressQuery(partial, p)) return false;
         const k = [addressKey(p), normalizeAddress(p.city), p.state].join("|");
         if (seen.has(k)) return false; seen.add(k); return true;
       });
@@ -84,7 +97,8 @@ export function createAddressLookup({
       if (candidates.length > 1) return { ...base, result: "ambiguous", reasonCode: "MULTIPLE_ADDRESSES", candidates: candidates.map(p => ({ ...p, zip: "", label: addressLabel({ ...p, zip: "" }) })), message: "Add a city or choose an address to narrow it down." };
       const original = candidates[0];
       let candidate;
-      if (fixtureMode || known.length) candidate = { ...original, verified: false };
+      if (original.provider === "census" && original.verified) candidate = original;
+      else if (fixtureMode || known.length) candidate = { ...original, verified: false };
       else try { candidate = await verify(original); } catch { candidate = { ...original, zip: "", verified: false, verificationUnavailable: true }; }
       trace("census", { candidate, skipped: known.length ? "authoritative recent listing" : fixtureMode ? "fixture" : undefined });
       // Preserve the user's requested house/street/unit. Verification never redirects it.

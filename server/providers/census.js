@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { serverDirectory } from "../config.js";
 import { persistentMemo } from "../storage/memo.js";
-import { addressLabel, normalizeAddress, splitAddress, addressKey, validBias } from "../../src/lib/search/address.js";
+import { addressLabel, normalizeAddress, splitAddress, addressKey, validBias, parseAddressQuery, matchesAddressQuery } from "../../src/lib/search/address.js";
 import { trace } from "../search/address-trace.js";
 const memo = persistentMemo(join(serverDirectory, ".cache", "census-address-v2.json"));
 let active = 0, nextStart = 0;
@@ -58,3 +58,42 @@ export function createCensusVerifier({ fetchImpl = fetch, cache = memo } = {}) {
   };
 }
 export const verifyAddress = createCensusVerifier();
+
+// Forward resolution also accepts street + city without a state or ZIP. Reuse
+// the verifier's global request guard and seven-day cache; no paid calls.
+export function createCensusResolver({ fetchImpl = fetch, cache = memo } = {}) {
+  return async text => {
+    const query = parseAddressQuery(text);
+    if (!query) return [];
+    const label = addressLabel({ ...query, zip: "" });
+    const result = await cache(["resolve", normalizeAddress(label)], async () => {
+      try {
+        return await polite(async () => {
+          const u = new URL("https://geocoding.geo.census.gov/geocoder/locations/onelineaddress");
+          u.search = new URLSearchParams({ address: label, benchmark: "Public_AR_Current", format: "json" });
+          const r = await fetchImpl(u, { signal: AbortSignal.timeout(3000) });
+          trace("census-resolve-response", { status: r.status });
+          if (!r.ok) throw Error("unavailable");
+          const data = (await r.json())?.result?.addressMatches;
+          if (!Array.isArray(data)) throw Error("invalid response");
+          const unit = splitAddress(query.line1).unit;
+          const candidates = data.slice(0, 6).map(m => {
+            const components = m.addressComponents || {};
+            const line1 = String(m.matchedAddress || "").split(",")[0] + (unit ? " Apt " + unit : "");
+            const p = { line1, street: line1, city: components.city, state: components.state,
+              zip: /^\d{5}$/.test(components.zip) ? components.zip : "",
+              lat: m.coordinates?.y, lng: m.coordinates?.x, verified: true, provider: "census", resultType: "address" };
+            p.label = p.standardized = addressLabel(p);
+            return p;
+          }).filter(p => p.city && p.state && p.zip && validBias(p) && matchesAddressQuery(query, p));
+          return { candidates };
+        });
+      } catch { return { candidates: [], unavailable: true }; }
+    }, v => v.unavailable ? 0 : 7 * 86400000);
+    trace("census-resolved", { candidates: result.candidates, unavailable: Boolean(result.unavailable) });
+    const candidates = result.candidates;
+    if (result.unavailable) Object.defineProperty(candidates, "unavailable", { value: true, configurable: true });
+    return candidates;
+  };
+}
+export const resolveAddress = createCensusResolver();

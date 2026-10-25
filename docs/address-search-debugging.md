@@ -21,6 +21,12 @@ Confirmed by code inspection and baseline fixtures:
 
 ## Live evidence and probe
 
+### Partial-address follow-up
+
+Reproduced `147 Midway Ln, Los Angeles` incorrectly returning both Los Angeles and Springfield in fixture mode. Queries without state bypassed structured parsing; cache/candidate matching ignored the supplied city. Unpunctuated queries also mixed city tokens into the street, and full no-comma parsing could mistake the street-name word “Trail” for the suffix in `5101 Trail West Dr Austin TX`.
+
+Added partial street/city parsing, locality-aware prefix matching for cached listings and provider candidates, and bounded forward Census resolution before autocomplete when no cached listing resolves a partial query. Live Census HTTP 200 calls completed `16305 Almaden Dr, Austin`, `5101 Trail West Dr Austin`, and `1600 Pennsylvania Ave NW, Washington` with state and ZIP; a public raw response is saved in `server/fixtures/census-partial-match.json`. A live pipeline check for `16305 Almaden Dr Austin` returned `for_sale` from a fresh recent listing cache. New offline HTTP tests cover missing state/ZIP, punctuation, units, city disambiguation, provider fallback, and preserving the house number. Address checks now use address-sale-v3 to discard earlier partial-query negatives; only positive unexpired listings are read from older caches.
+
 A public Census call succeeded with HTTP 200; its real response is saved in `server/fixtures/census-live-match.json`. Further live round trips and ZIP measurements are recorded below as they are run. Fixture results must not be presented as live evidence.
 
 ### Measured ZIP accuracy
