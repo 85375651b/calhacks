@@ -17,8 +17,12 @@ const secrets = [
   config.apiKey,
   config.apifyToken,
   process.env.OPENAI_API_KEY,
+  process.env.ASI1_API_KEY,
+  process.env.AGENT_SEED,
+  process.env.AGENT_BRIDGE_TOKEN,
+  process.env.AGENTVERSE_KEY,
 ].filter(
-  (value) => value && !["your_key_here", "your_token_here"].includes(value),
+  (value) => value && !value.startsWith('replace_') && !["your_key_here", "your_token_here"].includes(value),
 );
 const containsSecret = (text) =>
   secrets.some((secret) => text.includes(secret)) ||

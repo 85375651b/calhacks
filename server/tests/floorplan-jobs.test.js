@@ -35,6 +35,7 @@ test("adapter maps real keys, facts, missing fields and statuses; strips unsafe 
     "no_listing_found",
     "blocked",
     "invalid_address",
+    "timeout",
     "error",
   ])
     assert.equal(adaptResult({ status }, "store", address).status, status);
@@ -50,6 +51,8 @@ test("adapter maps real keys, facts, missing fields and statuses; strips unsafe 
   assert.equal(input.listingUrls.length, 1);
   assert.equal(input.useVisionCheck, false);
   assert.equal(input.maxFloorPlansPerAddress, 4);
+  assert.deepEqual(input.proxyConfiguration.apifyProxyGroups, ["RESIDENTIAL"]);
+  assert.ok(input.maxRunSecs < input.perAddressTimeoutSecs);
 });
 function setup(extra = {}) {
   let runs = 0,

@@ -69,7 +69,11 @@ export function actorInput(address, urls = []) {
     runOcr: true,
     ocrMaxImages: 4,
     useVisionCheck: false,
-    proxyConfiguration: { useApifyProxy: true },
+    proxyConfiguration: {
+      useApifyProxy: true,
+      apifyProxyGroups: ["RESIDENTIAL"],
+    },
+    maxRunSecs: timeoutSecs() - 15,
     maxConcurrency: 2,
     perAddressTimeoutSecs: timeoutSecs() - 10,
     requestTimeoutSecs: 30,
@@ -107,6 +111,7 @@ export function adaptResult(row, storeId, address) {
     "no_listing_found",
     "blocked",
     "invalid_address",
+    "timeout",
     "error",
   ];
   const status = statuses.includes(row?.status) ? row.status : "error";

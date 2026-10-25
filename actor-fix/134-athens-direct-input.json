@@ -1,0 +1,28 @@
+{
+  "addresses": ["134 Athens St, San Francisco, CA 94112"],
+  "listingUrls": [
+    {
+      "url": "https://shaneaspen.com/home-search/listings/1827351998071678182-134-Athens-ST",
+      "address": "134 Athens St, San Francisco, CA 94112"
+    },
+    {
+      "url": "https://kodweisteam.com/home-search/listings/6081212023712687074-134-Athens-ST?fr=1",
+      "address": "134 Athens St, San Francisco, CA 94112"
+    }
+  ],
+  "enabledSources": ["webSearch", "compass", "zillow", "redfin", "realtor"],
+  "maxRunSecs": 120,
+  "perAddressTimeoutSecs": 105,
+  "perSiteTimeoutSecs": 12,
+  "searchTimeoutSecs": 20,
+  "maxSitesPerAddress": 8,
+  "requestTimeoutSecs": 15,
+  "maxConcurrency": 1,
+  "runOcr": true,
+  "ocrMaxImages": 4,
+  "debugMode": true,
+  "proxyConfiguration": {
+    "useApifyProxy": true,
+    "apifyProxyGroups": ["RESIDENTIAL"]
+  }
+}

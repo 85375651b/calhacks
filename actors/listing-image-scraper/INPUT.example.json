@@ -1,0 +1,21 @@
+{
+  "listingUrls": [
+    {
+      "url": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+      "address": "134 Athens St, San Francisco, CA 94112"
+    },
+    {
+      "url": "https://www.redfin.com/CA/San-Francisco/134-Athens-St-94112/home/1768548",
+      "address": "134 Athens St, San Francisco, CA 94112"
+    }
+  ],
+  "downloadImages": true,
+  "maxImagesPerListing": 50,
+  "maxConcurrency": 1,
+  "minDomainDelaySecs": 3,
+  "allowAddressSearch": false,
+  "useBrowserFallback": true,
+  "maxRunSecs": 180,
+  "perListingTimeoutSecs": 90,
+  "proxyConfiguration": { "useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"] }
+}

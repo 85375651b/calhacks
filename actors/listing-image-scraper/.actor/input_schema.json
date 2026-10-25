@@ -1,0 +1,138 @@
+{
+  "title": "Listing image scraper",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "listingUrls": {
+      "title": "Listing URLs",
+      "type": "array",
+      "description": "Zillow or Redfin property detail URLs. Strings or objects containing url and optional address. Provide both providers with the same address to enable direct fallback.",
+      "editor": "json",
+      "prefill": [
+        {
+          "url": "https://www.redfin.com/CA/San-Francisco/134-Athens-St-94112/home/1768548",
+          "address": "134 Athens St, San Francisco, CA 94112"
+        }
+      ],
+      "default": []
+    },
+    "addresses": {
+      "title": "Addresses (optional)",
+      "type": "array",
+      "editor": "stringList",
+      "description": "Full US addresses: street, city, state ZIP. URLs are faster; address-only input starts a separately billed Google Search Actor.",
+      "default": []
+    },
+    "enabledSources": {
+      "title": "Enabled sources",
+      "type": "array",
+      "editor": "select",
+      "items": {
+        "type": "string",
+        "enum": [
+          "zillow",
+          "redfin"
+        ]
+      },
+      "default": [
+        "zillow",
+        "redfin"
+      ],
+      "description": "Providers to try. Include both to allow Zillow/Redfin fallback for an address."
+    },
+    "downloadImages": {
+      "title": "Save image files",
+      "type": "boolean",
+      "default": true,
+      "description": "Save photos in the default key-value store. Image URLs are returned even when downloads fail."
+    },
+    "maxImagesPerListing": {
+      "title": "Maximum images per listing",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200,
+      "default": 50,
+      "description": "Maximum photo records returned per property. Set 200 to collect larger galleries."
+    },
+    "useBrowserFallback": {
+      "title": "Use browser fallback",
+      "type": "boolean",
+      "default": true,
+      "description": "Render the public listing when HTML has no usable verified gallery. Known 403/429 blocks are not retried."
+    },
+    "allowAddressSearch": {
+      "title": "Allow address search",
+      "type": "boolean",
+      "default": true,
+      "description": "Start apify/google-search-scraper only when no usable supplied listing remains. Additional Actor charges may apply."
+    },
+    "proxyConfiguration": {
+      "title": "Proxy",
+      "type": "object",
+      "editor": "proxy",
+      "default": {
+        "useApifyProxy": true,
+        "apifyProxyGroups": [
+          "RESIDENTIAL"
+        ]
+      },
+      "description": "Optional Apify or custom proxy settings. Residential access depends on your Apify account."
+    },
+    "maxConcurrency": {
+      "title": "Concurrent properties",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2,
+      "default": 1,
+      "description": "Maximum properties processed concurrently. Default 1 limits request bursts."
+    },
+    "minDomainDelaySecs": {
+      "title": "Minimum gap between listing requests per host",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30,
+      "default": 3,
+      "description": "Minimum gap between listing navigations to the same hostname; browser subresources are separate."
+    },
+    "requestTimeoutSecs": {
+      "title": "Request timeout (seconds)",
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 45,
+      "default": 15,
+      "description": "Maximum duration of an individual listing or image request."
+    },
+    "perListingTimeoutSecs": {
+      "title": "Budget per property (seconds)",
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 300,
+      "default": 90,
+      "description": "Total time for one property, including optional discovery and image downloads."
+    },
+    "searchTimeoutSecs": {
+      "title": "Maximum discovery time (seconds)",
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 30,
+      "default": 15,
+      "description": "Discovery ceiling, further limited to a quarter of the remaining work budget."
+    },
+    "maxRunSecs": {
+      "title": "Run work budget (seconds)",
+      "type": "integer",
+      "minimum": 15,
+      "maximum": 3600,
+      "default": 180,
+      "description": "Overall work budget. Set the platform run timeout at least 15 seconds higher."
+    },
+    "maxImageMbytes": {
+      "title": "Maximum size per image (MB)",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25,
+      "default": 10,
+      "description": "Reject any single downloaded image larger than this limit."
+    }
+  }
+}

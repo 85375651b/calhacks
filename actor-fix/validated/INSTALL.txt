@@ -1,0 +1,13 @@
+This is a replacement-file bundle, not a complete Actor project.
+
+Replace only src/main.ts in the existing Actor with the included src/main.ts.
+Keep all other existing source files, package.json and Dockerfile.
+Do not append this file to an old entry point. Do not paste Markdown fences.
+Set build tag beta before building; leave latest on the working production build.
+
+The exact file passed TypeScript 5.9.3 syntax parsing and transpilation.
+The original Actor supporting files and dependency versions are unavailable here, so a full Actor typecheck has not been performed.
+
+Expected OUTPUT implementationVersion: public-fallback-0.2.3-streaming-search
+
+If a syntax error remains, export the saved src/main.ts from Apify for comparison with SHA256SUMS.txt. A build log alone does not contain the malformed source.

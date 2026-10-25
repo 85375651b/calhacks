@@ -1,0 +1,26 @@
+{
+  "maxSitesPerAddress": {
+    "title": "Maximum sites per address",
+    "type": "integer",
+    "description": "Maximum property URLs to try before returning a diagnostic result.",
+    "default": 8,
+    "minimum": 1,
+    "maximum": 20
+  },
+  "perSiteTimeoutSecs": {
+    "title": "Time budget per site (seconds)",
+    "type": "integer",
+    "description": "Maximum time for HTTP and browser retrieval on one property URL before switching sites.",
+    "default": 12,
+    "minimum": 1,
+    "maximum": 30
+  },
+  "searchTimeoutSecs": {
+    "title": "Web search time budget (seconds)",
+    "type": "integer",
+    "description": "Maximum time to discover alternative public property websites.",
+    "default": 20,
+    "minimum": 1,
+    "maximum": 30
+  }
+}

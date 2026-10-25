@@ -1,0 +1,13 @@
+{
+  "actorSpecification": 1,
+  "name": "listing-image-scraper",
+  "title": "Zillow and Redfin Listing Images",
+  "description": "Extract a property's listing photo gallery and optionally save image files. Supports listing URLs and address discovery.",
+  "version": "0.1",
+  "buildTag": "beta",
+  "minMemoryMbytes": 1024,
+  "maxMemoryMbytes": 4096,
+  "dockerfile": "../Dockerfile",
+  "readme": "../README.md",
+  "input": "./input_schema.json"
+}

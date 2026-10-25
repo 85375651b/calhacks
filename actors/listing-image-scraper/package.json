@@ -1,0 +1,20 @@
+{
+  "name": "listing-image-scraper",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/main.js",
+    "build": "node scripts/check.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "apify": "3.7.2",
+    "@crawlee/core": "3.18.2",
+    "@crawlee/playwright": "3.18.2",
+    "cheerio": "1.2.0",
+    "got-scraping": "4.2.2",
+    "playwright": "1.61.1"
+  }
+}

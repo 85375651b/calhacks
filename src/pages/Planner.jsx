@@ -11,6 +11,7 @@ import "../styles/floorplan.css";
 import RoomPanel from "../components/planner/RoomPanel";
 import { demoPlacements } from "../lib/planner/demo";
 import AddFurniture from "../components/planner/AddFurniture";
+import AgentConnect from '../components/planner/AgentConnect';
 import { plannerApi, localRead, localWrite } from "../lib/planner/persistence";
 import FurnitureModel from "../components/planner/FurnitureModel";
 import FurniturePanel from "../components/planner/FurniturePanel";
@@ -615,6 +616,7 @@ function PlannerHome() {
   return (
     <main id="main" className="planner-page" data-panel={mobilePanel}>
       <header className="planner-header">
+        <AgentConnect clientId={clientId} />
         {snapshot.photoUrl && (
           <img
             src={snapshot.photoUrl}

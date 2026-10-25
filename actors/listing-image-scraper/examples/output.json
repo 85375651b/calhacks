@@ -1,0 +1,84 @@
+{
+  "inputAddress": "134 Athens St, San Francisco, CA 94112",
+  "listingUrl": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+  "address": "134 Athens St, San Francisco, CA 94112",
+  "status": "found",
+  "images": [
+    {
+      "index": 1,
+      "url": "https://photos.zillowstatic.com/fp/85b0cc5c1ed09b42f91b21db5f2d9528-cc_ft_1536.jpg",
+      "width": 1536,
+      "height": null,
+      "caption": null,
+      "provenance": "property-json",
+      "downloadStatus": "saved",
+      "kvKey": "1_zillow_15168051_001.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 334609,
+      "sha256": "45e16a6be2538fde5deb1c5836651f6495633c75aed5cd5c95c5a3231a6dd410"
+    },
+    {
+      "index": 2,
+      "url": "https://photos.zillowstatic.com/fp/c45f0f76250d6c47c0f0d4714587374e-cc_ft_1536.jpg",
+      "width": 1536,
+      "height": null,
+      "caption": null,
+      "provenance": "property-json",
+      "downloadStatus": "saved",
+      "kvKey": "1_zillow_15168051_002.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 192194,
+      "sha256": "3a5681b40a06121bc8f53ae0c11484a4b14a0dd345256977b2b59edb582a8205"
+    },
+    {
+      "index": 3,
+      "url": "https://photos.zillowstatic.com/fp/90b1115cd6daff10d6b9f02f4e0c05c9-cc_ft_1536.jpg",
+      "width": 1536,
+      "height": null,
+      "caption": null,
+      "provenance": "property-json",
+      "downloadStatus": "saved",
+      "kvKey": "1_zillow_15168051_003.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 288300,
+      "sha256": "d5933af6a914ea0e7c0eb3e067629aebcc8c90cc4c3c5e27406fb3fd58181301"
+    }
+  ],
+  "attempts": [
+    {
+      "step": "listing-start",
+      "provider": "zillow",
+      "url": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+      "elapsedMs": 1
+    },
+    {
+      "step": "http-start",
+      "url": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/"
+    },
+    {
+      "step": "http",
+      "url": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+      "status": 200
+    },
+    {
+      "step": "extraction",
+      "url": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+      "status": "found",
+      "imageCount": 115,
+      "elapsedMs": 1017
+    }
+  ],
+  "implementationVersion": "listing-images-0.1.0",
+  "scrapedAt": "2026-10-25T07:35:18.085Z",
+  "provider": "zillow",
+  "propertyId": "15168051",
+  "addressVerified": true,
+  "galleryComplete": false,
+  "availableImageCount": 115,
+  "truncated": true,
+  "declaredImageCount": 115,
+  "imageCount": 3,
+  "savedImageCount": 3,
+  "elapsedMs": 1702,
+  "kvStoreId": "420c75b3-56d0-4adf-97b7-d9e960403cde"
+}

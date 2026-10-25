@@ -1,0 +1,20 @@
+{
+  "addresses": ["134 Athens St, San Francisco, CA 94112"],
+  "enabledSources": ["zillow", "redfin", "realtor", "compass", "webSearch"],
+  "proxyConfiguration": {
+    "useApifyProxy": true,
+    "apifyProxyGroups": ["RESIDENTIAL"]
+  },
+  "maxFloorPlansPerAddress": 4,
+  "minConfidence": 0.5,
+  "runOcr": true,
+  "ocrMaxImages": 4,
+  "maxConcurrency": 1,
+  "requestTimeoutSecs": 15,
+  "maxSitesPerAddress": 8,
+  "perSiteTimeoutSecs": 12,
+  "searchTimeoutSecs": 20,
+  "perAddressTimeoutSecs": 90,
+  "maxRunSecs": 120,
+  "debugMode": true
+}

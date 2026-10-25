@@ -10,7 +10,7 @@ import { converters, NotImplementedError } from "./converters/index.js";
 import { ConversionError } from "./converters/cubicasa.js";
 import { calibrate, rotation } from "../../src/lib/planner/calibration.js";
 import { adaptResult } from "./actorAdapter.js";
-const defaultManager = createJobManager({
+export const defaultManager = createJobManager({
   storePlans: storeActorPlans,
   sample: samplePlans,
   resultAvailable: async (result) => {

@@ -8,6 +8,7 @@ import {
   visibleListings,
 } from "./search/status.js";
 import { plannerRouter } from "./storage/planner-routes.js";
+import {createAgentRouter} from './agent/routes.js';
 import express from "express";
 import { favoritesRouter } from "./storage/favorites-routes.js";
 import { insightHandlers } from "./insights/index.js";
@@ -42,6 +43,7 @@ export function createApp(
   app.use("/api/planner/floorplan", createFloorPlanRouter());
   app.use("/api/favorites", favoritesRouter);
   app.use("/api", plannerRouter);
+  app.use('/api/agent',createAgentRouter());
   app.get("/api/search/config", (_req, res) =>
     res.json({
       openaiConfigured:

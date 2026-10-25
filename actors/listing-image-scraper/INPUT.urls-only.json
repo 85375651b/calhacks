@@ -1,0 +1,14 @@
+{
+  "listingUrls": [
+    {
+      "url": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+      "address": "134 Athens St, San Francisco, CA 94112"
+    }
+  ],
+  "downloadImages": false,
+  "maxImagesPerListing": 200,
+  "allowAddressSearch": false,
+  "maxConcurrency": 1,
+  "maxRunSecs": 60,
+  "proxyConfiguration": { "useApifyProxy": false }
+}

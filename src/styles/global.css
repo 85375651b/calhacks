@@ -142,7 +142,10 @@ nav {
   font-size: 13px;
 }
 nav a {
+  display: inline-flex;
+  align-items: center;
   padding: 10px 0;
+  border-bottom: 2px solid transparent;
 }
 nav .active {
   color: var(--accent);

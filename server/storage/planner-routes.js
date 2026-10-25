@@ -4,11 +4,11 @@ import { join } from "node:path";
 import { serverDirectory } from "../config.js";
 import { clientId } from "./favorites.js";
 import { createPlannerStore } from "./planner.js";
-const library = createPlannerStore(
+export const library = createPlannerStore(
   join(serverDirectory, "data", "furniture.json"),
   { kind: "furniture", cap: 50 },
 );
-const layouts = createPlannerStore(
+export const layouts = createPlannerStore(
   join(serverDirectory, "data", "layouts.json"),
   { kind: "layouts", cap: 10 },
 );

@@ -1,0 +1,25 @@
+{
+  "implementationVersion": "listing-images-0.1.0",
+  "checkedAt": "2026-10-25T07:39:43.205Z",
+  "buildCheck": "passed with installed SDK imports",
+  "automatedTests": 13,
+  "inputSchema": "passed official Apify meta-schema validation",
+  "liveZillow": {
+    "address": "134 Athens St, San Francisco, CA 94112",
+    "listingUrl": "https://www.zillow.com/homedetails/134-Athens-St-San-Francisco-CA-94112/15168051_zpid/",
+    "addressVerified": true,
+    "availableImageCount": 115,
+    "declaredImageCount": 115,
+    "savedImageCount": 3,
+    "localActorStatus": "found",
+    "elapsedMs": 1702,
+    "proxy": "direct",
+    "browserUsed": false
+  },
+  "liveRedfin": {
+    "httpStatus": 202,
+    "galleryVerified": false,
+    "browserTested": false
+  },
+  "cloudBuildTested": false
+}
