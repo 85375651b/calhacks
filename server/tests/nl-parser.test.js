@@ -122,7 +122,8 @@ function modelFrom(rules) {
               : null),
     ]),
   );
-  return Object.fromEntries(Object.keys(parseSchema.properties).map(k=>[k,k==='intent'?'description':k==='criteria'?c:rules[k]]));
+  const metadata={unparsedText:'',confidence:1,stateHint:null,locationText:'',normalizedLocation:null};
+  return Object.fromEntries(Object.keys(parseSchema.properties).map(k=>[k,k==='intent'?'description':k==='criteria'?c:k in metadata?metadata[k]:rules[k]]));
 }
 test("uncertain input uses schema intent, and unresolved bare addresses can fall back to descriptions", async (t) => {
   const old = process.env.OPENAI_API_KEY;

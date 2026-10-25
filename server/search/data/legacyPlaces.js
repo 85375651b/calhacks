@@ -100,4 +100,3 @@ export const legacySamples = [
   },
   { label: "78704", city: "Austin", state: "TX", lat: 30.2457, lng: -97.7688 },
 ];
-

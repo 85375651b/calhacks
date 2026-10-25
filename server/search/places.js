@@ -84,7 +84,7 @@ export function createPlaceResolver({provider=placeProvider,addressGeocoder=addr
           if(unique.length>1){questions.push({field:'location',message:`Which ${candidate.text} did you mean?`,options:unique.map(publicPlace)});}
           else hits.push({...unique[0],raw:candidate.text,relation:candidate.relation});
           matched.push(candidate);
-          if(!candidate.selected){p.understood.push({start:candidate.start,end:candidate.end,text:candidate.text,kind:'location',confidence:result.correction?.length?.9:1});}
+          if(!candidate.selected){p.understood.push({start:candidate.start,end:candidate.end,text:candidate.text,kind:'location',confidence:result.correction?0.9:1});}
           if(result.correction)p.assumptions.push(`Read '${candidate.text}' as ${unique[0].label}. Choose another place below if that is not right.`);
         }
       }
