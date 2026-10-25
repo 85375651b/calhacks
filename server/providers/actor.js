@@ -68,8 +68,8 @@ function release() {
     next.resolve();
   } else active--;
 }
-export async function runActor(id, input, { limit = 1, timeout = 90000, build } = {}) {
-  if (config.useFixtures)
+export async function runActor(id, input, { limit = 1, timeout = 90000, build, allowLiveInFixtureMode = false } = {}) {
+  if (config.useFixtures && !allowLiveInFixtureMode)
     throw new Error("External calls are disabled in fixture mode");
   if (!config.enableApify || !config.apifyToken)
     throw new Error("Apify data is unavailable");

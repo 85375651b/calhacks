@@ -9,5 +9,6 @@ export const config = {
   apifyToken: process.env.APIFY_TOKEN,
   enableApify: process.env.ENABLE_APIFY !== "false",
   useFixtures: process.env.USE_FIXTURES === "true",
+  ikeaLiveSearch: process.env.IKEA_LIVE_SEARCH === "true",
   port: Number(process.env.PORT) || 3001,
 };

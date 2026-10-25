@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { categories, resolveName } from "../../lib/planner/catalog";
+import { categories } from "../../lib/planner/catalog";
 import { plannerApi } from "../../lib/planner/persistence";
+import { prefillMeasurements } from "../../lib/planner/measurements";
 export function ConfirmFurniture({ value, onConfirm, onCancel, canPlace = false }) {
-  const [draft, setDraft] = useState(value),
+  const [draft, setDraft] = useState(() => prefillMeasurements(value)),
     ref = useRef();
   const [saving,setSaving] = useState(false), [error,setError] = useState("");
   useEffect(() => {
@@ -25,7 +26,8 @@ export function ConfirmFurniture({ value, onConfirm, onCancel, canPlace = false 
           e.preventDefault();
           if (saving) return;
           const place = e.nativeEvent.submitter?.value === "place";
-          const edited = ["widthIn","depthIn","heightIn"].some(k=>draft[k] !== value[k]);
+          const original = prefillMeasurements(value);
+          const edited = ["widthIn","depthIn","heightIn"].some(k=>draft[k] !== original[k]);
           const confirmed = draft.source === "ikea" ? {...draft,estimated:false,
             dimensionSource: edited || value.dimensionSource !== "product" ? "manual" : "product",modelStatus:"placeholder"} : draft;
           setSaving(true);
@@ -77,6 +79,7 @@ export function ConfirmFurniture({ value, onConfirm, onCancel, canPlace = false 
             {label} (inches)
             <input
               type="number"
+              name={k}
               required
               min={k === "heightIn" ? "0.1" : "1"}
               max={k === "heightIn" ? 240 : 600}
@@ -118,136 +121,57 @@ export function ConfirmFurniture({ value, onConfirm, onCancel, canPlace = false 
   );
 }
 export default function AddFurniture({ clientId, onSave, onPlace, edit, onEditDone }) {
-  const [tab, setTab] = useState("IKEA"),
-    [input, setInput] = useState(""),
+  const [input, setInput] = useState(''),
     [pending, setPending] = useState(null),
     [busy, setBusy] = useState(false),
-    [status, setStatus] = useState(""),
-    queue = useRef([]);
+    [status, setStatus] = useState('');
   useEffect(() => {
     if (edit) setPending(edit);
   }, [edit]);
-  async function next() {
-    const line = queue.current.shift();
-    if (!line) {
-      setBusy(false);
-      return;
-    }
-    setBusy(true);
-    setStatus(
-      tab === "IKEA" ? "Searching IKEA for your furniture… This may take up to 90 seconds." : `Resolving ${line.slice(0, 50)} (${queue.current.length} remaining)`,
-    );
-    try {
-      const isUrl = /^https?:\/\//i.test(line);
-      let result;
-      try {
-        result = await plannerApi(clientId, "/furniture/resolve", {
-          method: "POST",
-          body: JSON.stringify(tab === "IKEA" ? { query:line,provider:"ikea" } : isUrl ? { url: line } : { query: line }),
-        });
-      } catch (e) {
-        if (isUrl || tab === "IKEA") throw e;
-        result = {
-          ...resolveName(line),
-          notes: "Server unavailable. Resolved locally using typical sizes.",
-        };
-      }
-      setPending({ ...result, id: crypto.randomUUID() });
-      if (tab === "IKEA") setStatus("Match found. Confirm the product and its measurements.");
-    } catch (e) {
-      setStatus(e.message);
-      setBusy(false);
-      queue.current = [];
-    }
-  }
-  function resolve(e) {
+  async function search(e) {
     e.preventDefault();
-    if (tab === "Manual") {
-      setPending({
-        ...resolveName(input || "My furniture"),
-        id: crypto.randomUUID(),
-        source: "manual",
-        estimated: false,
-        confidence: 1,
-        notes: "Enter your measured dimensions.",
+    if (busy || !input.trim()) return;
+    setBusy(true);
+    setStatus('Searching IKEA for your furniture… This may take up to 90 seconds.');
+    try {
+      const result = await plannerApi(clientId, '/furniture/resolve', {
+        method: 'POST',
+        body: JSON.stringify({query:input.trim(),provider:'ikea'}),
       });
-      return;
+      setPending({...result,id:crypto.randomUUID()});
+      setStatus('Match found. Confirm the product and its measurements.');
+    } catch (error) {
+      setStatus(error.message);
+    } finally {
+      setBusy(false);
     }
-    const lines =
-      tab === "Bulk"
-        ? input
-            .split("\n")
-            .map((s) => s.trim())
-            .filter(Boolean)
-        : [input.trim()];
-    if (lines.length > 10) {
-      setStatus("Use up to 10 lines at a time.");
-      return;
-    }
-    queue.current = lines;
-    next();
   }
   async function confirm(draft, place = false) {
     const ok = await onSave(draft);
-    if (ok === false) return;
+    if (ok === false) throw new Error('Could not save furniture.');
     if (place) onPlace?.(draft);
     setPending(null);
     onEditDone?.();
-    setStatus("Added to your furniture library.");
-    if (queue.current.length) next();
-    else setBusy(false);
+    setStatus('Added to your furniture library.');
   }
   return (
-    <section>
+    <section className="furniture-add">
       <h3>Add your furniture</h3>
-      <div
-        className="panel-actions"
-        role="group"
-        aria-label="Add furniture method"
-      >
-        {["IKEA", "Name", "Link", "Manual", "Bulk"].map((t) => (
-          <button
-            key={t}
-            aria-pressed={tab === t}
-            disabled={busy}
-            onClick={() => setTab(t)}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-      <form onSubmit={resolve}>
+      <form onSubmit={search}>
         <label>
-          {tab === "Bulk"
-            ? "One name or URL per line (max 10)"
-            : tab === "Link"
-              ? "HTTPS product URL"
-              : tab === "IKEA" ? "Describe the IKEA furniture you want" : "Furniture name"}
-          {tab === "Bulk" ? (
-            <textarea
-              required
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              rows={4}
-            />
-          ) : (
-            <input
-              required={tab !== "Manual"}
-              type={tab === "Link" ? "url" : "text"}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={
-                tab === "Link" ? "https://…" : tab === "IKEA" ? "small grey two-seat sofa" : "queen bed, desk 60x30…"
-              }
-            />
-          )}
+          Describe the IKEA furniture you want
+          <input
+            required
+            maxLength={500}
+            type="text"
+            value={input}
+            disabled={busy || !!pending}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="small grey two-seat sofa"
+          />
         </label>
-        <button disabled={busy}>
-          {busy
-            ? pending ? "Confirm the match…" : "Resolving…"
-            : tab === "Manual"
-              ? "Enter dimensions"
-              : tab === "IKEA" ? "Find IKEA furniture" : "Resolve furniture"}
+        <button disabled={busy || !!pending}>
+          {busy ? 'Searching IKEA…' : 'Find IKEA furniture'}
         </button>
       </form>
       <p role="status">{status}</p>
@@ -259,8 +183,6 @@ export default function AddFurniture({ clientId, onSave, onPlace, edit, onEditDo
           canPlace={!!onPlace && !edit}
           onCancel={() => {
             setPending(null);
-            queue.current = [];
-            setBusy(false);
             onEditDone?.();
           }}
         />

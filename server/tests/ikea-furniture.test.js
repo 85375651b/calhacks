@@ -3,9 +3,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { config } from "../config.js";
 import { extractIkeaDimensions } from "../furniture/ikeaDimensions.js";
-import { createIkeaResolver, normalizeIkea, ikeaProductUrl, IKEA_ACTOR_ID } from "../furniture/ikea.js";
+import { createIkeaResolver, normalizeIkea, ikeaProductUrl, IKEA_ACTOR_ID, IKEA_ACTOR_BUILD } from "../furniture/ikea.js";
 import { furniture, layout } from "../storage/planner.js";
 import { resolveFurniture } from "../furniture/resolve.js";
+import { prefillMeasurements } from "../../src/lib/planner/measurements.js";
 
 const row = { name:"Test sofa",price:"$499",url:"https://www.ikea.com/us/en/p/test-sofa-12345678/",imageUrl:"https://www.ikea.com/us/en/images/products/test.jpg",matchScore:1.5 };
 const html = '<h2>Measurements</h2><p>Width: 78 3/4 &quot;</p><p>Depth: 35 3/8 &quot;</p><p>Height: 32 5/8 &quot;</p><h2>Package details</h2><p>Width: 999 cm</p>';
@@ -49,9 +50,32 @@ test("IKEA search routes to the supplied actor, enriches product details and cac
     assert.equal(product.modelStatus,'placeholder');
     assert.equal(seen[0],IKEA_ACTOR_ID);
     assert.deepEqual(seen[1],{description:'grey sofa',country:'us',language:'en'});
+    assert.equal(seen[2].build,process.env.IKEA_ACTOR_BUILD || IKEA_ACTOR_BUILD);
     await resolve({query:' GREY SOFA '},false);
     assert.equal(calls,1);assert.equal(claims,1);
   } finally {config.enableApify=old.enabled;config.apifyToken=old.token;}
+});
+test("new Actor size fields reach the planner without a second product-page request",async()=>{
+  const old={enabled:config.enableApify,token:config.apifyToken};config.enableApify=true;config.apifyToken='test-placeholder';
+  let key;
+  const result={...row,width:57.875,length:31.125,height:30.375,unit:'in'};
+  const resolve=createIkeaResolver({run:async()=>[result],page:async()=>{assert.fail('Complete Actor dimensions should skip page scraping');},claim:async()=>{},memo:(k,fn)=>{key=k;return fn();}});
+  try {
+    const product=await resolve({query:'small grey two seat sofa'},false);
+    assert.deepEqual([product.widthIn,product.depthIn,product.heightIn],[57.875,31.125,30.375]);
+    assert.equal(product.estimated,false);
+    assert.equal(product.dimensionSource,'product');
+    assert.equal(key.version,2);
+    assert.equal(key.build,process.env.IKEA_ACTOR_BUILD || IKEA_ACTOR_BUILD);
+    const saved=furniture({...product,id:'saltmyran'});
+    assert.deepEqual([saved.widthIn,saved.depthIn,saved.heightIn],[57.875,31.125,30.375]);
+  } finally {config.enableApify=old.enabled;config.apifyToken=old.token;}
+});
+
+test("Actor measurements take priority while page measurements fill missing or invalid axes",()=>{
+  const product=normalizeIkea({...row,widthIn:57.875,depthIn:-2,height:30.375,unit:'in'}, {widthIn:999,depthIn:31.125,heightIn:26},'sofa');
+  assert.deepEqual([product.widthIn,product.depthIn,product.heightIn],[57.875,31.125,30.375]);
+  assert.equal(normalizeIkea({...row,width:100,unit:'cm'},{},'sofa').widthIn,null);
 });
 test("an unreadable product page preserves match and image but never inserts guessed sizes",async()=>{
   const old={enabled:config.enableApify,token:config.apifyToken};config.enableApify=true;config.apifyToken='test-placeholder';
@@ -67,10 +91,34 @@ test("IKEA fixture mode never calls external providers and errors do not masquer
   const resolve=createIkeaResolver({run:fail,page:fail,claim:fail,memo:fail});
   const item=await resolve({query:'sofa'},true);
   assert.equal(item.fixture,true);assert.match(item.notes,/Sample/);
+  assert.deepEqual([item.widthIn,item.depthIn,item.heightIn],[57.875,31.125,30.375]);
   await assert.rejects(()=>resolve({query:'x',country:'../../bad'},true),/description/);
-  const old=config.useFixtures;config.useFixtures=true;
+  const old=config.useFixtures,oldLive=config.ikeaLiveSearch;config.useFixtures=true;config.ikeaLiveSearch=false;
   try { assert.equal((await resolveFurniture({provider:'ikea',query:'sofa'})).source,'ikea'); }
-  finally {config.useFixtures=old;}
+  finally {config.useFixtures=old;config.ikeaLiveSearch=oldLive;}
+});
+test("IKEA live opt-in calls the measurement build even when the rest of the website uses fixtures",async()=>{
+  const old={useFixtures:config.useFixtures,ikeaLiveSearch:config.ikeaLiveSearch,enableApify:config.enableApify,apifyToken:config.apifyToken};
+  Object.assign(config,{useFixtures:true,ikeaLiveSearch:true,enableApify:true,apifyToken:'test-placeholder'});
+  let options;
+  const resolve=createIkeaResolver({run:async(_id,_input,opts)=>{options=opts;return [{...row,widthIn:57.875,depthIn:31.125,heightIn:30.375}];},page:()=>assert.fail('No page needed'),claim:async()=>{},memo:(_key,fn)=>fn()});
+  try {
+    const product=await resolve({query:'small grey sofa'});
+    assert.equal(product.fixture,false);
+    assert.doesNotMatch(product.notes,/Sample/);
+    assert.equal(options.allowLiveInFixtureMode,true);
+    assert.equal(options.build,process.env.IKEA_ACTOR_BUILD || IKEA_ACTOR_BUILD);
+    assert.equal(config.useFixtures,true);
+  } finally {Object.assign(config,old);}
+});
+test("confirmation form prefills separate Actor axes and keeps missing measurements empty",()=>{
+  const product=prefillMeasurements({width:57.875,length:31.125,height:30.375,unit:'in'});
+  assert.deepEqual([product.widthIn,product.depthIn,product.heightIn],[57.875,31.125,30.375]);
+  assert.equal(prefillMeasurements({depth:31.125,unit:'in'}).depthIn,31.125);
+  assert.equal(prefillMeasurements({widthIn:60,width:57.875,unit:'in'}).widthIn,60);
+  assert.equal(prefillMeasurements({width:100,unit:'cm'}).widthIn,null);
+  assert.equal(prefillMeasurements({heightIn:NaN}).heightIn,null);
+  assert.equal(prefillMeasurements({}).depthIn,null);
 });
 test("IKEA furniture persists provenance and dimensions while retaining placement for later model replacement",()=>{
   const product=normalizeIkea(row,extractIkeaDimensions(html),'sofa');

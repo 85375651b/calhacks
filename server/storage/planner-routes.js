@@ -63,10 +63,13 @@ plannerRouter.delete(
     const used = (await layouts.list(req.clientId)).some((l) =>
       l.placements.some((p) => p.furnitureId === req.params.id),
     );
-    if (used)
-      throw new Error(
-        "Remove this furniture from saved layouts before deleting its definition.",
-      );
+    // A library deletion must not destroy furniture already placed in a house.
+    // Retain its definition for layout hydration, but hide it from the library.
+    if (used || req.query.preserveDefinition === "true") {
+      const definition = (await library.list(req.clientId)).find(item=>item.id === req.params.id);
+      if (definition) await library.put(req.clientId,{...definition,archived:true});
+      return library.list(req.clientId);
+    }
     return library.remove(req.clientId, req.params.id);
   }),
 );

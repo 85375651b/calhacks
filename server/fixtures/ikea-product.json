@@ -3,5 +3,12 @@
   "price": "",
   "url": "https://www.ikea.com/us/en/p/saltmyran-loveseat-oereryd-gray-beige-80618531/",
   "imageUrl": "https://www.ikea.com/us/en/images/products/saltmyran-loveseat-oereryd-gray-beige__1576105_pe1032229_s5.jpg?f=xu",
-  "matchScore": 0.5
+  "matchScore": 0.5,
+  "width": 57.875,
+  "length": 31.125,
+  "height": 30.375,
+  "unit": "in",
+  "widthIn": 57.875,
+  "depthIn": 31.125,
+  "heightIn": 30.375
 }

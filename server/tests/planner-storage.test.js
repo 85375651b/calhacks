@@ -69,6 +69,18 @@ test("layout and furniture validation strip fields and bound numeric values", ()
     ),
   );
 });
+
+test("archived layout definitions do not consume library slots",async()=>{
+  const dir=await mkdtemp(join(tmpdir(),'planner-archive-'));
+  try {
+    const id=randomUUID(),store=createPlannerStore(join(dir,'furniture.json'),{kind:'furniture',cap:1});
+    await store.put(id,{id:'sofa',name:'Sofa'});
+    await store.put(id,{id:'sofa',name:'Sofa',archived:true});
+    await store.put(id,{id:'chair',name:'Chair'});
+    assert.equal((await store.list(id)).filter(item=>!item.archived).length,1);
+    await assert.rejects(store.put(id,{id:'sofa',name:'Sofa'}),/up to 1/);
+  } finally {await rm(dir,{recursive:true,force:true});}
+});
 test("ten-layout cap permits updates and deletion without deleting furniture", async () => {
   const dir = await mkdtemp(join(tmpdir(), "layouts-"));
   try {

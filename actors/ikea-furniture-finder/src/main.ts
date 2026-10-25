@@ -1,7 +1,7 @@
 import { Actor, log } from 'apify';
 import { chromium } from 'playwright';
 import * as cheerio from 'cheerio';
-import { extractIkeaDimensions } from './dimensions.js';
+import { parseMeasurementText, type ProductSize } from './product-size.js';
 
 interface Input {
     description: string;
@@ -14,6 +14,21 @@ interface Candidate {
     price: string;
     url: string;
     imageUrl: string | null;
+}
+
+function parseProductSize(html: string): ProductSize {
+    const $ = cheerio.load(html);
+    const rows = $('.pip-product-dimensions__measurement').toArray().map((el) => $(el).text()).join(' ');
+    if (rows) return parseMeasurementText(rows);
+    let best = parseMeasurementText('');
+    $('[class*="product-dimensions"], [class*="measurements"]').each((_, el) => {
+        const parsed = parseMeasurementText($(el).text());
+        if (parsed.dimensions.length > best.dimensions.length) best = parsed;
+    });
+    if (best.dimensions.length) return best;
+    const body = $('body').text();
+    // Only accept the product measurements section, never arbitrary page numbers.
+    return /Measurements|Product dimensions/i.test(body) ? parseMeasurementText(body) : best;
 }
 
 const STOPWORDS = new Set(['a', 'an', 'the', 'with', 'and', 'or', 'for', 'of', 'in', 'to']);
@@ -49,7 +64,6 @@ function parseSearchResults(html: string, pageUrl: string): Candidate[] {
         const href = anchor.attr('href');
         if (!href) return;
         const url = absolutize(href, pageUrl).split('?')[0];
-        if (!['www.ikea.com', 'ikea.com'].includes(new URL(url).hostname)) return;
         if (seen.has(url)) return;
 
         const card = anchor.closest('[class*="product"], article, li, div');
@@ -76,6 +90,7 @@ function parseSearchResults(html: string, pageUrl: string): Candidate[] {
 }
 
 await Actor.init();
+Actor.on('aborting', async () => { await Actor.exit(); });
 
 try {
     const input = (await Actor.getInput<Input>()) ?? { description: '' };
@@ -85,28 +100,19 @@ try {
 
     const country = (input.country || 'us').toLowerCase();
     const language = (input.language || 'en').toLowerCase();
-    if (!/^[a-z]{2}$/.test(country) || !/^[a-z]{2}$/.test(language) || input.description.trim().length > 500) {
-        throw new Error('Use a description up to 500 characters and two-letter country/language codes.');
-    }
     const query = input.description.trim();
     const searchUrl = `https://www.ikea.com/${country}/${language}/search/?q=${encodeURIComponent(query)}`;
     const queryTokens = tokenize(query);
 
     const browser = await chromium.launch({ headless: true });
-    Actor.on('aborting', async () => {
-        await Actor.setValue('state', { status: 'aborted' });
-        await browser.close();
-        await Actor.exit();
-    });
     let best: (Candidate & { matchScore: number }) | null = null;
     let debugHtml: string | null = null;
-    let dimensions = { widthIn: null as number | null, depthIn: null as number | null, heightIn: null as number | null };
 
     try {
         const page = await browser.newPage();
         log.info(`Loading ${searchUrl}`);
-        await page.goto(searchUrl, { waitUntil: 'domcontentloaded', timeout: 45_000 });
-        await page.waitForSelector('a[href*="/p/"]', { timeout: 15_000 }).catch(() => undefined);
+        await page.goto(searchUrl, { waitUntil: 'domcontentloaded', timeout: 90_000 });
+        await page.waitForSelector('a[href*="/p/"]', { timeout: 30_000 }).catch(() => undefined);
         const html = await page.content();
         const candidates = parseSearchResults(html, searchUrl);
         log.info(`Found ${candidates.length} product candidates`);
@@ -116,17 +122,10 @@ try {
             .sort((a, b) => b.matchScore - a.matchScore);
 
         const top = scored[0];
-        if (top) {
-            try {
-                await page.goto(top.url, { waitUntil: 'domcontentloaded', timeout: 15_000 });
-                dimensions = extractIkeaDimensions(await page.content());
-                if (!top.imageUrl) {
-                    const og = await page.locator('meta[property="og:image"]').first().getAttribute('content').catch(() => null);
-                    if (og) top.imageUrl = og;
-                }
-            } catch {
-                log.warning('Product details unavailable. Returning the match with missing measurements.');
-            }
+        if (top && !top.imageUrl) {
+            await page.goto(top.url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+            const og = await page.locator('meta[property="og:image"]').first().getAttribute('content').catch(() => null);
+            if (og) top.imageUrl = og;
         }
 
         if (scored.length === 0) {
@@ -148,20 +147,33 @@ try {
     const result = best as Candidate & { matchScore: number };
     let imageRecordKey: string | null = null;
 
+    // Open the best match's product page to read its size.
+    let productSize = parseMeasurementText('');
+    const sizeBrowser = await chromium.launch({ headless: true });
+    try {
+        const productPage = await sizeBrowser.newPage();
+        await productPage.goto(result.url, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+        await productPage.waitForTimeout(1500);
+        const productHtml = await productPage.content();
+        productSize = parseProductSize(productHtml);
+        if (!productSize.size) log.warning('No size found on product page');
+    } catch (err) {
+        log.warning(`Could not read product page: ${(err as Error).message}`);
+    } finally {
+        await sizeBrowser.close();
+    }
+
     if (result.imageUrl) {
         try {
-            const imageUrl = new URL(result.imageUrl);
-            if (imageUrl.protocol !== 'https:' || !['www.ikea.com', 'ikea.com'].includes(imageUrl.hostname)) throw new Error('Image host unavailable');
-            const response = await fetch(imageUrl, { signal: AbortSignal.timeout(8_000), redirect: 'error' });
+            const response = await fetch(result.imageUrl);
             if (response.ok) {
                 const contentType = response.headers.get('content-type') ?? 'image/jpeg';
                 const buffer = Buffer.from(await response.arrayBuffer());
-                if (buffer.length > 10 * 1024 * 1024) throw new Error('Image too large');
                 imageRecordKey = 'furniture-image';
                 await Actor.setValue(imageRecordKey, buffer, { contentType });
             }
         } catch (err) {
-            log.warning('Could not download product image. The image URL is retained.');
+            log.warning(`Could not download image: ${(err as Error).message}`);
         }
     }
 
@@ -171,11 +183,9 @@ try {
         price: result.price,
         url: result.url,
         imageUrl: result.imageUrl,
+        ...productSize,
         matchScore: Number(result.matchScore.toFixed(2)),
         searchUrl,
-        ...dimensions,
-        dimensionUnit: 'in',
-        dimensionSource: Object.values(dimensions).every(v => v !== null) ? 'product' : 'missing',
     };
 
     await Actor.pushData(output);

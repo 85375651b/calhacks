@@ -49,6 +49,7 @@ export function furniture(v) {
       ? v.source
       : "manual",
     estimated: v.estimated !== false,
+    ...(v.archived === true ? {archived:true} : {}),
     ...(v.source === "ikea" ? {
       productId: /^\d{8}$/.test(v.productId) ? v.productId : null,
       price: text(v.price,100) || null,
@@ -155,7 +156,7 @@ export function createPlannerStore(file, { kind, cap }) {
       return store.mutate((data) => {
         const rows = data[id] || [],
           index = rows.findIndex((r) => r[field] === clean[field]);
-        if (index < 0 && rows.length >= cap)
+        if ((index < 0 || rows[index].archived) && rows.filter(row=>!row.archived).length >= cap && !clean.archived)
           throw new Error(
             `You can save up to ${cap} ${kind === "furniture" ? "items" : "layouts"}. Delete an older one first.`,
           );

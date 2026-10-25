@@ -8,6 +8,7 @@ import { resolveName } from "../../src/lib/planner/catalog.js";
 import { readFile } from "node:fs/promises";
 
 export const IKEA_ACTOR_ID = "1s1g2xDQFnPD0zt6C";
+export const IKEA_ACTOR_BUILD = "size-fields";
 const cache = persistentMemo(join(serverDirectory,".cache","ikea-furniture.json"),{cacheErrors:false});
 const budget = createRunGuard(join(serverDirectory,".cache","ikea-budget.json"),{
   max:()=>Math.max(1,Math.min(50,Number(process.env.IKEA_MAX_RUNS_PER_HOUR)||10)),
@@ -35,9 +36,11 @@ export function normalizeIkea(row, dimensions, query, {fixture=false} = {}) {
   const sourceUrl = ikeaProductUrl(row.url);
   const base = resolveName(`${query} ${row.name}`);
   const sizes = {};
+  const fields = {widthIn:["width"],depthIn:["depth","length"],heightIn:["height"]};
   for (const axis of ["widthIn","depthIn","heightIn"]) {
-    const n = dimensions?.[axis] ?? row[axis];
-    sizes[axis] = typeof n === "number" && Number.isFinite(n) && n >= (axis === 'heightIn' ? .1 : 1) && n <= (axis === 'heightIn' ? 240 : 600) ? n : null;
+    // Prefer the Actor's overall measurements; page extraction only fills gaps.
+    sizes[axis] = [row[axis],...(row.unit === "in" ? fields[axis].map(key=>row[key]) : []),dimensions?.[axis]]
+      .find(n=>typeof n === "number" && Number.isFinite(n) && n >= (axis === 'heightIn' ? .1 : 1) && n <= (axis === 'heightIn' ? 240 : 600)) ?? null;
   }
   const complete = Object.values(sizes).every(v=>v!=null);
   return { name:row.name.slice(0,160),category:base.category,color:base.color,...sizes,
@@ -50,7 +53,7 @@ export function normalizeIkea(row, dimensions, query, {fixture=false} = {}) {
   };
 }
 export function createIkeaResolver({ run=runActor, page=fetchPage, memo=cache, claim=budget }={}) {
-  return async ({query,country="us",language="en"},fixture=config.useFixtures) => {
+  return async ({query,country="us",language="en"},fixture=config.useFixtures && !config.ikeaLiveSearch) => {
     if (typeof query !== "string" || !query.trim() || query.trim().length>500 || !/^[a-z]{2}$/.test(country) || !/^[a-z]{2}$/.test(language))
       throw Object.assign(Error("Enter a furniture description up to 500 characters."),{code:"invalid_ikea"});
     const description = query.trim();
@@ -61,14 +64,18 @@ export function createIkeaResolver({ run=runActor, page=fetchPage, memo=cache, c
     }
     if (!config.enableApify || !config.apifyToken) throw Object.assign(Error("IKEA search is unavailable. You can enter dimensions manually."),{code:"ikea_unavailable"});
     try {
-      return await memo({query:description.toLowerCase(),country,language,version:1},async()=>{
+      const actorId = process.env.IKEA_ACTOR_ID || IKEA_ACTOR_ID;
+      const build = process.env.IKEA_ACTOR_BUILD || IKEA_ACTOR_BUILD;
+      return await memo({query:description.toLowerCase(),country,language,actorId,build,version:2},async()=>{
         await claim();
-        const rows = await run(process.env.IKEA_ACTOR_ID || IKEA_ACTOR_ID,{description,country,language},{limit:1,timeout:90000});
+        const rows = await run(actorId,{description,country,language},{limit:1,timeout:90000,build,allowLiveInFixtureMode:config.ikeaLiveSearch});
         const row=rows?.[0];
         if (!row) throw Error("No match");
+        const product = normalizeIkea(row,{},description);
+        if (!product.estimated) return product;
         const url = ikeaProductUrl(row.url);
         let dimensions = {};
-        // Enrich the existing Actor result without requiring an Actor deployment.
+        // Older or incomplete results can still use explicit product-page labels.
         try { dimensions = extractIkeaDimensions((await page(url)).html); } catch {}
         return normalizeIkea(row,dimensions,description);
       },7*86400000);

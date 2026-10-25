@@ -14,6 +14,7 @@ import AddFurniture from "../components/planner/AddFurniture";
 import { plannerApi, localRead, localWrite } from "../lib/planner/persistence";
 import FurnitureModel from "../components/planner/FurnitureModel";
 import FurniturePanel from "../components/planner/FurniturePanel";
+import FurnitureLibrary from "../components/planner/FurnitureLibrary";
 import { catalog } from "../lib/planner/catalog";
 import {
   warningsFor,
@@ -70,7 +71,6 @@ function PlannerHome() {
     [view, setView] = useState(() => (window.innerWidth < 768 ? "2D" : "3D")),
     [level, setLevel] = useState(0),
     [fullWalls, setFullWalls] = useState(false),
-    [quality, setQuality] = useState("low"),
     [roomId, setRoomId] = useState(""),
     [overrides, setOverrides] = useState({}),
     [dismissed, setDismissed] = useState(false);
@@ -131,10 +131,7 @@ function PlannerHome() {
     if (next.calibration) setLevel(next.levelIndex);
   }
   const heading = useRef(),
-    canvas = useRef(),
-    project = useRef(),
-    cameraControls = useRef();
-  const [planOpacity, setPlanOpacity] = useState(0.9);
+    project = useRef();
   const estimatedHouse = useMemo(
     () => generateHouse({ ...snapshot, seed: homeId }, overrides),
     [snapshot, homeId, overrides],
@@ -160,7 +157,6 @@ function PlannerHome() {
   const [history, setHistory] = useState({ past: [], present: [], future: [] }),
     [selected, setSelected] = useState(""),
     [snap, setSnap] = useState(3),
-    [flush, setFlush] = useState(false),
     [announcement, setAnnouncement] = useState("");
   const [library, setLibrary] = useState([]),
     [ready, setReady] = useState(false),
@@ -168,7 +164,8 @@ function PlannerHome() {
     [editing, setEditing] = useState(null),
     [savedLayouts, setSavedLayouts] = useState([]);
   const revision = useRef(0),
-    saveQueue = useRef(Promise.resolve());
+    saveQueue = useRef(Promise.resolve()),
+    deletedFurniture = useRef(new Set());
   useEffect(() => {
     let cancelled = false;
     async function load() {
@@ -277,7 +274,7 @@ function PlannerHome() {
         .catch(() => {})
         .then(async () => {
           try {
-            for (const def of library)
+            for (const def of library.filter(d=>!deletedFurniture.current.has(d.id)))
               await plannerApi(clientId, "/furniture", {
                 method: "POST",
                 body: JSON.stringify(def),
@@ -323,7 +320,7 @@ function PlannerHome() {
       );
   }, [ready, floorPlans.job?.result?.listingFacts?.ceilingHeightFt]);
   async function saveFurniture(def) {
-    if (!library.some((d) => d.id === def.id) && library.length >= 50) {
+    if (!library.some((d) => d.id === def.id && !d.archived) && library.filter(d=>!d.archived).length >= 50) {
       setAnnouncement("Maximum 50 library items. Delete an item first.");
       return false;
     }
@@ -346,6 +343,7 @@ function PlannerHome() {
       if (!ok) return false;
     }
     setLibrary(next);
+    deletedFurniture.current.delete(def.id);
     setHistory((h) => ({
       ...h,
       present: h.present.map((p) =>
@@ -357,19 +355,23 @@ function PlannerHome() {
     return true;
   }
   async function deleteFurniture(id) {
-    if (history.present.some((p) => p.furnitureId === id)) {
-      setAnnouncement(
-        "Remove placed copies before deleting this library item.",
-      );
-      return;
-    }
+    deletedFurniture.current.add(id);
     try {
-      await plannerApi(clientId, "/furniture/" + id, { method: "DELETE" });
-      const next = library.filter((d) => d.id !== id);
+      const preserve = [history.present,...history.past,...history.future].some(placements=>placements.some(p=>p.furnitureId === id));
+      const deletion = saveQueue.current.catch(()=>{}).then(()=>
+        plannerApi(clientId, "/furniture/" + encodeURIComponent(id) + (preserve ? "?preserveDefinition=true" : ""), {method:"DELETE"})
+      );
+      saveQueue.current = deletion;
+      const saved = await deletion;
+      const retained = saved.find(d=>d.id === id);
+      const next = library.flatMap(d=>d.id === id ? retained ? [retained] : [] : [d]);
       localWrite(clientId + ".library", next);
       setLibrary(next);
+      setAnnouncement("Deleted from your library. Placed copies are kept.");
     } catch (e) {
+      deletedFurniture.current.delete(id);
       setAnnouncement("Could not delete: " + e.message);
+      throw e;
     }
   }
   const items = history.present.filter((i) => i.level === floor.level),
@@ -469,33 +471,6 @@ function PlannerHome() {
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
   }, [history, selected, floor, homeId]);
-  function download() {
-    if (!canvas.current) return;
-    try {
-      const output = document.createElement("canvas");
-      output.width = canvas.current.width;
-      output.height = canvas.current.height;
-      const ctx = output.getContext("2d");
-      ctx.drawImage(canvas.current, 0, 0);
-      ctx.fillStyle = "#ffffffdd";
-      ctx.fillRect(0, output.height - 48, output.width, 48);
-      ctx.fillStyle = "#234c3c";
-      ctx.font = "18px sans-serif";
-      ctx.fillText(
-        inPlanMode
-          ? `Floor plan from ${activeAsset?.sourceName || "listing source"}, personal use. PropertyLens`
-          : "Estimated layout, PropertyLens",
-        16,
-        output.height - 18,
-      );
-      const a = document.createElement("a");
-      a.download = "propertylens-layout.png";
-      a.href = output.toDataURL("image/png");
-      a.click();
-    } catch {
-      setAnnouncement("Image export unavailable in this browser.");
-    }
-  }
   function open(s) {
     writeSession(snapshotKey(s.id), s);
     navigate("/planner/" + s.id, { state: { snapshot: s } });
@@ -770,7 +745,7 @@ function PlannerHome() {
           aria-expanded={mobilePanel === "rooms"}
           onClick={() => setMobilePanel(mobilePanel === "rooms" ? "" : "rooms")}
         >
-          Rooms
+          Library
         </button>
         <button
           aria-expanded={mobilePanel === "furniture"}
@@ -799,35 +774,6 @@ function PlannerHome() {
             </select>
           </label>
         )}
-        {inPlanMode && (
-          <label>
-            Plan opacity
-            <input
-              type="range"
-              min="0.1"
-              max="1"
-              step="0.05"
-              value={planOpacity}
-              onChange={(e) => setPlanOpacity(+e.target.value)}
-            />
-          </label>
-        )}
-        <button onClick={download}>Download image</button>
-        <button onClick={() => cameraControls.current?.("in")}>Zoom in</button>
-        <button onClick={() => cameraControls.current?.("out")}>
-          Zoom out
-        </button>
-        <details className="camera-pan">
-          <summary>Pan view</summary>
-          {["left", "right", "up", "down"].map((direction) => (
-            <button
-              key={direction}
-              onClick={() => cameraControls.current?.(direction)}
-            >
-              Pan {direction}
-            </button>
-          ))}
-        </details>
         {homeId === "demo" && (
           <button onClick={() => change(demoPlacements(house))}>
             Reset demo furniture
@@ -838,9 +784,6 @@ function PlannerHome() {
         </button>
         <button onClick={() => setFullWalls(!fullWalls)}>
           {fullWalls ? "Full walls" : "Cutaway"}
-        </button>
-        <button onClick={() => setQuality(quality === "low" ? "high" : "low")}>
-          Quality: {quality}
         </button>
         <label>
           Floor{" "}
@@ -868,8 +811,18 @@ function PlannerHome() {
         </label>
       </div>
       <div className="planner-workspace">
+        <aside className="planner-panel library-panel">
+          <FurnitureLibrary
+            library={[...library.filter(d=>!d.archived),...catalog]}
+            add={add}
+            room={floor.rooms.find(r=>r.id === roomId) || floor.rooms.find(r=>r.type === 'living') || floor.rooms[0]}
+            onLibraryEdit={setEditing}
+            onLibraryDelete={deleteFurniture}
+          />
+          <details className="library-room-settings">
+            <summary>Room &amp; floor settings</summary>
         {inPlanMode ? (
-          <aside className="planner-panel room-panel">
+          <aside className="room-settings">
             <h2>{activeAsset?.sample ? "Sample floor plan" : "Floor plan"}</h2>
             {converted ? (
               <>
@@ -899,12 +852,15 @@ function PlannerHome() {
           </aside>
         ) : (
           <RoomPanel
+            embedded
             floor={floor}
             overrides={overrides}
             setOverrides={setOverrides}
             onReset={() => setOverrides({})}
           />
         )}
+          </details>
+        </aside>
         <section
           className="planner-canvas"
           onDragOver={(e) => e.preventDefault()}
@@ -931,18 +887,16 @@ function PlannerHome() {
           }}
         >
           <Scene
-            onCameraControls={(fn) => (cameraControls.current = fn)}
             onProject={(fn) => (project.current = fn)}
             floor={floor}
             ceilingHeightIn={floorPlan.ceilingHeightIn}
             planUrl={planUrl}
             planRotation={activePlan?.rotationDeg || 0}
-            planOpacity={converted ? Math.min(0.25, planOpacity) : planOpacity}
+            planOpacity={converted ? 0.25 : 0.9}
             view={view}
             fullWalls={fullWalls}
-            quality={quality}
+            quality="low"
             focus={floor.rooms.find((r) => r.id === roomId)}
-            onCanvas={(el) => (canvas.current = el)}
             onEmpty={() => setSelected("")}
           >
             {items.map((item) => (
@@ -955,7 +909,7 @@ function PlannerHome() {
                 onMove={(p) => update(p.id, { xIn: p.xIn, zIn: p.zIn })}
                 floor={floor}
                 snap={snap}
-                flush={flush}
+                flush={false}
               />
             ))}
           </Scene>
@@ -982,14 +936,9 @@ function PlannerHome() {
             history,
             snap,
             setSnap,
-            flush,
-            setFlush,
           }}
           undo={() => setHistory(undo)}
           redo={() => setHistory(redo)}
-          library={[...library, ...catalog]}
-          onLibraryEdit={setEditing}
-          onLibraryDelete={deleteFurniture}
         >
           <AddFurniture
             clientId={clientId}

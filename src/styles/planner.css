@@ -25,9 +25,25 @@
 }
 .planner-toolbar {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px 20px;
   flex-wrap: wrap;
   margin: 20px 0;
+}
+.planner-toolbar > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+.planner-toolbar select {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #c6d0c9;
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
 }
 .planner-workspace {
   display: grid;
@@ -164,7 +180,40 @@
 }
 
 .planner-workspace {
-  grid-template-columns: 230px minmax(0, 1fr) 280px;
+  grid-template-columns: 320px minmax(0, 1fr) 280px;
+}
+.library-panel {
+  display: flex;
+  flex-direction: column;
+  height: 680px;
+  gap: 20px;
+}
+.furniture-library {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 180px;
+  gap: 12px;
+}
+.furniture-library h2,
+.furniture-library > label {
+  margin: 0;
+}
+.furniture-library .catalog-list {
+  flex: 1;
+  min-height: 100px;
+  max-height: none;
+}
+.library-room-settings {
+  flex-shrink: 0;
+  border-top: 1px solid #d9ded8;
+  padding-top: 16px;
+}
+.library-room-settings summary {
+  cursor: pointer;
+}
+.room-settings {
+  padding-top: 16px;
 }
 .panel-actions {
   display: flex;
@@ -174,6 +223,50 @@
 .panel-actions button {
   font-size: 12px;
   padding: 7px;
+}
+.furniture-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.furniture-panel > * {
+  flex-shrink: 0;
+}
+.furniture-warnings {
+  margin-top: auto;
+  padding-top: 24px;
+}
+.furniture-warnings h3 {
+  margin: 0 0 12px;
+}
+.furniture-warnings p,
+.furniture-warnings ul {
+  margin: 0;
+}
+.furniture-panel > h2,
+.furniture-panel > h3,
+.furniture-panel > label,
+.furniture-add > h3,
+.furniture-add > p,
+.furniture-add form > label {
+  margin: 0;
+}
+.furniture-panel > label,
+.furniture-add form > label {
+  gap: 8px;
+  line-height: 1.5;
+}
+.furniture-add,
+.furniture-add form {
+  display: grid;
+  gap: 12px;
+}
+.furniture-add form > button {
+  width: 100%;
+  margin: 0;
+}
+.furniture-add > p:empty {
+  display: none;
 }
 .catalog-list {
   max-height: 240px;
@@ -204,7 +297,7 @@
 }
 @media (max-width: 1100px) and (min-width: 768px) {
   .planner-workspace {
-    grid-template-columns: 200px minmax(0, 1fr);
+    grid-template-columns: 280px minmax(0, 1fr);
   }
   .furniture-panel {
     grid-column: 1/-1;
@@ -276,14 +369,6 @@
 .mobile-panel-tabs {
   display: none;
 }
-.camera-pan[open] {
-  display: flex;
-  gap: 6px;
-}
-.camera-pan summary {
-  padding: 10px;
-  cursor: pointer;
-}
 @media (max-width: 767px) {
   .planner-page {
     padding-bottom: 76px;
@@ -314,7 +399,7 @@
     z-index: 25;
     box-shadow: 0 -8px 30px #234c3c22;
   }
-  .planner-page[data-panel="rooms"] .room-panel,
+  .planner-page[data-panel="rooms"] .library-panel,
   .planner-page[data-panel="furniture"] .furniture-panel {
     display: block;
   }

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-export default function RoomPanel({ floor, overrides, setOverrides, onReset }) {
+export default function RoomPanel({ floor, overrides, setOverrides, onReset, embedded = false }) {
   const [metric, setMetric] = useState(false);
   return (
-    <aside className="planner-panel room-panel">
+    <aside className={embedded ? "room-settings" : "planner-panel room-panel"}>
       <h2>Rooms</h2>
       <button onClick={() => setMetric(!metric)}>
         Units: {metric ? "metric" : "feet / inches"}

@@ -28,6 +28,24 @@
       "searchUrl": {
         "type": "string"
       },
+      "width": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "length": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
+      "height": {
+        "type": [
+          "number",
+          "null"
+        ]
+      },
       "widthIn": {
         "type": [
           "number",
@@ -46,16 +64,23 @@
           "null"
         ]
       },
-      "dimensionUnit": {
+      "unit": {
+        "type": "string",
         "enum": [
           "in"
         ]
       },
-      "dimensionSource": {
-        "enum": [
-          "product",
-          "missing"
+      "size": {
+        "type": [
+          "string",
+          "null"
         ]
+      },
+      "dimensions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       }
     },
     "required": [
@@ -66,11 +91,15 @@
       "imageUrl",
       "matchScore",
       "searchUrl",
+      "width",
+      "length",
+      "height",
       "widthIn",
       "depthIn",
       "heightIn",
-      "dimensionUnit",
-      "dimensionSource"
+      "unit",
+      "size",
+      "dimensions"
     ]
   },
   "views": {
@@ -85,11 +114,15 @@
           "imageUrl",
           "matchScore",
           "searchUrl",
+          "width",
+          "length",
+          "height",
           "widthIn",
           "depthIn",
           "heightIn",
-          "dimensionUnit",
-          "dimensionSource"
+          "unit",
+          "size",
+          "dimensions"
         ]
       },
       "display": {
@@ -130,6 +163,26 @@
           "heightIn": {
             "label": "height (inches)",
             "format": "number"
+          },
+          "width": {
+            "label": "Width (inches)",
+            "format": "number"
+          },
+          "length": {
+            "label": "Length (inches)",
+            "format": "number"
+          },
+          "height": {
+            "label": "Height (inches)",
+            "format": "number"
+          },
+          "unit": {
+            "label": "Unit",
+            "format": "text"
+          },
+          "size": {
+            "label": "Overall size (W × L × H)",
+            "format": "text"
           }
         }
       }
