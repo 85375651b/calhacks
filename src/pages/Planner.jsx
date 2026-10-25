@@ -1,6 +1,7 @@
 import {validateFloorPlan,transformPlacements} from '../lib/planner/calibration';
 import FloorPlanPanel, { FloorPlanStatus } from "../components/planner/FloorPlanPanel";
-import { useFloorPlans } from "../lib/planner/floorPlanApi";
+import {planHouse} from '../lib/planner/planHouse';
+import { useAssetImage, useFloorPlans } from "../lib/planner/floorPlanApi";
 import "../styles/floorplan.css";
 import RoomPanel from "../components/planner/RoomPanel";
 import { demoPlacements } from "../lib/planner/demo";
@@ -82,11 +83,18 @@ function PlannerHome() {
     canvas = useRef(),
     project = useRef(),
     cameraControls = useRef();
-  const house = useMemo(
+  const [planOpacity,setPlanOpacity]=useState(.9);
+  const estimatedHouse = useMemo(
       () => generateHouse({ ...snapshot, seed: homeId }, overrides),
       [snapshot, homeId, overrides],
-    ),
-    floor = house.floors[Math.min(level, house.floors.length - 1)];
+    );
+  const imageHouse=useMemo(()=>planHouse(floorPlan,floorPlans.plans),[floorPlan,floorPlans.plans]);
+  const house=floorPlan.mode==='plan'&&imageHouse?imageHouse:estimatedHouse;
+  const inPlanMode=house===imageHouse;
+  const floor=house.floors.find(f=>f.level===level)||house.floors[0];
+  const activePlan=inPlanMode?floorPlan.plans.find(p=>p.levelIndex===floor.level&&p.calibration):null;
+  const activeAsset=floorPlans.plans.find(p=>p.assetId===activePlan?.assetId);
+  const planUrl=useAssetImage(activeAsset?.assetId,clientId);
   const [history, setHistory] = useState({ past: [], present: [], future: [] }),
     [selected, setSelected] = useState(""),
     [snap, setSnap] = useState(3),
@@ -397,7 +405,7 @@ function PlannerHome() {
       ctx.fillRect(0, output.height - 48, output.width, 48);
       ctx.fillStyle = "#234c3c";
       ctx.font = "18px sans-serif";
-      ctx.fillText("Estimated layout, PropertyLens", 16, output.height - 18);
+      ctx.fillText(inPlanMode?`Floor plan from ${activeAsset?.sourceName||"listing source"}, personal use. PropertyLens`:"Estimated layout, PropertyLens", 16, output.height - 18);
       const a = document.createElement("a");
       a.download = "propertylens-layout.png";
       a.href = output.toDataURL("image/png");
@@ -565,7 +573,7 @@ function PlannerHome() {
             {snapshot.address}
           </h1>
           <p>
-            {money(snapshot.price)} · Estimated layout, not the real floor plan
+            {money(snapshot.price)} · {inPlanMode?'Calibrated floor plan':'Estimated layout, not the real floor plan'}
           </p>
         </div>
         <button
@@ -637,6 +645,8 @@ function PlannerHome() {
         )}
       </div>
       <div className="planner-toolbar">
+        {imageHouse&&<label>Layout source<select value={floorPlan.mode} onChange={e=>setFloorPlan(p=>({...p,mode:e.target.value}))}><option value="plan">Floor plan</option><option value="estimated">Estimated layout</option></select></label>}
+        {inPlanMode&&<label>Plan opacity<input type="range" min="0.1" max="1" step="0.05" value={planOpacity} onChange={e=>setPlanOpacity(+e.target.value)}/></label>}
         <button onClick={download}>Download image</button>
         <button onClick={() => cameraControls.current?.("in")}>Zoom in</button>
         <button onClick={() => cameraControls.current?.("out")}>
@@ -669,10 +679,10 @@ function PlannerHome() {
         </button>
         <label>
           Floor{" "}
-          <select value={level} onChange={(e) => setLevel(+e.target.value)}>
+          <select value={floor.level} onChange={(e) => setLevel(+e.target.value)}>
             {house.floors.map((f) => (
               <option key={f.level} value={f.level}>
-                {f.level + 1}
+                {f.level===3?"Basement":`Level ${f.level+1}`}
               </option>
             ))}
           </select>
@@ -690,12 +700,12 @@ function PlannerHome() {
         </label>
       </div>
       <div className="planner-workspace">
-        <RoomPanel
+        {inPlanMode?<aside className="planner-panel room-panel"><h2>{activeAsset?.sample?'Sample floor plan':'Floor plan'}</h2><p>Walls aren't detected yet. 3D walls will come from floor plan conversion.</p><p>Furniture collisions are checked. Wall and door checks are unavailable.</p><button onClick={()=>setMobilePanel('floorplan')}>Scale and floor settings</button></aside>:<RoomPanel
           floor={floor}
           overrides={overrides}
           setOverrides={setOverrides}
           onReset={() => setOverrides({})}
-        />
+        />}
         <section
           className="planner-canvas"
           onDragOver={(e) => e.preventDefault()}
@@ -725,6 +735,10 @@ function PlannerHome() {
             onCameraControls={(fn) => (cameraControls.current = fn)}
             onProject={(fn) => (project.current = fn)}
             floor={floor}
+            ceilingHeightIn={floorPlan.ceilingHeightIn}
+            planUrl={planUrl}
+            planRotation={activePlan?.rotationDeg||0}
+            planOpacity={planOpacity}
             view={view}
             fullWalls={fullWalls}
             quality={quality}
@@ -747,7 +761,7 @@ function PlannerHome() {
             ))}
           </Scene>
           <p className="canvas-estimate">
-            Estimated layout, not the real floor plan
+            {inPlanMode?`${activeAsset?.sample?'Sample floor plan · ':''}Floor plan from ${activeAsset?.sourceName||'listing source'}, personal use`:'Estimated layout, not the real floor plan'}
           </p>
         </section>
         <FurniturePanel

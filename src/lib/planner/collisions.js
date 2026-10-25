@@ -40,6 +40,7 @@ export function doorBox(d) {
   };
 }
 export function wallSegments(floor) {
+  if(floor.openPlan)return [];
   const walls = [];
   for (const r of floor.rooms)
     for (const axis of ["x", "z"])
@@ -165,7 +166,7 @@ export function clampPlacement(p, item, floor, snap = 0, flush = false) {
     z = snap ? Math.round(p.zIn / snap) * snap : p.zIn;
   x = Math.max(hx, Math.min(floor.widthIn - hx, x));
   z = Math.max(hz, Math.min(floor.depthIn - hz, z));
-  if (flush) {
+  if (flush && !floor.openPlan) {
     for (const r of floor.rooms) {
       for (const edge of [r.x + hx, r.x + r.widthIn - hx])
         if (Math.abs(x - edge) < 2) x = edge;

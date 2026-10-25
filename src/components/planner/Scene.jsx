@@ -1,3 +1,4 @@
+import PlanFloor from "./PlanFloor";
 import React, { useEffect, useRef } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import {
@@ -60,9 +61,9 @@ function Camera({ floor, view, focus, onCameraControls }) {
     const x = (focus ? focus.x + focus.widthIn / 2 : floor.widthIn / 2) / 12,
       z = (focus ? focus.z + focus.depthIn / 2 : floor.depthIn / 2) / 12;
     camera.position.set(
-      x + (view === "3D" ? 30 : 0),
-      view === "3D" ? 40 : 70,
-      z + (view === "3D" ? 36 : 0.01),
+      x + (view === "3D" ? Math.max(floor.widthIn,floor.depthIn)/12*.85 : 0),
+      view === "3D" ? Math.max(floor.widthIn,floor.depthIn)/12*1.1 : 70,
+      z + (view === "3D" ? Math.max(floor.widthIn,floor.depthIn)/12 : 0.01),
     );
     if (view === "2D") {
       camera.zoom = Math.min(
@@ -89,7 +90,7 @@ function Camera({ floor, view, focus, onCameraControls }) {
       makeDefault
       enableRotate={view === "3D"}
       minDistance={5}
-      maxDistance={180}
+      maxDistance={Math.max(180,Math.max(floor.widthIn,floor.depthIn)/3)}
       maxPolarAngle={Math.PI / 2 - 0.03}
     />
   );
@@ -149,6 +150,7 @@ function Wall({ room, edge, floor, height }) {
 }
 function Content({
   floor,
+  ceilingHeightIn=96,planUrl,planRotation,planOpacity,
   view,
   fullWalls,
   quality,
@@ -187,7 +189,7 @@ function Content({
           far={500}
         />
       ) : (
-        <PerspectiveCamera makeDefault position={[35, 40, 40]} fov={48} />
+        <PerspectiveCamera makeDefault position={[35, 40, 40]} fov={48} far={100000} />
       )}
       <Camera
         floor={floor}
@@ -218,16 +220,16 @@ function Content({
             onClick={onEmpty}
             receiveShadow
           />
-          {["north", "south", "east", "west"].map((edge) => (
+          {!floor.openPlan && ["north", "south", "east", "west"].map((edge) => (
             <Wall
               key={edge}
               room={room}
               edge={edge}
               floor={floor}
-              height={view === "2D" ? 0.15 : fullWalls ? 8 : 1.2}
+              height={view === "2D" ? 0.15 : fullWalls ? ceilingHeightIn/12 : 1.2}
             />
           ))}
-          <Html
+          {!floor.openPlan&&<Html
             position={[
               (room.x + room.widthIn / 2) / 12,
               0.05,
@@ -237,9 +239,10 @@ function Content({
             style={{ pointerEvents: "none" }}
           >
             <span className="room-label">{room.name}</span>
-          </Html>
+          </Html>}
         </group>
       ))}
+      {planUrl&&<PlanFloor url={planUrl} floor={floor} rotationDeg={planRotation} opacity={planOpacity}/> }
       {children}
     </>
   );
@@ -247,7 +250,7 @@ function Content({
 export default function Scene(props) {
   return (
     <Canvas
-      aria-label="Estimated house layout. Use the Rooms and furniture panels for keyboard controls."
+      aria-label="House layout. Use the Rooms and furniture panels for keyboard controls."
       dpr={[1, 2]}
       shadows={props.quality === "high"}
       gl={{ preserveDrawingBuffer: true }}
