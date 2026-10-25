@@ -54,6 +54,7 @@ export default function FurniturePanel({
       <label>
         <input
           type="checkbox"
+          disabled={floor.openPlan}
           checked={flush}
           onChange={(e) => setFlush(e.target.checked)}
         />{" "}
@@ -120,9 +121,9 @@ export default function FurniturePanel({
           <legend>{item.name}</legend>
           <p>{fitMessage(item, room)}</p>
           <p>
-            Nearest room walls: {wallClearances(item, floor).x} in horizontally,{" "}
+            {floor.openPlan?'Nearest plan edges':'Nearest room walls'}: {wallClearances(item, floor).x} in horizontally,{" "}
             {wallClearances(item, floor).z} in vertically (negative means
-            crossing a wall).
+            {floor.openPlan?'outside the plan).':'crossing a wall).'}
           </p>
           {[
             ["xIn", "Position X (in)"],

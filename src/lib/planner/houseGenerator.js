@@ -1,3 +1,4 @@
+import { validateHouseModel } from "./validateHouseModel.js";
 export const clamp = (value, min, max, fallback = min) =>
   Number.isFinite(Number(value)) && value != null && value !== ""
     ? Math.max(min, Math.min(max, Number(value)))
@@ -9,7 +10,7 @@ function hash(seed) {
 }
 // A central corridor with two exterior-facing room bands yields a connected,
 // non-overlapping partition and gives every habitable room an exterior window.
-export function generateHouse(input = {}, overrides = {}) {
+function generateRawHouse(input = {}, overrides = {}) {
   if (Array.isArray(input.customRooms) && input.customRooms.length) {
     const rooms = input.customRooms.slice(0, 20).map((r, i) => ({
       id: "custom-room-" + i,
@@ -269,4 +270,8 @@ export function generateHouse(input = {}, overrides = {}) {
     estimated: true,
     limited: ["sqft", "beds", "baths", "stories"].some((k) => input[k] == null),
   };
+}
+
+export function generateHouse(input = {}, overrides = {}) {
+  return validateHouseModel(generateRawHouse(input, overrides));
 }

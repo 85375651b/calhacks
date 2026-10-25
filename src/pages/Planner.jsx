@@ -1,6 +1,11 @@
-import {validateFloorPlan,transformPlacements} from '../lib/planner/calibration';
-import FloorPlanPanel, { FloorPlanStatus } from "../components/planner/FloorPlanPanel";
-import {planHouse} from '../lib/planner/planHouse';
+import {
+  validateFloorPlan,
+  transformPlacements,
+} from "../lib/planner/calibration";
+import FloorPlanPanel, {
+  FloorPlanStatus,
+} from "../components/planner/FloorPlanPanel";
+import { planHouse, resolvePlannerHouse } from "../lib/planner/planHouse";
 import { useAssetImage, useFloorPlans } from "../lib/planner/floorPlanApi";
 import "../styles/floorplan.css";
 import RoomPanel from "../components/planner/RoomPanel";
@@ -69,32 +74,89 @@ function PlannerHome() {
     [roomId, setRoomId] = useState(""),
     [overrides, setOverrides] = useState({}),
     [dismissed, setDismissed] = useState(false);
-  const [floorPlan,setFloorPlan]=useState({mode:'estimated',ceilingHeightIn:96,ceilingSource:'default',plans:[]});
-  const floorPlans=useFloorPlans({snapshot,homeId,clientId,savedPlans:floorPlan.plans});
-  function updatePlan(plan,patch){
-    const previous=floorPlan.plans.find(p=>p.assetId===plan.assetId);
-    const next={assetId:plan.assetId,levelIndex:/basement/i.test(plan.floorLabel)?3:Math.max(0,Math.min(2,(Number(plan.floorLabel?.match(/\d+/)?.[0])||1)-1)),rotationDeg:0,calibration:null,...previous,...patch};
-    if(previous?.calibration&&next.calibration)setHistory(h=>({past:[],future:[],present:transformPlacements(h.present,plan,previous,next)}));
-    const plans=[...floorPlan.plans.filter(p=>p.assetId!==plan.assetId&&(!next.calibration||p.levelIndex!==next.levelIndex||!p.calibration)),next];
-    setFloorPlan(old=>({...old,mode:patch.calibration?'plan':plans.some(p=>p.calibration)?old.mode:'estimated',plans}));
-    if(next.calibration)setLevel(next.levelIndex);
+  const [floorPlan, setFloorPlan] = useState({
+    mode: "estimated",
+    ceilingHeightIn: 96,
+    ceilingSource: "default",
+    plans: [],
+  });
+  const floorPlans = useFloorPlans({
+    snapshot,
+    homeId,
+    clientId,
+    savedPlans: floorPlan.plans,
+  });
+  function updatePlan(plan, patch) {
+    const previous = floorPlan.plans.find((p) => p.assetId === plan.assetId);
+    const next = {
+      assetId: plan.assetId,
+      levelIndex: /basement/i.test(plan.floorLabel)
+        ? 3
+        : Math.max(
+            0,
+            Math.min(2, (Number(plan.floorLabel?.match(/\d+/)?.[0]) || 1) - 1),
+          ),
+      rotationDeg: 0,
+      calibration: null,
+      ...previous,
+      ...patch,
+    };
+    if (previous?.calibration && next.calibration)
+      setHistory((h) => ({
+        past: [],
+        future: [],
+        present: transformPlacements(h.present, plan, previous, next),
+      }));
+    const plans = [
+      ...floorPlan.plans.filter(
+        (p) =>
+          p.assetId !== plan.assetId &&
+          (!next.calibration ||
+            p.levelIndex !== next.levelIndex ||
+            !p.calibration),
+      ),
+      next,
+    ];
+    setFloorPlan((old) => ({
+      ...old,
+      convertedHouseModel: undefined,
+      houseModelSource: undefined,
+      mode: patch.calibration
+        ? "plan"
+        : plans.some((p) => p.calibration)
+          ? old.mode
+          : "estimated",
+      plans,
+    }));
+    if (next.calibration) setLevel(next.levelIndex);
   }
   const heading = useRef(),
     canvas = useRef(),
     project = useRef(),
     cameraControls = useRef();
-  const [planOpacity,setPlanOpacity]=useState(.9);
+  const [planOpacity, setPlanOpacity] = useState(0.9);
   const estimatedHouse = useMemo(
-      () => generateHouse({ ...snapshot, seed: homeId }, overrides),
-      [snapshot, homeId, overrides],
-    );
-  const imageHouse=useMemo(()=>planHouse(floorPlan,floorPlans.plans),[floorPlan,floorPlans.plans]);
-  const house=floorPlan.mode==='plan'&&imageHouse?imageHouse:estimatedHouse;
-  const inPlanMode=house===imageHouse;
-  const floor=house.floors.find(f=>f.level===level)||house.floors[0];
-  const activePlan=inPlanMode?floorPlan.plans.find(p=>p.levelIndex===floor.level&&p.calibration):null;
-  const activeAsset=floorPlans.plans.find(p=>p.assetId===activePlan?.assetId);
-  const planUrl=useAssetImage(activeAsset?.assetId,clientId);
+    () => generateHouse({ ...snapshot, seed: homeId }, overrides),
+    [snapshot, homeId, overrides],
+  );
+  const imageHouse = useMemo(
+    () => planHouse(floorPlan, floorPlans.plans),
+    [floorPlan, floorPlans.plans],
+  );
+  const house = useMemo(
+    () => resolvePlannerHouse(estimatedHouse, floorPlan, floorPlans.plans),
+    [estimatedHouse, floorPlan, floorPlans.plans],
+  );
+  const inPlanMode = house.source === "floorplan";
+  const converted = inPlanMode && !house.floors[0].openPlan;
+  const floor = house.floors.find((f) => f.level === level) || house.floors[0];
+  const activePlan = inPlanMode
+    ? floorPlan.plans.find((p) => p.levelIndex === floor.level && p.calibration)
+    : null;
+  const activeAsset = floorPlans.plans.find(
+    (p) => p.assetId === activePlan?.assetId,
+  );
+  const planUrl = useAssetImage(activeAsset?.assetId, clientId);
   const [history, setHistory] = useState({ past: [], present: [], future: [] }),
     [selected, setSelected] = useState(""),
     [snap, setSnap] = useState(3),
@@ -241,11 +303,25 @@ function PlannerHome() {
         });
     }, 650);
     return () => clearTimeout(timer);
-  }, [history.present, overrides, floorPlan, ready, homeId, snapshot, library, clientId]);
-  useEffect(()=>{
-    const ft=floorPlans.job?.result?.listingFacts?.ceilingHeightFt;
-    if(ready&&Number.isFinite(ft)&&ft>=6&&ft<=20)setFloorPlan(p=>p.ceilingSource==='default'?{...p,ceilingHeightIn:ft*12,ceilingSource:'listing'}:p);
-  },[ready,floorPlans.job?.result?.listingFacts?.ceilingHeightFt]);
+  }, [
+    history.present,
+    overrides,
+    floorPlan,
+    ready,
+    homeId,
+    snapshot,
+    library,
+    clientId,
+  ]);
+  useEffect(() => {
+    const ft = floorPlans.job?.result?.listingFacts?.ceilingHeightFt;
+    if (ready && Number.isFinite(ft) && ft >= 6 && ft <= 20)
+      setFloorPlan((p) =>
+        p.ceilingSource === "default"
+          ? { ...p, ceilingHeightIn: ft * 12, ceilingSource: "listing" }
+          : p,
+      );
+  }, [ready, floorPlans.job?.result?.listingFacts?.ceilingHeightFt]);
   async function saveFurniture(def) {
     if (!library.some((d) => d.id === def.id) && library.length >= 50) {
       setAnnouncement("Maximum 50 library items. Delete an item first.");
@@ -405,7 +481,13 @@ function PlannerHome() {
       ctx.fillRect(0, output.height - 48, output.width, 48);
       ctx.fillStyle = "#234c3c";
       ctx.font = "18px sans-serif";
-      ctx.fillText(inPlanMode?`Floor plan from ${activeAsset?.sourceName||"listing source"}, personal use. PropertyLens`:"Estimated layout, PropertyLens", 16, output.height - 18);
+      ctx.fillText(
+        inPlanMode
+          ? `Floor plan from ${activeAsset?.sourceName || "listing source"}, personal use. PropertyLens`
+          : "Estimated layout, PropertyLens",
+        16,
+        output.height - 18,
+      );
       const a = document.createElement("a");
       a.download = "propertylens-layout.png";
       a.href = output.toDataURL("image/png");
@@ -573,7 +655,10 @@ function PlannerHome() {
             {snapshot.address}
           </h1>
           <p>
-            {money(snapshot.price)} · {inPlanMode?'Calibrated floor plan':'Estimated layout, not the real floor plan'}
+            {money(snapshot.price)} ·{" "}
+            {inPlanMode
+              ? "Calibrated floor plan"
+              : "Estimated layout, not the real floor plan"}
           </p>
         </div>
         <button
@@ -614,10 +699,51 @@ function PlannerHome() {
             Delete oldest saved layout and retry
           </button>
         )}
-        <FloorPlanStatus state={floorPlans}/>
+        <FloorPlanStatus state={floorPlans} />
       </header>
-      <div className="floorplan-switch"><button aria-expanded={mobilePanel==='floorplan'} onClick={()=>setMobilePanel(mobilePanel==='floorplan'?'':'floorplan')}>Floor plan</button></div>
-      {mobilePanel==='floorplan'&&<FloorPlanPanel state={floorPlans} clientId={clientId} homeId={homeId} address={snapshot.address} floorPlan={floorPlan} onCeilingChange={height=>setFloorPlan(p=>({...p,ceilingHeightIn:height,ceilingSource:'user'}))} onChange={updatePlan} onKeepEstimated={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('');}} onRooms={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('rooms');}}/>}
+      <div className="floorplan-switch">
+        <button
+          aria-expanded={mobilePanel === "floorplan"}
+          onClick={() =>
+            setMobilePanel(mobilePanel === "floorplan" ? "" : "floorplan")
+          }
+        >
+          Floor plan
+        </button>
+      </div>
+      {mobilePanel === "floorplan" && (
+        <FloorPlanPanel
+          state={floorPlans}
+          clientId={clientId}
+          homeId={homeId}
+          address={snapshot.address}
+          floorPlan={floorPlan}
+          onCeilingChange={(height) =>
+            setFloorPlan((p) => ({
+              ...p,
+              ceilingHeightIn: height,
+              ceilingSource: "user",
+            }))
+          }
+          onChange={updatePlan}
+          onConverted={(result, converter) =>
+            setFloorPlan((p) => ({
+              ...p,
+              mode: "plan",
+              convertedHouseModel: result.houseModel,
+              houseModelSource: converter,
+            }))
+          }
+          onKeepEstimated={() => {
+            setFloorPlan((p) => ({ ...p, mode: "estimated" }));
+            setMobilePanel("");
+          }}
+          onRooms={() => {
+            setFloorPlan((p) => ({ ...p, mode: "estimated" }));
+            setMobilePanel("rooms");
+          }}
+        />
+      )}
       {house.limited && !dismissed && (
         <p className="planner-notice">
           Limited listing data: using typical sizes for a 3 bed, 2 bath home.
@@ -645,8 +771,33 @@ function PlannerHome() {
         )}
       </div>
       <div className="planner-toolbar">
-        {imageHouse&&<label>Layout source<select value={floorPlan.mode} onChange={e=>setFloorPlan(p=>({...p,mode:e.target.value}))}><option value="plan">Floor plan</option><option value="estimated">Estimated layout</option></select></label>}
-        {inPlanMode&&<label>Plan opacity<input type="range" min="0.1" max="1" step="0.05" value={planOpacity} onChange={e=>setPlanOpacity(+e.target.value)}/></label>}
+        {imageHouse && (
+          <label>
+            Layout source
+            <select
+              value={floorPlan.mode}
+              onChange={(e) =>
+                setFloorPlan((p) => ({ ...p, mode: e.target.value }))
+              }
+            >
+              <option value="plan">Floor plan</option>
+              <option value="estimated">Estimated layout</option>
+            </select>
+          </label>
+        )}
+        {inPlanMode && (
+          <label>
+            Plan opacity
+            <input
+              type="range"
+              min="0.1"
+              max="1"
+              step="0.05"
+              value={planOpacity}
+              onChange={(e) => setPlanOpacity(+e.target.value)}
+            />
+          </label>
+        )}
         <button onClick={download}>Download image</button>
         <button onClick={() => cameraControls.current?.("in")}>Zoom in</button>
         <button onClick={() => cameraControls.current?.("out")}>
@@ -679,10 +830,13 @@ function PlannerHome() {
         </button>
         <label>
           Floor{" "}
-          <select value={floor.level} onChange={(e) => setLevel(+e.target.value)}>
+          <select
+            value={floor.level}
+            onChange={(e) => setLevel(+e.target.value)}
+          >
             {house.floors.map((f) => (
               <option key={f.level} value={f.level}>
-                {f.level===3?"Basement":`Level ${f.level+1}`}
+                {f.level === 3 ? "Basement" : `Level ${f.level + 1}`}
               </option>
             ))}
           </select>
@@ -700,12 +854,35 @@ function PlannerHome() {
         </label>
       </div>
       <div className="planner-workspace">
-        {inPlanMode?<aside className="planner-panel room-panel"><h2>{activeAsset?.sample?'Sample floor plan':'Floor plan'}</h2><p>Walls aren't detected yet. 3D walls will come from floor plan conversion.</p><p>Furniture collisions are checked. Wall and door checks are unavailable.</p><button onClick={()=>setMobilePanel('floorplan')}>Scale and floor settings</button></aside>:<RoomPanel
-          floor={floor}
-          overrides={overrides}
-          setOverrides={setOverrides}
-          onReset={() => setOverrides({})}
-        />}
+        {inPlanMode ? (
+          <aside className="planner-panel room-panel">
+            <h2>{activeAsset?.sample ? "Sample floor plan" : "Floor plan"}</h2>
+            {converted ? (
+              <p>Generated from floor plan. Verify against the original.</p>
+            ) : (
+              <>
+                <p>
+                  Walls aren't detected yet. 3D walls will come from floor plan
+                  conversion.
+                </p>
+                <p>
+                  Furniture collisions are checked. Wall and door checks are
+                  unavailable.
+                </p>
+              </>
+            )}
+            <button onClick={() => setMobilePanel("floorplan")}>
+              Scale and floor settings
+            </button>
+          </aside>
+        ) : (
+          <RoomPanel
+            floor={floor}
+            overrides={overrides}
+            setOverrides={setOverrides}
+            onReset={() => setOverrides({})}
+          />
+        )}
         <section
           className="planner-canvas"
           onDragOver={(e) => e.preventDefault()}
@@ -737,8 +914,8 @@ function PlannerHome() {
             floor={floor}
             ceilingHeightIn={floorPlan.ceilingHeightIn}
             planUrl={planUrl}
-            planRotation={activePlan?.rotationDeg||0}
-            planOpacity={planOpacity}
+            planRotation={activePlan?.rotationDeg || 0}
+            planOpacity={converted ? Math.min(0.25, planOpacity) : planOpacity}
             view={view}
             fullWalls={fullWalls}
             quality={quality}
@@ -761,7 +938,11 @@ function PlannerHome() {
             ))}
           </Scene>
           <p className="canvas-estimate">
-            {inPlanMode?`${activeAsset?.sample?'Sample floor plan · ':''}Floor plan from ${activeAsset?.sourceName||'listing source'}, personal use`:'Estimated layout, not the real floor plan'}
+            {converted
+              ? "Generated from floor plan. Verify against the original."
+              : inPlanMode
+                ? `${activeAsset?.sample ? "Sample floor plan · " : ""}Floor plan from ${activeAsset?.sourceName || "listing source"}, personal use`
+                : "Estimated layout, not the real floor plan"}
           </p>
         </section>
         <FurniturePanel
