@@ -57,3 +57,5 @@
     width: 100%;
   }
 }
+.suggestion-zip { display: inline-block; min-width: 5.5em; min-height: 1.2em; }
+.address-combobox [role="option"]:hover { background: var(--surface-alt, #f0f2ef); }

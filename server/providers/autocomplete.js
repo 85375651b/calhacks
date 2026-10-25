@@ -9,6 +9,8 @@ import { recentListings } from "../search/recent.js";
 import { config } from "../config.js";
 import { fixtureCandidates } from "../search/address-fixtures.js";
 import savedExamples from "../fixtures/autocomplete-examples.json" with { type: "json" };
+import { plausibleZip } from "./zip.js";
+import { trace } from "../search/address-trace.js";
 // Photon API: https://github.com/komoot/photon/blob/master/docs/api-v1.md
 const STATE_CODES = Object.fromEntries(
   [
@@ -88,7 +90,9 @@ export function normalizeSuggestions(data, places = false) {
     const state =
       STATE_CODES[rawState.toLowerCase()] ||
       (/^[A-Z]{2}$/.test(rawState) ? rawState : "");
-    const zip = text(p.postcode);
+    const providerZip = text(p.postcode);
+    if (!plausibleZip(state, providerZip)) continue;
+    const zip = "";
     if (
       text(p.countrycode).toUpperCase() !== "US" ||
       (!places && (!house || !road)) ||
@@ -168,12 +172,12 @@ export function normalizeProviderResults(
       house &&
       (!number ||
         !street ||
-        !/^\d{5}(?:-\d{4})?$/.test(zip) ||
         confidence < 0.6 ||
         (provider === "geoapify" &&
           !["building", "address"].includes(p.result_type)))
     )
       continue;
+    if (!plausibleZip(state, zip)) continue;
     if (
       !house &&
       !places &&
@@ -199,7 +203,8 @@ export function normalizeProviderResults(
       street: line1,
       city,
       state,
-      zip,
+      providerZip: /^\d{5}(?:-\d{4})?$/.test(zip) ? zip : "",
+      zip: "",
       lat: p.lat,
       lng: p.lon,
       confidence,
@@ -298,6 +303,7 @@ export function createAutocompleteProvider({
               },
         );
         const r = await fetchImpl(u, { signal: AbortSignal.timeout(5000) });
+        trace("autocomplete-provider", { provider: source, status: r.status });
         if (!r.ok) throw Error("Provider unavailable");
         return normalizeProviderResults(
           await r.json(),
@@ -315,6 +321,7 @@ export function createAutocompleteProvider({
         try {
           results = await call("photon");
         } catch {}
+      trace("provider-candidates", { candidates: results });
       results = await Promise.all(
         results.map(async (p) => ({
           ...p,

@@ -46,9 +46,11 @@ export function persistentMemo(file, { now = Date.now } = {}) {
     const job = (async () => {
       try {
         const value = await fn();
+        const duration = typeof ttl === "function" ? ttl(value) : ttl;
+        if (duration <= 0) return value;
         entries[key] = {
           value,
-          until: now() + (typeof ttl === "function" ? ttl(value) : ttl),
+          until: now() + duration,
         };
         await save();
         return value;

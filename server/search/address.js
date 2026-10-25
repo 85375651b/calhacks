@@ -26,7 +26,7 @@ const memo = persistentMemo(
 );
 export function cleanSelected(p) {
   const result = {};
-  for (const k of ["line1", "city", "state", "zip"]) {
+  for (const k of ["line1", "city", "state"]) {
     const v = k === "line1" ? p.line1 || p.street : p[k];
     if (typeof v !== "string" || !v.trim() || v.length > 150)
       throw Object.assign(Error("Choose a complete US address."), {
@@ -34,11 +34,11 @@ export function cleanSelected(p) {
       });
     result[k] = v.trim();
   }
+  result.zip = typeof p.zip === "string" && /^\d{5}(?:-\d{4})?$/.test(p.zip) ? p.zip : "";
   if (
     !/^\d/.test(result.line1) ||
     !/^[A-Z]{2}$/i.test(result.state) ||
-    !/^\d{5}(?:-\d{4})?$/.test(result.zip) ||
-    !validBias(p)
+    ((p.lat != null || p.lng != null) && !validBias(p))
   )
     throw Object.assign(Error("Choose a complete US address."), {
       status: 400,
@@ -113,7 +113,7 @@ export function createAddressLookup({
             .slice(0, 5)
             .map((p) => ({ ...p, line1: p.line1 || p.street }))
             .filter(
-              (p) => p.line1 && p.city && p.state && p.zip && validBias(p),
+              (p) => p.line1 && p.city && p.state,
             );
           trace("candidates", { candidates });
           if (!candidates.length)

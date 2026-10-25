@@ -43,21 +43,40 @@ export function normalizeAddress(value = "") {
     .trim();
 }
 export function addressParts(p) {
-  const { base, unit } = splitAddress(p.line1 || p.street || p.address || "");
+  if (typeof p === "string") p = { address: p };
+  const { base, unit } = splitAddress(p.line1 || p.street || p.address || p.addressLine1 || p.formattedAddress || "");
   return {
     street: normalizeAddress(base.split(",")[0]),
     unit,
     zip: String(p.zip || p.zipCode || "").slice(0, 5),
   };
 }
+// The identity of a street/unit deliberately excludes locality and ZIP.
+export function addressKey(address) {
+  const { street, unit } = addressParts(address);
+  return street + (unit ? "|unit:" + unit : "");
+}
+export function parseAddressText(text = "") {
+  const match = text.trim().match(/^(.+?),\s*([^,]+),\s*([a-z]{2})(?:\s*,?\s*(\d{5})(?:-\d{4})?)?\s*$/i)
+    || text.trim().match(/^(.+?\b(?:st(?:reet)?|ave(?:nue)?|ln|lane|rd|road|dr|drive|blvd|boulevard|ct|court|cir(?:cle)?|pkwy|parkway|hwy|highway|trl|trail|way|pl|place)\.?\s*(?:(?:apt|unit|ste|#)\s*[a-z0-9-]+)?)[,\s]+(.+?)\s+([a-z]{2})(?:\s+(\d{5})(?:-\d{4})?)?$/i);
+  return match ? { line1: match[1], street: match[1], city: match[2].trim(), state: match[3].toUpperCase(), zip: match[4] || "", label: text } : null;
+}
+export function distanceMeters(a, b) {
+  if (!validBias(a) || !validBias(b)) return Infinity;
+  const radians = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * radians, dLng = (b.lng - a.lng) * radians;
+  return 12742000 * Math.asin(Math.min(1, Math.sqrt(Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * radians) * Math.cos(b.lat * radians) * Math.sin(dLng / 2) ** 2)));
+}
 export function exactAddress(candidate, listing) {
   const a = addressParts(candidate),
     b = addressParts(listing);
   return Boolean(
     a.street &&
-    a.zip &&
     a.street === b.street &&
-    a.zip === b.zip &&
+    ((candidate.city && candidate.state && listing.city && listing.state &&
+      normalizeAddress(candidate.city) === normalizeAddress(listing.city) &&
+      String(candidate.state).toUpperCase() === String(listing.state).toUpperCase()) ||
+      distanceMeters(candidate, listing) <= 100) &&
     (!a.unit || a.unit === b.unit),
   );
 }

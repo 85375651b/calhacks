@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useRef, useState, useReducer } from "react";
 import { comboboxReducer, initialCombobox, inputPrivacy } from "../lib/search/combobox";
+import { fastSuggestion } from "../lib/search/suggestions";
 import { useNavigate } from "react-router-dom";
 import { classifyIntent } from "../lib/search/intent";
 import { useFavorites } from "../lib/Favorites";
@@ -65,7 +66,7 @@ export default function AddressCombobox({
           }),
           v = r.ok ? await r.json() : [];
         if (seq === sequence.current && !controller.signal.aborted)
-          dispatch({ type: "results", revision: interaction.revision, items: Array.isArray(v) ? v.slice(0, 6) : [] });
+          dispatch({ type: "results", revision: interaction.revision, items: Array.isArray(v) ? v.slice(0, 6).map(fastSuggestion) : [] });
       } catch {
       } finally {
         if (seq === sequence.current && !controller.signal.aborted)
@@ -77,19 +78,34 @@ export default function AddressCombobox({
       controller.abort();
     };
   }, [address, eligible, open, bias?.lat, bias?.lng, clientId]);
+  useEffect(() => {
+    if (!open || !items.length || interaction.verifiedRevision === interaction.revision) return;
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const r = await fetch("/api/autocomplete/verify", {
+          method: "POST", headers: { "Content-Type": "application/json", "X-Client-Id": clientId },
+          body: JSON.stringify({ suggestions: items.slice(0, 3) }), signal: controller.signal,
+        });
+        const v = r.ok ? await r.json() : [];
+        if (!controller.signal.aborted) dispatch({ type: "verified", revision: interaction.revision, items: Array.isArray(v) ? v : [] });
+      } catch {}
+    }, 300);
+    return () => { clearTimeout(timer); controller.abort(); };
+  }, [items, open, interaction.revision, interaction.verifiedRevision, clientId]);
   function close() {
     request.current?.abort();
     sequence.current++;
     dispatch({ type: "close" });
   }
   useEffect(() => {
-    const close = (e) => {
+    const outside = (e) => {
       if (!container.current?.contains(e.target)) {
         close();
       }
     };
-    document.addEventListener("pointerdown", close);
-    return () => document.removeEventListener("pointerdown", close);
+    document.addEventListener("pointerdown", outside);
+    return () => document.removeEventListener("pointerdown", outside);
   }, []);
   async function choose(p) {
     close();
@@ -186,7 +202,7 @@ export default function AddressCombobox({
           <ul id={listId} role="listbox" aria-label="Suggested US addresses">
             {items.map((p, i) => (
               <li
-                key={p.label}
+                key={i}
                 id={`${listId}-${i}`}
                 role="option"
                 aria-selected={active === i}
@@ -203,9 +219,12 @@ export default function AddressCombobox({
                   </strong>
                   <small>
                     <Highlight
-                      text={`${p.city}, ${p.state} ${p.zip || ""}`}
+                      text={`${p.city}, ${p.state}`}
                       query={address}
                     />
+                  </small>
+                  <small className="suggestion-zip" title={p.verified ? "ZIP verified by US Census" : "ZIP unverified"}>
+                    {p.verified ? `${p.zip} ✓` : "\u00a0"}
                   </small>
                 </span>
                 {p.forSale && <span className="sample-badge">For sale</span>}

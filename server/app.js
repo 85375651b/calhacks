@@ -1,4 +1,5 @@
 import { exactAddress, splitAddress } from "../src/lib/search/address.js";
+import { fastSuggestion } from "../src/lib/search/suggestions.js";
 import { verifyAddress } from "./providers/census.js";
 import { lookupAddress, cleanSelected } from "./search/address.js";
 import {
@@ -50,7 +51,7 @@ export function createApp(
     }),
   );
   const verificationClients = new Map();
-  app.post("/api/address/verify", async (req, res) => {
+  app.post(["/api/address/verify", "/api/autocomplete/verify"], async (req, res) => {
     res.set("Cache-Control", "no-store");
     try {
       const client = String(req.get("X-Client-Id") || req.ip).slice(0, 100),
@@ -72,10 +73,15 @@ export function createApp(
           .json({
             error: { message: "Too many verifications. Try again shortly." },
           });
-      const p = cleanSelected(req.body?.selected || {});
-      res.json(
-        config.useFixtures ? { ...p, verified: false } : await verifyAddress(p),
-      );
+      const batch = req.path === "/api/autocomplete/verify";
+      if (batch && (!Array.isArray(req.body?.suggestions) || req.body.suggestions.length > 3)) throw Error("Invalid batch");
+      const rows = batch ? req.body.suggestions : [req.body?.selected || {}];
+      const result = await Promise.all(rows.map(async row => {
+        const p = cleanSelected(row);
+        const v = config.useFixtures ? { ...p, zip: "", verified: false } : await verifyAddress(p);
+        return { ...v, originalLabel: row.label };
+      }));
+      res.json(batch ? result : result[0]);
     } catch {
       res
         .status(400)
@@ -195,13 +201,13 @@ export function createApp(
     try {
       res.json(
         autocomplete
-          ? await autocomplete(
+          ? (await autocomplete(
               req.query.q,
               String(req.get("X-Client-Id") || req.ip).slice(0, 100),
               req.query.lat != null && req.query.lng != null
                 ? { lat: Number(req.query.lat), lng: Number(req.query.lng) }
                 : undefined,
-            )
+            )).map(fastSuggestion)
           : [],
       );
     } catch (error) {
