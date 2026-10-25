@@ -175,7 +175,6 @@ export default function Home({ addressOnly = false }) {
         },
         notApplied: value.notApplied || [],
       });
-      if (v.address?.standardized) setText(v.address.standardized);
       if (v.result === "for_sale" && v.listings.length === 1)
         setSelected({ ...v.listings[0], usingFixtures: v.usingFixtures });
     } catch (e) {

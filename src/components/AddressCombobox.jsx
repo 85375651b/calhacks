@@ -1,4 +1,5 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState, useReducer } from "react";
+import { comboboxReducer, initialCombobox, inputPrivacy } from "../lib/search/combobox";
 import { useNavigate } from "react-router-dom";
 import { classifyIntent } from "../lib/search/intent";
 import { useFavorites } from "../lib/Favorites";
@@ -25,19 +26,17 @@ export default function AddressCombobox({
   id: givenId,
   placeholder,
 }) {
-  const [local, setLocal] = useState(""),
-    [items, setItems] = useState([]),
-    [open, setOpen] = useState(false),
-    [active, setActive] = useState(-1),
-    [loading, setLoading] = useState(false);
-  const address = value ?? local,
-    change = (v) => (onChange ? onChange(v) : setLocal(v)),
+  const [interaction, dispatch] = useReducer(comboboxReducer, undefined, initialCombobox);
+  const [loading, setLoading] = useState(false);
+  const { items, open, active } = interaction;
+  const address = value ?? interaction.value,
+    change = (v) => onChange?.(v),
     container = useRef(),
     request = useRef(),
     sequence = useRef(0),
     navigate = useNavigate(),
     generated = useId(),
-    id = givenId || generated,
+    id = givenId || `home-search-${generated}`,
     listId = id + "-suggestions";
   const { clientId } = useFavorites(),
     { work } = usePreferences();
@@ -50,10 +49,8 @@ export default function AddressCombobox({
     const seq = ++sequence.current,
       controller = new AbortController();
     request.current = controller;
-    setItems([]);
-    setActive(-1);
     setLoading(false);
-    if (!eligible) return () => controller.abort();
+    if (!eligible || !open) return () => controller.abort();
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
@@ -68,7 +65,7 @@ export default function AddressCombobox({
           }),
           v = r.ok ? await r.json() : [];
         if (seq === sequence.current && !controller.signal.aborted)
-          setItems(Array.isArray(v) ? v.slice(0, 6) : []);
+          dispatch({ type: "results", revision: interaction.revision, items: Array.isArray(v) ? v.slice(0, 6) : [] });
       } catch {
       } finally {
         if (seq === sequence.current && !controller.signal.aborted)
@@ -79,39 +76,30 @@ export default function AddressCombobox({
       clearTimeout(timer);
       controller.abort();
     };
-  }, [address, eligible, bias?.lat, bias?.lng, clientId]);
+  }, [address, eligible, open, bias?.lat, bias?.lng, clientId]);
+  function close() {
+    request.current?.abort();
+    sequence.current++;
+    dispatch({ type: "close" });
+  }
   useEffect(() => {
     const close = (e) => {
       if (!container.current?.contains(e.target)) {
-        setOpen(false);
-        setActive(-1);
+        close();
       }
     };
     document.addEventListener("pointerdown", close);
     return () => document.removeEventListener("pointerdown", close);
   }, []);
   async function choose(p) {
-    request.current?.abort();
-    setOpen(false);
-    setActive(-1);
+    close();
+    dispatch({ type: "select", item: p });
     change(p.label);
     if (p.resultType === "city" || p.resultType === "street") return;
     if (description) {
       onSelect?.(p);
       return;
     }
-    if (p.line1 || p.street)
-      try {
-        const r = await fetch("/api/address/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ selected: p }),
-        });
-        if (r.ok) {
-          p = await r.json();
-          change(p.standardized || p.label);
-        }
-      } catch {}
     if (onSelect) onSelect(p);
     else
       navigate(
@@ -120,7 +108,7 @@ export default function AddressCombobox({
       );
   }
   function submit() {
-    setOpen(false);
+    close();
     if (!address.trim() || disabled) return;
     if (onSubmit) onSubmit(address);
     else if (onSelect) onSelect({ label: address.trim() });
@@ -131,19 +119,11 @@ export default function AddressCombobox({
     if (e.nativeEvent.isComposing) return;
     if (e.key === "Escape") {
       e.preventDefault();
-      setOpen(false);
-      setActive(-1);
+      close();
     }
-    if (["ArrowUp", "ArrowDown"].includes(e.key) && eligible && items.length) {
+    if (["ArrowUp", "ArrowDown"].includes(e.key) && expanded && items.length) {
       e.preventDefault();
-      setOpen(true);
-      setActive((i) =>
-        e.key === "ArrowDown"
-          ? (i + 1) % items.length
-          : i < 0
-            ? items.length - 1
-            : (i - 1 + items.length) % items.length,
-      );
+      dispatch({ type: "arrow", direction: e.key === "ArrowDown" ? 1 : -1 });
     }
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -170,17 +150,18 @@ export default function AddressCombobox({
       <div className="autocomplete-wrap">
         <Input
           id={id}
+          name={`home-search-${generated}`}
+          {...inputPrivacy}
           value={address}
           onChange={(e) => {
             request.current?.abort();
+            sequence.current++;
+            dispatch({ type: "type", value: e.target.value });
             change(e.target.value);
-            setOpen(true);
-            setActive(-1);
           }}
           onKeyDown={keys}
-          onFocus={() => setOpen(true)}
           onBlur={(e) => {
-            if (!container.current?.contains(e.relatedTarget)) setOpen(false);
+            if (!container.current?.contains(e.relatedTarget)) close();
           }}
           disabled={disabled}
           rows={description ? 3 : undefined}
@@ -210,7 +191,6 @@ export default function AddressCombobox({
                 role="option"
                 aria-selected={active === i}
                 className={active === i ? "highlighted" : ""}
-                onMouseMove={() => setActive(i)}
                 onPointerDown={(e) => e.preventDefault()}
                 onClick={() => choose(p)}
               >
