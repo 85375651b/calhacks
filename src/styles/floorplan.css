@@ -1,0 +1,20 @@
+.floorplan-status {display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px;background:#eef4ed;border-radius:8px;font-size:.9rem;color:#234c3c}
+.floorplan-switch {margin:12px 0}
+.floorplan-panel {margin-bottom:16px;max-height:550px}
+.floorplan-panel input[type=file] {max-width:100%}
+.floorplan-card {display:inline-flex;vertical-align:top;flex-direction:column;gap:8px;width:min(100%,300px);padding:14px;margin:8px;border:1px solid #cdd9cd;border-radius:12px}
+.plan-thumbnail {height:150px;padding:4px;background:white;border:1px solid #bdcdbd}
+.plan-thumbnail img {height:100%;width:100%;object-fit:contain}
+.floorplan-fallbacks,.plan-viewer-toolbar {display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.floorplan-viewer {width:min(1100px,96vw);max-height:94dvh;padding:20px;border:1px solid #b8c8b8;border-radius:16px;color:#173d2b;overflow:auto}
+.floorplan-viewer::backdrop {background:#10291dcc}
+.floorplan-viewer header {display:flex;align-items:center;justify-content:space-between;gap:16px}
+.floorplan-viewer h2 {font-size:1.25rem;margin:0}
+.plan-viewport {height:55dvh;overflow:hidden;background:#e5e9e2;display:flex;align-items:center;justify-content:center;touch-action:none;border:1px solid #c6d0c6;position:relative}
+.plan-viewport>img {max-width:100%;max-height:100%;object-fit:contain;user-select:none;transform-origin:center}
+.floorplan-viewer button,.floorplan-panel button,.floorplan-switch button {min-height:36px}
+.floorplan-viewer :focus-visible,.floorplan-panel :focus-visible {outline:3px solid #3c805c;outline-offset:3px}
+@media(max-width:767px){
+ .planner-page[data-panel=floorplan] .floorplan-panel {display:block;position:fixed;bottom:0;left:0;right:0;z-index:40;max-height:55dvh;margin:0;border-radius:16px 16px 0 0}
+ .floorplan-card{margin:8px 0;width:100%}.floorplan-viewer{padding:12px}.floorplan-viewer header{align-items:flex-start}.plan-viewport{height:48dvh}
+}

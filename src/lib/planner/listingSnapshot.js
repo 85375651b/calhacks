@@ -7,6 +7,9 @@ export function listingSnapshot(listing = {}, detail = {}) {
   for (const key of [
     "id",
     "address",
+    "city",
+    "state",
+    "zip",
     "price",
     "beds",
     "baths",

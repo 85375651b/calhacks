@@ -1,3 +1,6 @@
+import FloorPlanPanel, { FloorPlanStatus } from "../components/planner/FloorPlanPanel";
+import { useFloorPlans } from "../lib/planner/floorPlanApi";
+import "../styles/floorplan.css";
 import RoomPanel from "../components/planner/RoomPanel";
 import { demoPlacements } from "../lib/planner/demo";
 import AddFurniture from "../components/planner/AddFurniture";
@@ -64,6 +67,9 @@ function PlannerHome() {
     [roomId, setRoomId] = useState(""),
     [overrides, setOverrides] = useState({}),
     [dismissed, setDismissed] = useState(false);
+  const [floorPlan,setFloorPlan]=useState({mode:'estimated',ceilingHeightIn:96,ceilingSource:'default',plans:[]});
+  const floorPlans=useFloorPlans({snapshot,homeId,clientId,savedPlans:floorPlan.plans});
+  function updatePlan(plan,patch){setFloorPlan(old=>({...old,plans:[...old.plans.filter(p=>p.assetId!==plan.assetId),{assetId:plan.assetId,levelIndex:0,rotationDeg:0,calibration:null,...old.plans.find(p=>p.assetId===plan.assetId),...patch}]}));}
   const heading = useRef(),
     canvas = useRef(),
     project = useRef(),
@@ -586,7 +592,10 @@ function PlannerHome() {
             Delete oldest saved layout and retry
           </button>
         )}
+        <FloorPlanStatus state={floorPlans}/>
       </header>
+      <div className="floorplan-switch"><button aria-expanded={mobilePanel==='floorplan'} onClick={()=>setMobilePanel(mobilePanel==='floorplan'?'':'floorplan')}>Floor plan</button></div>
+      {mobilePanel==='floorplan'&&<FloorPlanPanel state={floorPlans} clientId={clientId} homeId={homeId} address={snapshot.address} floorPlan={floorPlan} onChange={updatePlan} onKeepEstimated={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('');}} onRooms={()=>{setFloorPlan(p=>({...p,mode:'estimated'}));setMobilePanel('rooms');}}/>}
       {house.limited && !dismissed && (
         <p className="planner-notice">
           Limited listing data: using typical sizes for a 3 bed, 2 bath home.
