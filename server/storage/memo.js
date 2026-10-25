@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import { dirname } from "node:path";
 import { createHash } from "node:crypto";
+import { trace } from "../search/address-trace.js";
 export const hash = (v) =>
   createHash("sha256").update(JSON.stringify(v)).digest("hex");
 export function persistentMemo(file, { now = Date.now } = {}) {
@@ -36,10 +37,12 @@ export function persistentMemo(file, { now = Date.now } = {}) {
     key = hash(key);
     await ready;
     if (entries[key]?.until > now()) {
+      trace("cache", { namespace: file.split(/[\\/]/).pop(), hit: true });
       if (entries[key].error) throw new Error(entries[key].error);
       return entries[key].value;
     }
     if (flight.has(key)) return flight.get(key);
+    trace("cache", { namespace: file.split(/[\\/]/).pop(), hit: false });
     const job = (async () => {
       try {
         const value = await fn();

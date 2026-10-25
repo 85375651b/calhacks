@@ -1,4 +1,5 @@
 import { claimAddressRentCast } from "../providers/daily-budget.js";
+import { trace, withAddressTrace } from "./address-trace.js";
 import { addressSlot } from "../providers/concurrency.js";
 import { join } from "node:path";
 import { config, serverDirectory } from "../config.js";
@@ -63,7 +64,7 @@ export function createAddressLookup({
   claim = claimAddressRentCast,
 } = {}) {
   const clients = new Map();
-  return async (body, client = "anonymous") => {
+  return async (body, client = "anonymous") => withAddressTrace(body?.debug === true, async () => {
     if (
       !body ||
       (!body.selected &&
@@ -114,6 +115,7 @@ export function createAddressLookup({
             .filter(
               (p) => p.line1 && p.city && p.state && p.zip && validBias(p),
             );
+          trace("candidates", { candidates });
           if (!candidates.length)
             return {
               ...base,
@@ -126,6 +128,7 @@ export function createAddressLookup({
               fixtureMode ? { ...p, verified: false } : verify(p),
             ),
           );
+          trace("census", { candidates });
           if (
             !selected &&
             candidates.length === 1 &&
@@ -192,26 +195,31 @@ export function createAddressLookup({
             listings = visibleListings(await recent(candidate)).filter((p) =>
               exactAddress(candidate, p),
             );
+            trace("recent-cache", { count: listings.length });
             if (listings.length) sources.push("Recent listing cache");
             if (!listings.length) {
               try {
                 if (!(await claim())) throw Error("Daily cap");
+                trace("rentcast-request", { address: addressLabel(candidate), status: "Active", limit: 50 });
                 const data = await request(
                   "/listings/sale",
                   addressLabel(candidate),
                   { status: "Active", limit: "50" },
                 );
                 sources.push("RentCast");
+                trace("rentcast-response", { count: Array.isArray(data) ? data.length : 0 });
                 listings = visibleListings(
                   (Array.isArray(data) ? data : []).map((p) =>
                     normalize(p, "RentCast", true),
                   ),
                 ).filter((p) => exactAddress(candidate, p));
-              } catch {
+              } catch (e) {
+                trace("rentcast-error", { code: e.code || "UNAVAILABLE", status: e.status || null });
                 unavailable.push("RentCast");
               }
             }
             if (!listings.length && enabled) {
+              trace("apify-request", { address: addressLabel(candidate) });
               try {
                 const data = await runner(
                   ACTORS.Zillow,
@@ -223,12 +231,14 @@ export function createAddressLookup({
                   { limit: 50 },
                 );
                 sources.push("Zillow");
+                trace("apify-response", { count: Array.isArray(data) ? data.length : 0 });
                 listings = visibleListings(
                   (Array.isArray(data) ? data : []).map((p) =>
                     normalize(p, "Zillow", true),
                   ),
                 ).filter((p) => exactAddress(candidate, p));
               } catch {
+                trace("apify-error", { reason: "unavailable or capped" });
                 unavailable.push("Zillow");
               }
             }
@@ -264,6 +274,6 @@ export function createAddressLookup({
           ? 60000
           : Math.max(1000, 3600000 - (now() - Date.parse(v.checkedAt))),
     );
-  };
+  });
 }
 export const lookupAddress = createAddressLookup();
