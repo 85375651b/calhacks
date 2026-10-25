@@ -12,3 +12,4 @@ server/.cache/
 *.log
 server/data/
 server/research/
+.venv/

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "wood_oak_planks",
+    "tags": ["wood", "floor", "light", "warm", "natural", "modern"],
+    "surface": "floor",
+    "tile_ft": 3,
+    "maps": {
+      "color": "textures/oak_wood_planks_1k.blend/textures/oak_wood_planks_diff_1k.jpg",
+      "normal": "textures/oak_wood_planks_1k.blend/textures/oak_wood_planks_nor_gl_1k.exr",
+      "roughness": "textures/oak_wood_planks_1k.blend/textures/oak_wood_planks_rough_1k.exr"
+    }
+  },
+  {
+    "id": "wood_cherry_dark",
+    "tags": ["wood", "floor", "dark", "warm", "classic", "glossy"],
+    "surface": "floor",
+    "tile_ft": 3,
+    "maps": {
+      "color": "textures/lacquered_cherry_wood_1k.blend/textures/lacquered_cherry_wood_diff_1k.jpg",
+      "normal": "textures/lacquered_cherry_wood_1k.blend/textures/lacquered_cherry_wood_nor_gl_1k.exr",
+      "roughness": "textures/lacquered_cherry_wood_1k.blend/textures/lacquered_cherry_wood_rough_1k.exr"
+    }
+  },
+  {
+    "id": "tile_terracotta",
+    "tags": ["tile", "floor", "brown", "warm", "rustic"],
+    "surface": "floor",
+    "tile_ft": 3,
+    "maps": {
+      "color": "textures/tiled_floor_001_1k.blend/textures/tiled_floor_001_diffuse_1k.jpg",
+      "normal": "textures/tiled_floor_001_1k.blend/textures/tiled_floor_001_nor_gl_1k.exr",
+      "roughness": "textures/tiled_floor_001_1k.blend/textures/tiled_floor_001_rough_1k.jpg"
+    }
+  },
+  {
+    "id": "tile_stone_beige",
+    "tags": ["tile", "stone", "floor", "beige", "rustic", "neutral"],
+    "surface": "floor",
+    "tile_ft": 3,
+    "maps": {
+      "color": "textures/floor_tiles_02_1k.blend/textures/floor_tiles_02_diff_1k.jpg",
+      "normal": "textures/floor_tiles_02_1k.blend/textures/floor_tiles_02_nor_gl_1k.exr",
+      "roughness": "textures/floor_tiles_02_1k.blend/textures/floor_tiles_02_rough_1k.jpg"
+    }
+  },
+  {
+    "id": "concrete_floor_dark",
+    "tags": ["concrete", "floor", "dark", "gray", "industrial", "modern"],
+    "surface": "floor",
+    "tile_ft": 6,
+    "maps": {
+      "color": "textures/concrete_floor_worn_001_1k.blend/textures/concrete_floor_worn_001_diff_1k.jpg",
+      "normal": "textures/concrete_floor_worn_001_1k.blend/textures/concrete_floor_worn_001_nor_gl_1k.exr",
+      "roughness": "textures/concrete_floor_worn_001_1k.blend/textures/concrete_floor_worn_001_rough_1k.jpg"
+    }
+  },
+  {
+    "id": "concrete_wall_light",
+    "tags": ["concrete", "wall", "light", "gray", "industrial", "minimalist"],
+    "surface": "wall",
+    "tile_ft": 6,
+    "maps": {
+      "color": "textures/concrete_wall_009_1k.blend/textures/concrete_wall_009_diff_1k.jpg",
+      "normal": "textures/concrete_wall_009_1k.blend/textures/concrete_wall_009_nor_gl_1k.exr",
+      "roughness": "textures/concrete_wall_009_1k.blend/textures/concrete_wall_009_rough_1k.exr"
+    }
+  },
+  {
+    "id": "plaster_beige",
+    "tags": ["plaster", "wall", "beige", "warm", "neutral", "minimalist"],
+    "surface": "wall",
+    "tile_ft": 6,
+    "maps": {
+      "color": "textures/beige_wall_001_1k.blend/textures/beige_wall_001_diff_1k.jpg",
+      "normal": "textures/beige_wall_001_1k.blend/textures/beige_wall_001_nor_gl_1k.exr",
+      "roughness": "textures/beige_wall_001_1k.blend/textures/beige_wall_001_rough_1k.jpg"
+    }
+  },
+  {
+    "id": "brick_red",
+    "tags": ["brick", "wall", "red", "warm", "rustic", "industrial"],
+    "surface": "wall",
+    "tile_ft": 6,
+    "maps": {
+      "color": "textures/brick_wall_09_1k.blend/textures/brick_wall_09_diff_1k.jpg",
+      "normal": "textures/brick_wall_09_1k.blend/textures/brick_wall_09_nor_gl_1k.exr",
+      "roughness": "textures/brick_wall_09_1k.blend/textures/brick_wall_09_rough_1k.exr"
+    }
+  },
+  {
+    "id": "stone_sandstone_blocks",
+    "tags": ["stone", "wall", "beige", "warm", "light", "rustic"],
+    "surface": "wall",
+    "tile_ft": 4,
+    "maps": {
+      "color": "textures/sandstone_blocks_08_1k.blend/textures/sandstone_blocks_08_diff_1k.jpg",
+      "normal": "textures/sandstone_blocks_08_1k.blend/textures/sandstone_blocks_08_nor_gl_1k.exr",
+      "roughness": "textures/sandstone_blocks_08_1k.blend/textures/sandstone_blocks_08_rough_1k.jpg"
+    }
+  }
+]

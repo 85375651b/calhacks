@@ -693,3 +693,30 @@ nav .count-badge {
     flex-wrap: wrap;
   }
 }
+.full-filters {
+  margin-bottom: 16px;
+}
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+}
+.filter-toggle:hover {
+  background: transparent;
+}
+.filter-count {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.filter-chevron {
+  font-size: 16px;
+  color: var(--accent);
+}
+.home-address-search {
+  margin-bottom: 32px;
+}
