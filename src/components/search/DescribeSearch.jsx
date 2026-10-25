@@ -1,3 +1,4 @@
+import AddressCombobox from '../AddressCombobox';
 import React, { useEffect, useRef, useState } from 'react';
 import { EXAMPLES, interpretationFor } from '../../../server/search/nlParser';
 import { defaults } from '../../../server/search/criteria';
@@ -52,8 +53,7 @@ export default function DescribeSearch({ mode, setMode, text, setText, parsed, s
     </div>
     <div id="panel-describe" role="tabpanel" aria-labelledby="tab-describe" hidden={mode !== 'describe'}>
       <form onSubmit={e => { e.preventDefault(); submit(); }}>
-        <label htmlFor="describe-input">Describe what you’re looking for</label>
-        <textarea ref={input} id="describe-input" value={text} maxLength={500} rows={3} placeholder="Describe the home you want, or enter an address (e.g. 4 bed house in Los Angeles under $1.5M, or 147 Midway Ln)" aria-describedby="describe-help describe-count" onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit(); } }} />
+        <AddressCombobox embedded description id="describe-input" label="Describe a home or enter its address" value={text} onChange={setText} onSubmit={submit} onSelect={p=>{setParsed({intent:'address',address:{text:p.label},notApplied:[]});onAddress({selected:p});}} bias={bias} disabled={busy||parsing} placeholder="Describe the home you want, or enter an address (e.g. 4 bed house in Los Angeles under $1.5M, or 147 Midway Ln)"/>
         <div className="describe-actions"><small id="describe-help">Enter to search · Shift+Enter for a new line</small><small id="describe-count">{text.length}/500</small><button disabled={busy || parsing || !text.trim()}>{parsing ? 'Understanding your search…' : busy ? 'Searching…' : 'Search'}</button></div>
         {configured && <p className="small-note">Your search text is sent to OpenAI to interpret it.</p>}
       </form>

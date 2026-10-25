@@ -95,7 +95,7 @@ test("Photon requests US houses with a timeout; normalized-query cache lasts ten
   assert.deepEqual(await failed("123 Main"), []);
 });
 
-test("autocomplete validates query and limits each IP to 20 requests per minute", async () => {
+test("autocomplete validates query and limits each IP to 30 requests per minute", async () => {
   let time = 0,
     calls = 0;
   const autocomplete = createAutocomplete({
@@ -107,12 +107,12 @@ test("autocomplete validates query and limits each IP to 20 requests per minute"
   });
   await assert.rejects(autocomplete("12", "a"), { status: 400 });
   assert.equal(calls, 0);
-  for (let i = 0; i < 20; i++) await autocomplete("123", "a");
+  for (let i = 0; i < 30; i++) await autocomplete("123", "a");
   await assert.rejects(autocomplete("123", "a"), { status: 429 });
   await autocomplete("123", "b");
   time = 60000;
   await autocomplete("123", "a");
-  assert.equal(calls, 22);
+  assert.equal(calls, 32);
 });
 
 test("actual Apify fixture normalizes observed fields without inventing missing photo/history data", () => {

@@ -7,7 +7,7 @@ import {normalize} from '../search/listing.js';
 const p={line1:'123 N Main St',city:'Austin',state:'TX',zip:'78701',lat:30,lng:-97,label:'123 N Main St, Austin, TX 78701'};
 const raw=(address='123 North Main Street',status='Active')=>({address,city:'Austin',state:'TX',zipCode:'78701',status,price:500000});
 const direct=async(k,fn)=>fn();
-const options={fixtureMode:false,enabled:false,cache:direct,provider:async()=>[p],verify:async p=>({...p,verified:true}),recent:async()=>[],request:async()=>[]};
+const options={claim:async()=>true,fixtureMode:false,enabled:false,cache:direct,provider:async()=>[p],verify:async p=>({...p,verified:true}),recent:async()=>[],request:async()=>[]};
 test('exact address matching preserves number, street, ZIP and requested unit',()=>{
  assert.equal(normalizeAddress(' 123 N. Main St. '),'123 north main street');
  assert.equal(splitAddress('12 Oak St Apt 3').unit,'3');

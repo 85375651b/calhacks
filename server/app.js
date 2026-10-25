@@ -1,3 +1,4 @@
+import {verifyAddress} from './providers/census.js';
 import {lookupAddress} from './search/address.js';
 import {isDisplayable,normalizeListingStatus,visibleListings} from './search/status.js';
 import { plannerRouter } from './storage/planner-routes.js';
@@ -22,6 +23,11 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
   app.use("/api/favorites", favoritesRouter);
   app.use("/api", plannerRouter);
   app.get('/api/search/config', (_req, res) => res.json({ openaiConfigured: !config.useFixtures && Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_key_here') }));
+  app.post('/api/address/verify',async(req,res)=>{
+    const p=req.body?.selected;
+    if(!p||typeof(p.line1||p.street)!=='string'||typeof p.city!=='string'||typeof p.state!=='string'||typeof p.zip!=='string'||JSON.stringify(p).length>1500)return res.status(400).json({error:{message:'Choose a complete address.'}});
+    res.json(config.useFixtures?{...p,verified:false}:await verifyAddress(p));
+  });
   app.post('/api/search/address', async (req,res)=>{
     res.set('Cache-Control','no-store');
     try {const v=await addressLookup(req.body,String(req.get('X-Client-Id')||req.ip).slice(0,100));res.json({...v,...(v.listings?{listings:visibleListings(v.listings)}:{})});}
@@ -77,7 +83,7 @@ export function createApp(lookup, { autocomplete, enrich, parse = parseSearch, r
   app.get("/api/autocomplete", async (req, res) => {
     res.set("Cache-Control", "no-store");
     try {
-      res.json(autocomplete ? await autocomplete(req.query.q, req.ip) : []);
+      res.json(autocomplete ? await autocomplete(req.query.q, String(req.get('X-Client-Id')||req.ip).slice(0,100),req.query.lat!=null&&req.query.lng!=null?{lat:Number(req.query.lat),lng:Number(req.query.lng)}:undefined) : []);
     } catch (error) {
       if (error instanceof LookupError) {
         if (error.status === 429) res.set("Retry-After", "60");

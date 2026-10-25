@@ -12,7 +12,8 @@
     "test": "node --test server/tests/*.test.js",
     "check:secrets": "node server/scripts/check-secrets.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "probe:autocomplete": "node server/scripts/probeAutocomplete.js"
   },
   "dependencies": {
     "@napi-rs/canvas": "^1.0.13",

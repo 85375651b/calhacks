@@ -2,7 +2,7 @@ import { LookupError } from "./errors.js";
 
 export function createAutocomplete({ provider, now = Date.now }) {
   const clients = new Map();
-  return async (query, ip) => {
+  return async (query, ip, bias) => {
     if (
       typeof query !== "string" ||
       query.trim().length < 3 ||
@@ -27,14 +27,14 @@ export function createAutocomplete({ provider, now = Date.now }) {
       client = { count: 0, expiresAt: now() + 60000 };
       clients.set(ip, client);
     }
-    if (++client.count > 20)
+    if (++client.count > 30)
       throw new LookupError(
         429,
         "RATE_LIMIT",
         "Please continue typing the address manually.",
       );
     try {
-      return await provider(query);
+      return await provider(query, bias);
     } catch {
       return [];
     }

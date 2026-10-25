@@ -1,0 +1,73 @@
+{
+  "742 evergreen": [
+    {
+      "line1": "742 Evergreen Place",
+      "street": "742 Evergreen Place",
+      "city": "Miami Township",
+      "state": "OH",
+      "zip": "45140",
+      "lat": 39.2126073,
+      "lng": -84.2679438,
+      "confidence": 0.75,
+      "matchType": null,
+      "provider": "sample",
+      "resultType": "address",
+      "verified": false,
+      "label": "742 Evergreen Place, Miami Township, OH 45140",
+      "forSale": false
+    },
+    {
+      "line1": "742 Evergreen Court",
+      "street": "742 Evergreen Court",
+      "city": "Algonquin",
+      "state": "IL",
+      "zip": "60102",
+      "lat": 42.163796108221,
+      "lng": -88.302964748838,
+      "confidence": 0.75,
+      "matchType": null,
+      "provider": "sample",
+      "resultType": "address",
+      "verified": false,
+      "label": "742 EVERGREEN CT, ALGONQUIN, IL, 60102",
+      "forSale": false,
+      "standardized": "742 EVERGREEN CT, ALGONQUIN, IL, 60102"
+    },
+    {
+      "line1": "742 Evergreen Avenue",
+      "street": "742 Evergreen Avenue",
+      "city": "New York",
+      "state": "NY",
+      "zip": "11207",
+      "lat": 40.686495406374,
+      "lng": -73.908951373044,
+      "confidence": 0.75,
+      "matchType": null,
+      "provider": "sample",
+      "resultType": "address",
+      "verified": false,
+      "label": "742 EVERGREEN AVE, BROOKLYN, NY, 11207",
+      "forSale": false,
+      "standardized": "742 EVERGREEN AVE, BROOKLYN, NY, 11207"
+    }
+  ],
+  "400 broad st seattle wa": [
+    {
+      "line1": "400 Broad Street",
+      "street": "400 Broad Street",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98109",
+      "lat": 47.619822816651,
+      "lng": -122.348868336565,
+      "confidence": 0.75,
+      "matchType": null,
+      "provider": "sample",
+      "resultType": "address",
+      "verified": false,
+      "label": "400 BROAD ST, SEATTLE, WA, 98109",
+      "forSale": false,
+      "standardized": "400 BROAD ST, SEATTLE, WA, 98109"
+    }
+  ]
+}
