@@ -33,6 +33,7 @@ import {
   snapshotKey,
 } from "../lib/planner/listingSnapshot";
 import Scene from "../components/planner/Scene";
+import { loadLibrary, findEntry } from "../lib/planner/materials";
 import { money } from "../components/search/ListingGrid";
 import "../styles/planner.css";
 const demo = {
@@ -72,9 +73,14 @@ function PlannerHome() {
     [view, setView] = useState(() => (window.innerWidth < 768 ? "2D" : "3D")),
     [level, setLevel] = useState(0),
     [fullWalls, setFullWalls] = useState(false),
+    [materialLibrary, setMaterialLibrary] = useState([]),
+    [surfaceIds, setSurfaceIds] = useState({ floor: "", walls: "" }),
     [roomId, setRoomId] = useState(""),
     [overrides, setOverrides] = useState({}),
     [dismissed, setDismissed] = useState(false);
+  useEffect(() => {
+    loadLibrary().then(setMaterialLibrary).catch(() => setMaterialLibrary([]));
+  }, []);
   const [floorPlan, setFloorPlan] = useState({
     mode: "estimated",
     ceilingHeightIn: 96,
@@ -787,6 +793,27 @@ function PlannerHome() {
         <button onClick={() => setFullWalls(!fullWalls)}>
           {fullWalls ? "Full walls" : "Cutaway"}
         </button>
+        {materialLibrary.length > 0 &&
+          ["floor", "walls"].map((surface) => (
+            <label key={surface}>
+              {surface === "floor" ? "Floor finish" : "Wall finish"}{" "}
+              <select
+                value={surfaceIds[surface]}
+                onChange={(e) =>
+                  setSurfaceIds((m) => ({ ...m, [surface]: e.target.value }))
+                }
+              >
+                <option value="">Default</option>
+                {materialLibrary
+                  .filter((m) => m.surface === (surface === "floor" ? "floor" : "wall"))
+                  .map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.id.replace(/_/g, " ")}
+                    </option>
+                  ))}
+              </select>
+            </label>
+          ))}
         <label>
           Floor{" "}
           <select
@@ -897,6 +924,10 @@ function PlannerHome() {
             planOpacity={converted ? 0.25 : 0.9}
             view={view}
             fullWalls={fullWalls}
+            surfaceMaterials={{
+              floor: findEntry(materialLibrary, surfaceIds.floor),
+              walls: findEntry(materialLibrary, surfaceIds.walls),
+            }}
             quality="low"
             focus={floor.rooms.find((r) => r.id === roomId)}
             onEmpty={() => setSelected("")}

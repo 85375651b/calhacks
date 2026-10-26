@@ -17,6 +17,7 @@ import "./styles/results.css";
 import "./styles/autocomplete.css";
 import "./styles/enrichment.css";
 const Planner = lazy(() => import("./pages/Planner"));
+const Tour = lazy(() => import("./pages/Tour"));
 export default function App() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
@@ -46,6 +47,14 @@ export default function App() {
             element={
               <Suspense fallback={<main id="main">Loading planner - </main>}>
                 <Planner />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/tour"
+            element={
+              <Suspense fallback={<main id="main">Loading tour - </main>}>
+                <Tour />
               </Suspense>
             }
           />

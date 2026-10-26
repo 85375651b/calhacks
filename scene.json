@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "units": "feet",
+  "house": "floorplan/cubicasa5k/plan1_clean.json",
+  "materials": { "floor": "wood_oak_planks", "walls": "paint_white" },
+  "furniture": [
+    {
+      "id": "table-1",
+      "glb": "table_sized.glb",
+      "size_ft": [3.8714, 2.4606, 2.4278],
+      "position": [17.54, 0, 2.93],
+      "rotation_deg": 0
+    }
+  ]
+}

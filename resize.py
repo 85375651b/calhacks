@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import trimesh
 
@@ -80,6 +82,12 @@ def resize_to_real_size(path_in, path_out, length, width, height, unit="cm",
     trimesh.Scene(meshes).export(path_out)
     lo2, hi2 = bounds_of(meshes)
     print("final size x,y,z:", [fmt_ft_in(v) for v in hi2 - lo2])
+
+    # sidecar for place.py: exact size in feet, x (width), y (height), z (depth)
+    sidecar = path_out.rsplit(".", 1)[0] + ".json"
+    with open(sidecar, "w") as f:
+        json.dump({"glb": path_out, "size_ft": [round(float(v), 4) for v in hi2 - lo2]}, f, indent=2)
+    print("wrote", sidecar)
     return hi2 - lo2
 
 

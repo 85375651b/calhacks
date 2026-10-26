@@ -1,0 +1,69 @@
+# Minimal OCIO 2.1 config for render/render.py.
+# Fedora's Blender 5.2 ships an OCIO 2.5 config but links OpenColorIO 2.4, so it
+# falls back to "Standard" only. This config re-creates Blender's AgX Base sRGB
+# view (same math and LUT as Blender's own config: Rec.709 -> FilmLight E-Gamut,
+# lg2 allocation, AgX_Base_sRGB.cube, Rec.1886 -> sRGB) plus Standard/Raw.
+ocio_profile_version: 2.1
+search_path: "/usr/share/blender/5.2/datafiles/colormanagement/luts"
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  reference: Linear Rec.709
+  default: Linear Rec.709
+  scene_linear: Linear Rec.709
+  rendering: Linear Rec.709
+  default_byte: sRGB
+  default_float: Linear Rec.709
+  default_sequencer: sRGB
+  data: Non-Color
+  color_picking: sRGB
+  color_timing: sRGB
+  compositing_log: sRGB
+  texture_paint: Linear Rec.709
+  matte_paint: Linear Rec.709
+
+displays:
+  sRGB:
+    - !<View> {name: Standard, colorspace: sRGB}
+    - !<View> {name: AgX, colorspace: AgX Base sRGB}
+    - !<View> {name: Raw, colorspace: Non-Color}
+
+active_displays: [sRGB]
+active_views: [Standard, AgX, Raw]
+
+colorspaces:
+  - !<ColorSpace>
+    name: Linear Rec.709
+    family: Linear
+    equalitygroup: ""
+    bitdepth: 32f
+    isdata: false
+    aliases: [Linear]
+
+  - !<ColorSpace>
+    name: Non-Color
+    family: Data
+    bitdepth: 32f
+    isdata: true
+
+  - !<ColorSpace>
+    name: sRGB
+    family: Display
+    bitdepth: 32f
+    isdata: false
+    from_scene_reference: !<ExponentWithLinearTransform> {gamma: 2.4, offset: 0.055, direction: inverse}
+
+  - !<ColorSpace>
+    name: AgX Base sRGB
+    family: Display
+    bitdepth: 32f
+    isdata: false
+    from_scene_reference: !<GroupTransform>
+      children:
+        - !<MatrixTransform> {matrix: [0.5593711113, 0.3047833144, 0.1358455743, 0, 0.0762207335, 0.7879717939, 0.1358074726, 0, 0.0655267398, 0.1645467807, 0.7699264795, 0, 0, 0, 0, 1]}
+        - !<RangeTransform> {min_in_value: 0, min_out_value: 0}
+        - !<AllocationTransform> {allocation: lg2, vars: [-12.47393, 12.5260688117]}
+        - !<FileTransform> {src: AgX_Base_sRGB.cube, interpolation: tetrahedral}
+        - !<ExponentTransform> {value: 2.4}
+        - !<ExponentWithLinearTransform> {gamma: 2.4, offset: 0.055, direction: inverse}

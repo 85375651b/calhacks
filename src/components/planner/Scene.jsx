@@ -1,7 +1,8 @@
 import PlanFloor from "./PlanFloor";
 import DetectedWalls from "./DetectedWalls";
 import React, { useEffect, useRef } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import { applySurfaceMaterial } from "../../lib/planner/materials";
 import {
   OrbitControls,
   OrthographicCamera,
@@ -134,6 +135,7 @@ function Wall({ room, edge, floor, height }) {
           }
           size={horizontal ? [(b - a) / 12, h, 0.12] : [0.12, h, (b - a) / 12]}
           color={color}
+          userData={{ surface: color === "#a9d5e3" ? "glass" : "wall" }}
         />,
       );
   };
@@ -149,6 +151,16 @@ function Wall({ room, edge, floor, height }) {
   part(cursor, end, height / 2, height);
   return <group>{parts}</group>;
 }
+// Applies library materials to meshes tagged userData.surface ("floor" / "wall").
+// null entries keep the default planner look.
+export function SurfaceMaterials({ floor = null, walls = null }) {
+  const scene = useThree((s) => s.scene);
+  useFrame(() => {
+    applySurfaceMaterial(scene, "floor", floor);
+    applySurfaceMaterial(scene, "wall", walls);
+  });
+  return null;
+}
 function Content({
   floor,
   ceilingHeightIn=96,planUrl,planRotation,planOpacity,
@@ -157,6 +169,7 @@ function Content({
   quality,
   focus,
   children,
+  surfaceMaterials,
   onEmpty,
   onProject,
   onCameraControls,
@@ -219,6 +232,7 @@ function Content({
             size={[room.widthIn / 12, 0.08, room.depthIn / 12]}
             color={roomColors[room.type]}
             onClick={onEmpty}
+            userData={{ surface: "floor" }}
             receiveShadow
           />
           {!floor.openPlan && !floor.walls && ["north", "south", "east", "west"].map((edge) => (
@@ -245,6 +259,7 @@ function Content({
       ))}
       {floor.walls && <DetectedWalls walls={floor.walls} heightIn={view === "2D" ? 1.8 : fullWalls ? ceilingHeightIn : 14.4} />}
       {planUrl&&<PlanFloor url={planUrl} floor={floor} rotationDeg={planRotation} opacity={planOpacity}/> }
+      <SurfaceMaterials {...surfaceMaterials} />
       {children}
     </>
   );
